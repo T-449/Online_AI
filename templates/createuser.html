@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Create new User</title>
+</head>
+<body>
+    <form action="login" method="post">
+
+        {% csrf_token %}
+
+        Enter name: <input type="text" name="username"><br>
+        Enter password: <input type="text" name="password"><br>
+        <input type="submit">
+    </form>
+</body>
+</html>

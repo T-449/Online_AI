@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+</head>
+<body>
+    <h2>{{ loginstatus }}</h2>
+    <form action="showprofile" method="post">
+
+        {% csrf_token %}
+
+        Enter name: <input type="text" name="username"><br>
+        Enter password: <input type="text" name="password"><br>
+        <input type="submit">
+    </form>
+    <a class="btn btn-primary" href="createuser">Create new user</a>
+</body>
+</html>
