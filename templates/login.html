@@ -1,43 +1,63 @@
 {% load static %}
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
     <title>Login</title>
-</head>
-<body style="background-color: tan;">
-    <script src="https://unpkg.com/@popperjs/core@2.4.0/dist/umd/popper.min.js"></script>
-    <script src="{% static 'js/bootstrap.js' %}"></script>
-    <h2>{{ loginstatus }}</h2>
-    <div class="center">
-    <form action="showprofile" method="post">
 
-        {% csrf_token %}
-        <div class="container">
-            <div class="row g-3">
-                <label for="username" class="form-label" style="color: black;">Username</label>
-                <div class="col-5">
-                    <input type="text" class="form-control"  name="username" placeholder="First name" aria-label="First name" required>
-                </div>
-                <div class="row g-3">
-                    <label for="password" class="form-label">Password</label>
-                    <div class="col-5">
-                        <input type="password"  name="password"class="form-control" id="password" required>
-                    </div>
-                </div>
-                <div class="row g-3">
-                    <div class="col-5">
-                        <input class="btn btn-primary" type="submit" value="Sign In">
-                    </div>
-                </div>
-                <div class="row g-3">
-                    <div class="col-5">
-                        <a class="btn btn-primary" href="createuser">Sign Up</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </form>
+    <link rel="canonical" href="https://getbootstrap.com/docs/5.0/examples/sign-in/">
+
+
+
+    <!-- Bootstrap core CSS -->
+<link href="{% static 'assets/dist/css/bootstrap.min.css' %}" rel="stylesheet">
+
+    <style>
+      .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        user-select: none;
+      }
+
+      @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+          font-size: 3.5rem;
+        }
+      }
+    </style>
+
+
+    <!-- Custom styles for this template -->
+    <link href="{% static 'assets/dist/css/signin.css' %}" rel="stylesheet">
+  </head>
+  <body class="text-center">
+<main class="form-signin">
+  <br>
+    <img class="mb-4" src="{% static 'assets/brand/freeLogo.jpeg' %}" alt="" width="200" height="200">
+    <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
+  <form action="showprofile" method="post">
+      {% csrf_token %}
+    <div class="form-floating">
+      <input type="text" class="form-control" name="username" id="floatingInput" placeholder="name@example.com" required>
+      <label for="floatingInput">Username or Email</label>
     </div>
-</body>
+    <div class="form-floating">
+      <input type="password" class="form-control" name="password" id="floatingPassword" placeholder="Password" required>
+      <label for="floatingPassword">Password</label>
+    </div>
+
+      <input class="w-100 btn btn-lg btn-primary mr-1" type="submit" value="Sign In"><br><br>
+          <a class="w-100 btn btn-lg btn-success" href="createuser">Sign Up</a>
+      <br><p style="color: red">{{ loginstatus }}</p style="color: red">
+    <p class="mt-5 mb-3 text-muted">&copy; 2021–2022</p>
+  </form>
+</main>
+
+
+
+  </body>
 </html>
