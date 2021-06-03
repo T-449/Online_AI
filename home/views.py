@@ -16,7 +16,7 @@ def login(request):
     print(line)
     f.close()
     if line == '1':
-        user = UserInfo(username=request.POST['username'], password=request.POST['password'])
+        user = UserInfo(firstname=request.POST['firstname'], lastname=request.POST['lastname'], email=request.POST['email'], password=request.POST['password'])
         user.save()
         f = open("usercreated.txt", "w")
         f.write("0")
@@ -33,7 +33,7 @@ def createuser(request):
 
 def showprofile(request):
     try:
-        user = UserInfo.objects.get(username=request.POST['username'], password=request.POST['password'])
+        user = UserInfo.objects.get(firstname=request.POST['username'], password=request.POST['password'])
     except UserInfo.DoesNotExist:
         return render(request, 'login.html', {'loginstatus': 'Unsuccessful login. Try Again'})
-    return render(request, 'userprofile.html', {'username': user.username})
+    return render(request, 'userprofile.html', {'username': user.firstname + " " + user.lastname})

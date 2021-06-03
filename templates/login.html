@@ -1,19 +1,43 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
     <title>Login</title>
 </head>
-<body>
+<body style="background-color: tan;">
+    <script src="https://unpkg.com/@popperjs/core@2.4.0/dist/umd/popper.min.js"></script>
+    <script src="{% static 'js/bootstrap.js' %}"></script>
     <h2>{{ loginstatus }}</h2>
+    <div class="center">
     <form action="showprofile" method="post">
 
         {% csrf_token %}
-
-        Enter name: <input type="text" name="username"><br>
-        Enter password: <input type="text" name="password"><br>
-        <input type="submit">
+        <div class="container">
+            <div class="row g-3">
+                <label for="username" class="form-label" style="color: black;">Username</label>
+                <div class="col-5">
+                    <input type="text" class="form-control"  name="username" placeholder="First name" aria-label="First name" required>
+                </div>
+                <div class="row g-3">
+                    <label for="password" class="form-label">Password</label>
+                    <div class="col-5">
+                        <input type="password"  name="password"class="form-control" id="password" required>
+                    </div>
+                </div>
+                <div class="row g-3">
+                    <div class="col-5">
+                        <input class="btn btn-primary" type="submit" value="Sign In">
+                    </div>
+                </div>
+                <div class="row g-3">
+                    <div class="col-5">
+                        <a class="btn btn-primary" href="createuser">Sign Up</a>
+                    </div>
+                </div>
+            </div>
+        </div>
     </form>
-    <a class="btn btn-primary" href="createuser">Create new user</a>
+    </div>
 </body>
 </html>

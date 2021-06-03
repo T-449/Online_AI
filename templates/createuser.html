@@ -1,17 +1,47 @@
+{% load static %}
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Create new User</title>
-</head>
-<body>
-    <form action="login" method="post">
+<html>
+    <head>
+        <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+        <title>Create User</title>
+    </head>
+    <body style="background-color: tan;">
+        <script src="https://unpkg.com/@popperjs/core@2.4.0/dist/umd/popper.min.js"></script>
+        <script src="{% static 'js/bootstrap.js' %}"></script>
 
-        {% csrf_token %}
-
-        Enter name: <input type="text" name="username"><br>
-        Enter password: <input type="text" name="password"><br>
-        <input type="submit">
-    </form>
-</body>
+        <form action="login" method="post">
+            {% csrf_token %}
+            <div class="container">
+                <div class="row g-3">
+                    <label for="username" class="form-label" style="color: black;">Username</label>
+                    <div class="col-5">
+                        <input type="text" class="form-control"  name="firstname" placeholder="First name" aria-label="First name" required>
+                    </div>
+                    <div class="col-5">
+                        <input type="text" class="form-control" name="lastname" placeholder="Last name" aria-label="Last name">
+                    </div>
+                    <div class="row g-3">
+                        <label for="email" class="form-label">Email</label>
+                        <div class="col-5">
+                            <input type="email" name="email" class="form-control" id="email" required>
+                        </div>
+                    </div>
+                    <div class="row g-3">
+                        <label for="password" class="form-label">Password</label>
+                        <div class="col-5">
+                            <input type="password"  name="password"class="form-control" id="password" required>
+                        </div>
+                    </div>
+                    <div class="row g-3">
+                        <div class="col-5">
+                            <input class="btn btn-primary" type="submit" value="Submit">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </body>
 </html>
+
+
+
