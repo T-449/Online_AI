@@ -6,18 +6,10 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
-    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
-    <meta name="generator" content="Hugo 0.83.1">
-    <title>Headers · Bootstrap v5.0</title>
-
-    <link rel="canonical" href="https://getbootstrap.com/docs/5.0/examples/headers/">
-
-
+    <title>OnlineAI</title>
 
     <!-- Bootstrap core CSS -->
-<link href="{% static 'assets/dist/css/bootstrap.min.css' %}" rel="stylesheet">
-
-
+    <link href="{% static 'assets/dist/css/bootstrap.min.css' %}" rel="stylesheet">
 
     <style>
       .bd-placeholder-img {
@@ -36,17 +28,37 @@
     </style>
 
 
-    <!-- Custom styles for this template -->
-{#    <link href="headers.css" rel="stylesheet">#}
-
 </head>
 <body>
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 
-    <link href="{% static 'headers.css' %}" rel="stylesheet">
+    <nav class="navbar navbar-expand-sm bg-dark">
+    <div class="container d-flex flex-wrap">
+      <ul class="nav me-auto">
+        <li class="navbar-brand" href="#">
+            <img src="{% static 'assets/brand/freeLogo.jpeg' %}" alt="" style="width:50px;">
+        </li>
+          <li class="navbar-brand" href="#">
+            <img src="{% static 'assets/brand/OnlineAINeonText.jpg' %}" alt="" style="width:150px;">
+        </li>
 
+        <li class="nav-item"><a href="#" class="nav-link link-light px-2 active" aria-current="page">Tournament</a></li>
+        <li class="nav-item"><a href="#" class="nav-link link-light px-2">Archives</a></li>
+        <li class="nav-item"><a href="#" class="nav-link link-light px-2">Help</a></li>
+
+      </ul>
+
+      <ul class="nav">
+          <form class="form-inline" action="#">
+            <input class="form-control mr-sm-2" type="text" placeholder="Search">
+        </form>
+        <li class="nav-item"><a href="{% url 'login' %}" class="nav-link link-light px-2">Login</a></li>
+        <li class="nav-item"><a href="{% url 'createuser' %}" class="nav-link link-light px-2">Sign up</a></li>
+      </ul>
+    </div>
+  </nav>
 
     {% block content %}
 
