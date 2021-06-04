@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block content %}
+    <link rel="stylesheet" type="text/css" media="screen" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-markdown/2.10.0/css/bootstrap-markdown.min.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+{#    <script src="https://code.jquery.com/jquery-1.12.4.min.js"> </script>#}
+{#    <script src="https://use.fontawesome.com/f9b4728164.js"></script>#}
+{#    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>#}
+{#    <script src="http://www.codingdrama.com/bootstrap-markdown/js/to-markdown.js"></script>#}
+{#    <script src="http://www.codingdrama.com/bootstrap-markdown/js/markdown.js"></script>#}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-markdown/2.10.0/js/bootstrap-markdown.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/0.3.5/marked.min.js"></script>
+
+
+
+    <div class="container p-3 my-3 border">
+        <form>
+            <div class="form-group">
+                <label for="Title">Title</label>
+                <input class="form-control" type="text" placeholder="Title" id="Title">
+            </div> <br>
+            <div class="form-group">
+                <label for="Body">Body</label>
+                <textarea class="form-control" id="Body" data-provide="markdown" rows="10"></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-info">Submit</button>
+        </form>
+    </div>
+{% endblock content %}
