@@ -1,2 +1,3 @@
 __pycache__/
 .idea/
+.fuse_hidden*
