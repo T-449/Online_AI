@@ -1,11 +1,90 @@
+import os
+
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404
-from .models import Game
+from django.contrib import messages
+
+from .models import Game, GameCreatorWorkspaceACL, game_creator_validate_workspace_access
+from django.http import HttpRequest, HttpResponse, Http404, HttpResponseRedirect
+from django.urls import reverse
 
 
 # Create your views here.
 
-def show_workspace_home(request, workspace_id):
-    question = get_object_or_404(Game, game_uuid=workspace_id)
+def get_game_or_validate_requests(request, workspace_id):
+    game = get_object_or_404(Game,game_uuid=workspace_id)
+    if not request.user.is_authenticated or \
+          not  game_creator_validate_workspace_access(request.user,game):
+        raise Http404
+    return game
 
-    return render(request, 'game_creator/game_creator_workspace.html')
+def show_workspace_home(request, workspace_id):
+    game = get_game_or_validate_requests(request,workspace_id)
+    print(game.game_title)
+
+    return render(request, 'game_creator/game_creator_workspace.html', {'game': game})
+
+
+def post_game_description(request, workspace_id):
+    game = get_game_or_validate_requests(request,workspace_id)
+    r = HttpResponseRedirect(reverse('game_creator_show_workspace', args=(workspace_id,)))
+    print(type(request.POST['description']))
+    game.upload_description_file_from_string(request.POST['description'])
+    game.game_title = request.POST['title']
+    game.save()
+    messages.success(request, 'Saved')
+    return r
+
+
+def post_judge_code(request, workspace_id):
+    game = get_game_or_validate_requests(request,workspace_id)
+    r = HttpResponseRedirect(reverse('game_creator_show_workspace', args=(workspace_id,)))
+    game.upload_judge_code_from_string(request.POST['judge_code'])
+    game.game_judge_code_language = request.POST['judge_code_language']
+    game.save()
+    messages.success(request, 'Saved')
+    return r
+
+
+def post_visualization_code(request, workspace_id):
+    game = get_game_or_validate_requests(request,workspace_id)
+    r = HttpResponseRedirect(reverse('game_creator_show_workspace', args=(workspace_id,)))
+    game.upload_visualization_file_from_string(request.POST['visualization_code'])
+    game.game_visualization_code_language = request.POST['visualization_language']
+    game.save()
+    messages.success(request, 'Saved')
+    return r
+
+
+def get_game_description(request, game_uuid):
+    game = get_game_or_validate_requests(request,game_uuid)
+    file_path = game.get_game_description_filepath()
+
+    if os.path.exists(file_path):
+        with open(file_path, 'rb') as fh:
+            response = HttpResponse(fh.read(), content_type="application/octet-stream")
+            response['Content-Disposition'] = 'inline; filename=' + os.path.basename(file_path)
+            return response
+    raise Http404
+
+
+def get_game_judge_code(request, game_uuid):
+    game = get_game_or_validate_requests(request,game_uuid)
+    file_path = game.get_game_judge_code_filepath()
+    if os.path.exists(file_path):
+        with open(file_path, 'rb') as fh:
+            response = HttpResponse(fh.read(), content_type="application/octet-stream")
+            response['Content-Disposition'] = 'inline; filename=' + os.path.basename(file_path)
+            return response
+    raise Http404
+
+
+def get_game_visualization_code(request, game_uuid):
+    game = get_game_or_validate_requests(request,game_uuid)
+    file_path = game.get_visualization_code_filepath()
+    if os.path.exists(file_path):
+        with open(file_path, 'rb') as fh:
+            response = HttpResponse(fh.read(), content_type="application/octet-stream")
+            response['Content-Disposition'] = 'inline; filename=' + os.path.basename(file_path)
+            return response
+    raise Http404

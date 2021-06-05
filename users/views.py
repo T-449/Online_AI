@@ -11,9 +11,9 @@ def register(request):
         form = UserRegisterForm(request.POST)
         if form.is_valid():
             form.save()
-            username = form.cleaned_data.get('username');
-            messages.success(request, f'Account created for {username}! You can now log in.');
-            return redirect('login');
+            username = form.cleaned_data.get('username')
+            messages.success(request, f'Account created for {username}! You can now log in.')
+            return redirect('login')
     else:
         form = UserRegisterForm()
     context = {'form': form}
@@ -22,5 +22,5 @@ def register(request):
 
 @login_required
 def profile(request):
-    # print(request.user,type(request.user))
+    print(request.user, type(request.user))
     return render(request, 'users/profile.html')
