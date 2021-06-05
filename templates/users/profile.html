@@ -1,6 +1,21 @@
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
-{% block content %}
-    <h1> Hello, {{ user.username }} </h1>
+{% block title %}
+    <title>{{ profile_user.username }} Profile - OnlineAI</title>
+{% endblock title %}
 
+{% block content %}
+    <div class="content-section">
+      <div class="media">
+        <img class="img-thumbnail account-img" src="{{ profile_user.userprofile.image.url }}" style="width: 200px; height: 200px;>
+        <div class="media-body">
+          <h3 class="account-heading">{{ profile_user.username }}</h3>
+          <h7 class="text-secondary">{{ profile_user.first_name  }} {{ profile_user.last_name }}</h7>
+          <p class="text-secondary">{{ profile_user.email }}</p>
+        </div>
+      </div>
+      {% ifequal profile_user user %}
+
+      {% endifequal %}
+    </div>
 {% endblock content %}

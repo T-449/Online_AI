@@ -3,7 +3,7 @@
 {%  load crispy_forms_tags %}
 
 {% block title %}
-    <title>Register - Online AI</title>
+    <title>Update Profile - Online AI</title>
 {% endblock title %}
 
 {% block content %}
@@ -38,30 +38,31 @@
     </style>
 
     <div class="container container-small">
-        <div class="py-5 text-center">
-          <img class="d-block mx-auto mb-4" src="{% static 'assets/brand/freeLogo.jpeg' %}" alt="" width="200" height="200">
-          <img class="d-block mx-auto mb-4" src="{% static 'assets/brand/OnlineAINeonText.jpg' %}" alt="" width="500">
-        </div>
+        <div class="content-section">
+          <div class="media">
+            <img class="img-thumbnail account-img" src="{{ user.userprofile.image.url }}" style="width: 200px; height: 200px;>
+            <div class="media-body">
+              <h2 class="account-heading">{{ user.username }}</h2>
+              <p class="text-secondary">{{ user.email }}</p>
+            </div>
+          </div>
 
         <div class="content-section">
 
-            <form method="POST">
+            <form method="POST", enctype="multipart/form-data">
                  <fieldset class="form-group">
-                    <legend class="border-bottom mb-4">Register</legend>
+                    <legend class="border-bottom mb-4">Update profile</legend>
                 </fieldset>
                 {% csrf_token %}
                 <fieldset class="form-group">
-                    {{ form|crispy  }}
+                    {{ u_form|crispy  }}
+                    {{ up_form|crispy  }}
+
                 </fieldset>
                 <div class="form-group">
-                    <button class="btn btn-outline-info" type="submit">Sign Up</button>
+                    <button class="btn btn-outline-info" type="submit">Update</button>
                 </div>
             </form>
-            <div class="border-top pt-6">
-                <large class="text-muted">
-                    Already Have An Account? <a class="ml-2" href={% url 'login' %}> Sign In </a>
-                </large>
-            </div>
         </div>
     </div>
 

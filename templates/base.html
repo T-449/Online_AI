@@ -6,8 +6,10 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
-    <title>OnlineAI</title>
 
+    {% block title %}
+        <title>OnlineAI</title>
+    {% endblock title %}
     <!-- Bootstrap core CSS -->
     <link href="{% static 'assets/dist/css/bootstrap.min.css' %}" rel="stylesheet">
 
@@ -49,16 +51,18 @@
             </li>
           </a>
 
-        <li class="nav-item"><a href="#" class="nav-link link-light px-2 active" aria-current="page">Tournament</a></li>
-        <li class="nav-item"><a href="#" class="nav-link link-light px-2">Archives</a></li>
-        <li class="nav-item"><a href="#" class="nav-link link-light px-2">Help</a></li>
+        <li class="nav-item"><a href="#" class="nav-link link-light px-2 active" aria-current="page">Tournaments</a></li>
+        <li class="nav-item"><a href="#" class="nav-link link-light px-2">Games</a></li>
+        <li class="nav-item"><a href="#" class="nav-link link-light px-2">Rating</a></li>
 
       </ul>
 
       <ul class="nav">
         </form>
           {% if user.is_authenticated %}
-             <li class=  "nav-item"><a href="{% url 'profile' %}" class="nav-link link-light px-2">{{ user.username }}</a></li>
+            <img class="rounded-circle account-img" src="{{ user.userprofile.image.url }}" style="width: 40px; height: 40px;">
+             <li class=  "nav-item">
+              <a href="{% url 'viewprofile' profile_name=user.username%}" class="nav-link link-light px-2">{{ user.username }}</a></li>
             <li class="nav-item"><a href="{% url 'logout' %}" class="nav-link link-light px-2">Logout</a></li>
 
           {% else %}
