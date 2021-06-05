@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block content %}
+
+    <style>@media (min-width: 768px) {
+        .container-small {
+            width: 300px;
+        }
+        .container-large {
+            width: 970px;
+        }
+        }
+        @media (min-width: 992px) {
+            .container-small {
+                width: 500px;
+            }
+            .container-large {
+                width: 1170px;
+            }
+        }
+        @media (min-width: 1200px) {
+            .container-small {
+                width: 700px;
+            }
+            .container-large {
+                width: 1500px;
+            }
+        }
+
+        .container-small, .container-large {
+            max-width: 100%;
+        }
+    </style>
+
+    <div class="container container-small">
+     <div class="py-5 text-center">
+          <img class="d-block mx-auto mb-4" src="{% static 'assets/brand/freeLogo.jpeg' %}" alt="" width="200" height="200">
+          <img class="d-block mx-auto mb-4" src="{% static 'assets/brand/OnlineAINeonText.jpg' %}" alt="" width="500">
+        </div>
+    <div class="content-section" style="margin-top:0.5cm;">
+        <form method="POST">
+            {% csrf_token %}
+            <fieldset class="form-group">
+                <legend class="border-bottom mb-4">Log In</legend>
+                {{ form|crispy }}
+            </fieldset>
+            <div class="form-group">
+                <button class="btn btn-outline-info" type="submit">Login</button>
+            </div>
+        </form>
+        <div class="border-top pt-6">
+            <large class="text-muted">
+                Don't have an Account? <a class="ml-2" href="{% url 'register' %}">Sign Up Now</a>
+            </large>
+        </div>
+    </div>
+    </div>
+{% endblock content %}

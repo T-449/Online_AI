@@ -30,6 +30,7 @@
 
 </head>
 <body>
+
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
@@ -38,11 +39,15 @@
     <div class="container d-flex flex-wrap">
       <ul class="nav me-auto">
         <li class="navbar-brand" href="#">
+            <a href="{% url 'home' %}">
             <img src="{% static 'assets/brand/freeLogo.jpeg' %}" alt="" style="width:50px;">
+            </a>
         </li>
-          <li class="navbar-brand" href="#">
-            <img src="{% static 'assets/brand/OnlineAINeonText.jpg' %}" alt="" style="width:150px;">
-        </li>
+          <a href="{% url 'home' %}">
+            <li class="navbar-brand" href="#">
+                <img src="{% static 'assets/brand/OnlineAINeonText.jpg' %}" alt="" style="width:150px;">
+            </li>
+          </a>
 
         <li class="nav-item"><a href="#" class="nav-link link-light px-2 active" aria-current="page">Tournament</a></li>
         <li class="nav-item"><a href="#" class="nav-link link-light px-2">Archives</a></li>
@@ -51,19 +56,48 @@
       </ul>
 
       <ul class="nav">
-          <form class="form-inline" action="#">
-            <input class="form-control mr-sm-2" type="text" placeholder="Search">
         </form>
-        <li class="nav-item"><a href="{% url 'login' %}" class="nav-link link-light px-2">Login</a></li>
-        <li class="nav-item"><a href="{% url 'createuser' %}" class="nav-link link-light px-2">Sign up</a></li>
+          {% if user.is_authenticated %}
+             <li class=  "nav-item"><a href="{% url 'profile' %}" class="nav-link link-light px-2">{{ user.username }}</a></li>
+            <li class="nav-item"><a href="{% url 'logout' %}" class="nav-link link-light px-2">Logout</a></li>
+
+          {% else %}
+            <li class=  "nav-item"><a href="{% url 'login' %}" class="nav-link link-light px-2">Login</a></li>
+            <li class="nav-item"><a href="{% url 'register' %}" class="nav-link link-light px-2">Sign up</a></li>
+          {% endif %}
       </ul>
     </div>
   </nav>
 
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+    <div class="container">
     {% block content %}
 
 
     {% endblock content %}
+    <style>
+        .footer{
+           position:relative;
+           bottom:0
+        }
 
+
+    </style>
+
+    <footer class="modal-footer footer wrapper" style="margin-top:2cm">
+        <p class="mb-1">&copy; 2021-2022 Online_AI</p>
+{#        <ul class="list-inline">#}
+{#          <li class="list-inline-item"><a href="#">Privacy</a></li>#}
+{#          <li class="list-inline-item"><a href="#">Terms</a></li>#}
+{#          <li class="list-inline-item"><a href="#">Support</a></li>#}
+        </ul>
+      </footer>
+    </div>
 </body>
 </html>
