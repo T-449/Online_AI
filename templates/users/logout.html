@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+    <style>@media (min-width: 768px) {
+        .container-small {
+            width: 300px;
+        }
+        .container-large {
+            width: 970px;
+        }
+        }
+        @media (min-width: 992px) {
+            .container-small {
+                width: 500px;
+            }
+            .container-large {
+                width: 1170px;
+            }
+        }
+        @media (min-width: 1200px) {
+            .container-small {
+                width: 700px;
+            }
+            .container-large {
+                width: 1500px;
+            }
+        }
+
+        .container-small, .container-large {
+            max-width: 100%;
+        }
+    </style>
+
+    <div class="container">
+       <p style="margin-top:0.5cm;">
+        <h2> You have been logged out.</h2>
+        <div class="border-top pt-6">
+            <large class="text-muted">
+                <a class="ml-2" href="{% url 'login' %}"> Log in again</a>
+            </large>
+    </div>
+    </p>
+    </div>
+{% endblock content %}

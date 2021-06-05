@@ -11,7 +11,7 @@ from home.models import UserInfo
 # Create your views here.
 
 def login(request):
-    return render(request, 'login.html', {'loginstatus': ''})
+    return render(request, 'users/login.html', {'loginstatus': ''})
 
 
 def createuser(request):
@@ -27,7 +27,7 @@ def showprofile(request):
         try:
             user = UserInfo.objects.get(email=id, password=pwd)
         except UserInfo.DoesNotExist:
-            return render(request, 'login.html',
+            return render(request, 'users/login.html',
                           {'loginstatus': 'Unsuccessful login. Please try Again', 'color': 'red'})
     return render(request, 'userprofile.html', {'username': user.firstname + " " + user.lastname})
 
@@ -36,4 +36,4 @@ def usercreation(request):
     user = UserInfo(firstname=request.POST['firstname'], lastname=request.POST['lastname'], email=request.POST['email'],
                     password=request.POST['password'], country=request.POST['country'], username=request.POST['username'])
     user.save()
-    return render(request, 'login.html', {'loginstatus': 'User created successfully', 'color': 'green'})
+    return render(request, 'users/login.html', {'loginstatus': 'User created successfully', 'color': 'green'})
