@@ -5,7 +5,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 # Create your views here.
 from users.forms import UserRegisterForm, UserUpdateForm, UserProfileUpdateForm
-
+from game_creator.models import GameC
 
 def register(request):
     if request.method == 'POST':
@@ -22,11 +22,14 @@ def register(request):
 
 
 def view_profile(request, profile_name):
+    GameCreatorWorkspaceACL.objects.filter(user=u)
+    g = GameCreatorWorkspaceACL.objects.filter(user=u)
+    g.game
+
     # print(request.user,type(request.user))
     profile_user = get_object_or_404(User, username=profile_name)
     context = {'profile_user': profile_user}
     return render(request, 'users/profile.html', context)
-
 
 @login_required
 def update_profile(request):
