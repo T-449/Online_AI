@@ -5,7 +5,8 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 # Create your views here.
 from users.forms import UserRegisterForm, UserUpdateForm, UserProfileUpdateForm
-from game_creator.models import GameC
+from game_creator.models import GameCreatorWorkspaceACL, Game
+
 
 def register(request):
     if request.method == 'POST':
@@ -22,13 +23,13 @@ def register(request):
 
 
 def view_profile(request, profile_name):
-    GameCreatorWorkspaceACL.objects.filter(user=u)
-    g = GameCreatorWorkspaceACL.objects.filter(user=u)
-    g.game
-
+    workspaces = GameCreatorWorkspaceACL.objects.filter(user=request.user)
     # print(request.user,type(request.user))
     profile_user = get_object_or_404(User, username=profile_name)
-    context = {'profile_user': profile_user}
+    context = {
+        'profile_user': profile_user,
+        'workspaces' : workspaces
+    }
     return render(request, 'users/profile.html', context)
 
 @login_required
@@ -54,3 +55,8 @@ def update_profile(request):
     }
 
     return render(request, 'users/update_profile.html', context)
+
+@login_required
+def create_game(request):
+    game = Game.objects.create_game(request.user)
+    return redirect('game_creator_show_workspace', workspace_id=game.game_uuid)

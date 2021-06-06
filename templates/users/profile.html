@@ -115,7 +115,32 @@
 
                         {% ifequal profile_user user %}
                         <div class="tab-pane fade" id="workspaces" role="tabpanel" aria-labelledby="workspaces-tab">
+                            <div class="container">
+                                <a class="btn btn-success" href={% url 'create_game' %} >Create New Game</a>
+                              <table class="table table-striped">
+                                <thead>
+                                  <tr>
+                                    <th>Your Games</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                {% for workspace in workspaces %}
+                                <li class="list-group-item">
+                                  <tr>
+                                    <td>
+                                        <a href={% url 'game_creator_show_workspace' workspace_id=workspace.game.game_uuid %}>
+                                        {{ workspace.game.game_title }}
+                                        </a>
+                                    </td>
+                                  </tr>
+                                {% endfor %}
 
+
+                                </tbody>
+                              </table>
+                            </div>
+
+                            </ul>
                         </div>
                         {% endifequal %}
                       </div>
