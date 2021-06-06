@@ -13,7 +13,7 @@ class GameManager(models.Manager):
         game = self.create()
         initialize_with_empty_file(game.get_game_description_filepath())
         initialize_with_empty_file(game.get_game_judge_code_filepath())
-        initialize_with_empty_file(game.get_visualization_code_url())
+        initialize_with_empty_file(game.get_visualization_code_filepath())
 
         try:
             GameCreatorWorkspaceACL.objects.create(user=user, game=game)
@@ -102,6 +102,13 @@ class GameCreatorWorkspaceACL(models.Model):
 
     class Meta:
         unique_together = ('user', 'game',)
+
+
+# class GameCreatorWorkspaceInvite(models.Model):
+#     access_entry = models.ForeignKey(GameCreatorWorkspaceACL, on_delete=models.CASCADE)
+#
+#     def reject_invite(self):
+
 
 
 def game_creator_validate_workspace_access(user, game):

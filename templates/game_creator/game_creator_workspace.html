@@ -34,6 +34,7 @@
             <li><a data-toggle="tab" href="#visualization_code">Visualization Code</a></li>
             <li><a data-toggle="tab" href="#agents">Agents</a></li>
             <li><a data-toggle="tab" href="#test_sandbox">Testing Sandbox</a></li>
+            <li><a data-toggle="tab" href="#permissions">Permissions</a></li>
         </ul>
 
         <div class="tab-content">
@@ -98,6 +99,32 @@
             <div id="menu3" class="tab-pane fade">
                 <h3>Menu 3</h3>
                 <p>Eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
+            </div>
+            <div id="permissions" class="tab-pane fade">
+                <br>
+                <form action="{% url 'game_creator_send_workspace_invite' game.game_uuid %}" method="POST">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="judge_code">Invite User</label>
+                        <input type="text" class="form-control" id="user_invite" rows="1" name="user_invite"></input>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Invite</button>
+                </form>
+                <hr>
+                <h4>Editors</h4>
+                <table class="table table-hover">
+                    <thead>
+                        User Name
+                    </thead>
+                    {% for query in query_list %}
+                        <tr>
+                            <td>
+                                <a href="{% url 'viewprofile' query.user.username %}">{{ query.user.username }}</a>
+                            </td>
+                        </tr>
+
+                {% endfor %}
+                </table>
             </div>
         </div>
 
