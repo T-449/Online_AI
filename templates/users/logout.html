@@ -1,8 +1,12 @@
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
-{% block content %}
 
-    <style>@media (min-width: 768px) {
+{% block title %}
+        <title>Logged out.</title>
+{% endblock title %}
+
+{% block additionalCSS %}
+        <style>@media (min-width: 768px) {
         .container-small {
             width: 300px;
         }
@@ -31,7 +35,10 @@
             max-width: 100%;
         }
     </style>
+{% endblock additionalCSS %}
 
+
+{% block content %}
     <div class="container">
        <p style="margin-top:0.5cm;">
         <h2> You have been logged out.</h2>
