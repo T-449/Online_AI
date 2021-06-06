@@ -9,6 +9,7 @@ urlpatterns = [
     path('register/', user_views.register, name='register'),
     path('profile/<slug:profile_name>', user_views.view_profile, name='viewprofile'),
     path('update_profile/', user_views.update_profile, name='update_profile'),
+    path('', user_views.homepage, name='home'),
 
     path('create_game/', user_views.create_game, name='create_game'),
 ]

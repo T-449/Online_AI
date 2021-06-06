@@ -32,6 +32,12 @@ def view_profile(request, profile_name):
     }
     return render(request, 'users/profile.html', context)
 
+def homepage(request):
+    if (request.user.is_authenticated):
+        return redirect('viewprofile', profile_name=request.user.username)
+    else:
+        return redirect('login')
+
 @login_required
 def update_profile(request):
     if request.method == 'POST':

@@ -29,7 +29,6 @@ urlpatterns = [
     path('test/', include('test.urls')),
     path('workspace/', include('game_creator.urls')),
 
-    path('', test.views.test, name='home'),
     path('', include('users.urls'))
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
