@@ -33,7 +33,7 @@ class Game(models.Model):
 
     objects = GameManager()
 
-    game_title = models.CharField(max_length=256, default='')
+    game_title = models.CharField(max_length=256, default='Untitled')
 
     def upload_judge_code(self, f, language):
         with open(settings.MEDIA_ROOT + "/" + self.get_judge_code_url(), 'wb+') as destination:

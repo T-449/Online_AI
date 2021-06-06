@@ -2,3 +2,4 @@ __pycache__/
 .idea/
 .fuse_hidden*
 db.sqlite3.bak
+db.sqlite3
