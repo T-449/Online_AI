@@ -13,38 +13,56 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 
+{#    #}
+{#    <script#}
+{#  src="https://code.jquery.com/jquery-3.4.1.min.js"#}
+{#  integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="#}
+{#  crossorigin="anonymous"></script>#}
+{##}
+<script text="javascript">
+    setTimeout(fade_out, 3000);
+    function fade_out() {
+        $(".alert.alert-success").fadeOut().empty();
+    }
+</script>
 
 
     <div class="container p-3 my-3 border">
         <ul class="nav nav-tabs">
             <li class="active"><a data-toggle="tab" href="#statement">Statement</a></li>
-            <li><a data-toggle="tab" href="#menu1">Judge Code</a></li>
-            <li><a data-toggle="tab" href="#menu2">Agents</a></li>
-            <li><a data-toggle="tab" href="#menu3">Visualization Code</a></li>
-            <li><a data-toggle="tab" href="#menu3">Testing Sandbox</a></li>
+            <li><a data-toggle="tab" href="#judge_code">Judge Code</a></li>
+            <li><a data-toggle="tab" href="#visualization_code">Visualization Code</a></li>
+            <li><a data-toggle="tab" href="#agents">Agents</a></li>
+            <li><a data-toggle="tab" href="#test_sandbox">Testing Sandbox</a></li>
         </ul>
 
         <div class="tab-content">
             <div id="statement" class="tab-pane fade in active">
                 <br>
-                <form>
+                <form action="{% url 'game_creator_post_description' game.game_uuid%}" method="POST">
+                   {% csrf_token %}
                         <div class="form-group">
                             <label for="Title">Title</label>
-                            <input class="form-control" type="text" placeholder="Title" id="Title">
+                            <input class="form-control" type="text" placeholder="Title"
+                                   id="Title" name = "title" value="{{ game.game_title }}">
                         </div> <br>
                         <div class="form-group">
                             <label for="Body">Body</label>
-                            <textarea class="form-control" id="Body" data-provide="markdown" rows="10"></textarea>
+
+                            <textarea class="form-control" id="Body" data-provide="markdown"
+                                      name = "description" rows="10"></textarea>
+
                         </div>
                         <button type="submit" class="btn btn-primary">Submit</button>
                     </form>
             </div>
-            <div id="menu1" class="tab-pane fade">
+            <div id="judge_code" class="tab-pane fade">
                 <br>
-                <form>
+                <form action="{% url 'game_creator_post_judge_code' game.game_uuid %}" method="POST">
+                    {% csrf_token %}
                     <div class="form-group">
                         <label for="language">Select Language</label>
-                        <select class="form-control" id="sel1">
+                        <select class="form-control" id="sel1" name="judge_code_language">
                             <option>g++17</option>
                             <option>python</option>
                             <option>g++14</option>
@@ -52,15 +70,30 @@
                         </select>
                     </div> <br>
                     <div class="form-group">
-                            <label for="judge_code">Judge Code</label>
-                            <textarea class="form-control" id="judge_code" rows="10"></textarea>
-                        </div>
-                        <button type="submit_judge_code" class="btn btn-primary">Submit</button>
+                        <label for="judge_code">Judge Code</label>
+                        <textarea class="form-control" id="judge_code" rows="10" name="judge_code"></textarea>
+                    </div>
+                    <button type="submit_judge_code" class="btn btn-primary">Submit</button>
                 </form>
              </div>
-            <div id="menu2" class="tab-pane fade">
-                <h3>Menu 2</h3>
-                <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam.</p>
+            <div id="visualization_code" class="tab-pane fade">
+                <br>
+                <form action="{% url 'game_creator_post_visualization_code' game.game_uuid %}" method="POST">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="language">Select Language</label>
+                        <select class="form-control" id="visualization_language_selection"
+                                name="visualization_language">
+                            <option>python</option>
+                            <option>javascript</option>
+                        </select>
+                    </div> <br>
+                    <div class="form-group">
+                        <label for="judge_code">Judge Code</label>
+                        <textarea class="form-control" id="visualization_code" rows="10" name="visualization_code"></textarea>
+                    </div>
+                    <button type="submit_judge_code" class="btn btn-primary">Submit</button>
+                </form>
             </div>
             <div id="menu3" class="tab-pane fade">
                 <h3>Menu 3</h3>
@@ -73,6 +106,21 @@
 
     </div>
 
+    <script type="text/javascript">
+        function download_to_textbox(url, el)
+        {
+            $.get(url, null, function(data)
+            {
+              el.val(data);
+            }, "text");
+        }
 
+        download_to_textbox("{% url 'game_creator_get_game_description' game.game_uuid %}",
+            $("textarea[name='description']"));
+        download_to_textbox("{% url 'game_creator_get_game_judge_code' game.game_uuid %}",
+            $("textarea[name='judge_code']"));
+        download_to_textbox("{% url 'game_creator_get_game_visualization_code' game.game_uuid %}",
+            $("textarea[name='visualization_code']"));
+    </script>
 
 {% endblock content %}
