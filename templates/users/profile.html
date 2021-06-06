@@ -1,21 +1,111 @@
 {% extends "base.html" %}
+{% load static %}
 {% load crispy_forms_tags %}
+
 {% block title %}
     <title>{{ profile_user.username }} Profile - OnlineAI</title>
 {% endblock title %}
 
-{% block content %}
-    <div class="content-section">
-      <div class="media">
-        <img class="img-thumbnail account-img" src="{{ profile_user.userprofile.image.url }}" style="width: 200px; height: 200px;>
-        <div class="media-body">
-          <h3 class="account-heading">{{ profile_user.username }}</h3>
-          <h7 class="text-secondary">{{ profile_user.first_name  }} {{ profile_user.last_name }}</h7>
-          <p class="text-secondary">{{ profile_user.email }}</p>
-        </div>
-      </div>
-      {% ifequal profile_user user %}
 
-      {% endifequal %}
-    </div>
+{% block additionalCSS %}
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <link href="{% static 'assets/dist/css/profile.css' %}" rel="stylesheet">
+{% endblock additionalCSS %}
+
+{% block content %}
+    <div class="container emp-profile center">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="profile-img">
+                        <img class="img-thumbnail account-img" alt="" src="{{ profile_user.userprofile.image.url }}"
+                             style="width: 200px; height: 200px; >
+                    </div>
+                      {% comment %}  <div class="file btn btn-lg btn-primary">
+                            Change Photo
+                            <input type="file" name="file"/>
+                      {% endcomment %}
+
+                </div>
+            </div>
+
+
+                <div class="col-md-6">
+                    <div class="profile-head">
+                        <h5>{{ profile_user.username }}</h5>
+                        <h6> {{ profile_user.first_name }} {{ profile_user.last_name }}</h6>
+                        <p> Rating: {{ profile_user.userprofile.rating }}</p>
+                        {% ifequal profile_user user%}
+                        <a href={% url 'update_profile' %} class="btn btn-success" name="btnAddMore">Edit profile</a>
+                        {% endifequal %}
+                    </div>
+                    <div>
+                        <ul class="nav nav-tabs" id="myTab" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">About</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="history-tab" data-toggle="tab" href="#history" role="tab" aria-controls="history" aria-selected="false">Contest History</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+
+            </div>
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="tab-content profile-tab" id="myTabContent">
+                        <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <label>User Name</label>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <p>{{ profile_user.username }}</p>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <label>Name</label>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <p>{{ profile_user.first_name }} {{ profile_user.last_name }}</p>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <label>Email</label>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <p>{{ profile_user.email }}</p>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <label>Country</label>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <p>{{  profile_user.userprofile.country.name }}</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <label>Joined</label>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <p>{{  profile_user.date_joined |date:"j F Y"}}</p>
+                                        </div>
+                                    </div>
+
+                        </div>
+                        <div class="tab-pane fade" id="history" role="tabpanel" aria-labelledby="history-tab">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 {% endblock content %}
