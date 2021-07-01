@@ -34,6 +34,8 @@ INSTALLED_APPS = [
 
     'game_creator.apps.GameCreatorConfig',
 
+    'submission.apps.SubmissionConfig',
+
     'test.apps.TestConfig',
     'users.apps.UsersConfig',
 
