@@ -8,6 +8,8 @@ from django.db import models
 from game_creator.models import Game
 from game_creator.models import GameCreatorWorkspaceACL
 
+from tournament.models import TournamentInfo
+
 import django.contrib.auth.models
 
 
@@ -23,6 +25,21 @@ class SubmissionManager(models.Manager):
 
         try:
             WorkspaceTestSubmissionEntry.objects.create(game=workspace, submission=submission)
+        except:
+            Submission.objects.filter(pk=submission.pk).delete()
+
+        return submission
+
+    def create_tournament_submission(self, user, time, code, language, tournament):
+        submission = self.create(user=user)
+        submission.submission_time = time
+        submission.submission_language = language
+        submission.submission_status = "private"
+
+        fileutils.write_string_to_file(submission.get_submission_filepath(), code)
+
+        try:
+            TournamentSubmissionEntry.objects.create(tournament=tournament, submission=submission)
         except:
             Submission.objects.filter(pk=submission.pk).delete()
 
@@ -60,6 +77,11 @@ class Submission(models.Model):
 class WorkspaceTestSubmissionEntry(models.Model):
     submission = models.ForeignKey(Submission, on_delete=models.CASCADE)
     game = models.ForeignKey(Game, on_delete=models.CASCADE)
+
+
+class TournamentSubmissionEntry(models.Model):
+    tournament = models.ForeignKey(TournamentInfo, on_delete=models.CASCADE)
+    submission = models.ForeignKey(Game, on_delete=models.CASCADE)
 
 # from submission.models import Submission
 # from django.contrib.auth.models import User
