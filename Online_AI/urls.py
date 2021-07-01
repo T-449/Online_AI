@@ -16,23 +16,18 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
-
 ## media root thingy
 from django.conf import settings
 from django.conf.urls.static import static
 
 import test.views
 
-
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('test/', include('test.urls')),
-    path('workspace/', include('game_creator.urls')),
+                  path('admin/', admin.site.urls),
+                  path('test/', include('test.urls')),
+                  path('workspace/', include('game_creator.urls')),
+                  path('submission/', include('submission.urls')),
+                  path('tournament/', include('tournament.urls')),
+                  path('', include('users.urls'))
 
-    path('', include('users.urls'))
-
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-
-
-
-
+              ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

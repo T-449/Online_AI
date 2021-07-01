@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block additionalCSS %}
+    <link rel="canonical" href="https://getbootstrap.com/docs/5.0/examples/checkout/">
+    <link href="{% static 'assets/dist/css/form-validation.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/dist/css/bootstrap.min.css' %}" rel="stylesheet">
+{% endblock additionalCSS %}
+
+{% block title %}
+    <title>{{ profile_user.username }} Create Tournament - OnlineAI</title>
+{% endblock title %}
+
+{% block content %}
+<div class="container">
+  <main>
+    <div class="py-5 text-center">
+      <img class="d-block mx-auto mb-4" src="{% static 'assets/brand/freeLogo.jpeg' %}" alt="" width="200" height="200">
+      <h2>Welcome to our platform</h2>
+      <p class="lead">We respect your privacy. The information you provide here is kept secure and only used for enhancing your
+      experience in our platform.</p>
+    </div>
+        <form action="tournamentCreation" method="post" class="needs-validation" novalidate>
+            {% csrf_token %}
+          <div class="row g-3">
+            <div class="col-sm-6">
+              <label for="tournamentName" class="form-label">Tournament name</label>
+              <input type="text" class="form-control" name="tournamentname" id="tournamentname" placeholder="" value="" required>
+              <div class="invalid-feedback">
+                Valid tournament name is required.
+              </div>
+            </div>
+
+            <div class="col-md-5">
+              <label for="game" class="form-label">Game</label>
+              <select class="form-select" name="game" id="game" required>
+                <option value="">Choose a game...</option>
+                  {% for game in games %}
+                    <option value="{{ game.id }}">{{ game.game_title }}</option>
+                  {% endfor %}
+              </select>
+              <div class="invalid-feedback">
+                Please select a valid game.
+              </div>
+            </div>
+
+            <div class="col-12">
+              <label for="description" class="form-label">Description</label>
+              <div class="input-group has-validation">
+                  <textarea class="form-control" id="description" name="description" data-provide="markdown" rows="5"></textarea>
+              </div>
+            </div>
+
+            <div class="col-12">
+              <label for="startTime" class="form-label">Start Time</label>
+              <input type="datetime-local" name="starttime" id="starttime">
+            </div>
+
+            <div class="col-12">
+              <label for="endTime" class="form-label">End Time</label>
+              <input type="datetime-local" name="endtime" id="endtime">
+            </div>
+
+
+
+          <hr class="my-4">
+
+          <button class="w-100 btn btn-primary btn-lg" type="submit">Create my tournament</button>
+          </div>
+        </form>
+  </main>
+
+  <footer class="my-5 pt-5 text-muted text-center text-small">
+    <p class="mb-1">&copy; 2021-2022 Online_AI</p>
+    <ul class="list-inline">
+      <li class="list-inline-item"><a href="#">Privacy</a></li>
+      <li class="list-inline-item"><a href="#">Terms</a></li>
+      <li class="list-inline-item"><a href="#">Support</a></li>
+    </ul>
+  </footer>
+</div>
+
+
+    <script src="{% static 'assets/dist/js/bootstrap.bundle.min.js' %}"></script>
+
+      <script src="{% static 'assets/dist/js/form-validation.js' %}"></script>
+
+{% endblock content %}
