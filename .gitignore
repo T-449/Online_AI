@@ -5,3 +5,7 @@ db.sqlite3.bak
 db.sqlite3.bak2
 db.sqlite3
 media/
+db.sqlite3
+media/
+venv/
+Online_AI/__pycache__/

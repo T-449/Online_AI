@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block additionalCSS %}
+    <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,700,900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'assets/dist/fonts/icomoon/style.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/dist/css/owl.carousel.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/dist/css/style.css' %}">
+{% endblock additionalCSS %}
+
+{% block title %}
+    <title>{{ profile_user.username }} Tournament Details - OnlineAI</title>
+{% endblock title %}
+
+{% block content %}
+  <div class="content">
+
+    <div class="container">
+      <div class="row">
+        <div class="col-md-5 mr-auto">
+          <h2>Description</h2>
+          <p class="mb-5">{{ tournament.description }}</p>
+        </div>
+
+        <div class="col-md-6">
+            <div class="row">
+
+              <div class="col-md-12 form-group">
+                <label for="name" class="col-form-label">Tournament Name</label>
+                <h5>{{ tournament.name }}</h5>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12 form-group">
+                <label for="email" class="col-form-label">Game</label>
+                <h5>{{ game }}</h5>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-12 form-group">
+                <label for="startTime" class="col-form-label">Start Time</label>
+                <h5>{{ tournament.startTime }}</h5>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-12 form-group">
+                <label for="endTime" class="col-form-label">End Time</label>
+                <h5>{{ tournament.endTime }}</h5>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-12 form-group">
+                <label for="phase" class="col-form-label">Phase</label>
+                <h5>{{ tournament.phase }}</h5>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-12">
+                <input type="button" value="Testing" class="btn btn-success rounded-0 py-2 px-4">
+              </div>
+            </div>
+
+        </div>
+      </div>
+  </div>
+  </div>
+
+
+
+    <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static 'js/popper.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/jquery.validate.min.js' %}"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+{% endblock content %}
