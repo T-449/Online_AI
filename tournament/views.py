@@ -44,4 +44,4 @@ def baseTab(request):
     tournament_id = 1
     tournament = TournamentInfo.objects.get(id=int(tournament_id))
     game = Game.objects.get(id=tournament.game_id_id)
-    return render(request, 'tournament/basetab.html', {'tournament': tournament, 'game': game.game_title})
+    return render(request, 'tournament/baseTab.html', {'tournament': tournament, 'game': game.game_title})
