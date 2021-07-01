@@ -3,3 +3,5 @@ __pycache__/
 .fuse_hidden*
 db.sqlite3.bak
 db.sqlite3
+*.pyc
+media/
