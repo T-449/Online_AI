@@ -1,4 +1,6 @@
 import os
+from django.utils import timezone
+
 
 from django.http import Http404, HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
@@ -36,9 +38,11 @@ def post_test_submission(request, workspace_uuid):
 
     lang = request.POST['submission_language']
     code = request.POST['submission_code']
-    time = request.POST['submission_time']
+    time = now = timezone.now()
+
     user = request.user
     submission = models.Submission.objects.create_test_submission(user, time, code, lang, game)
+    submission.save()
     r = HttpResponseRedirect(reverse('game_creator_show_workspace', args=(workspace_uuid,)))
     messages.success(request, 'Saved')
     return r

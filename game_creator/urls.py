@@ -7,6 +7,8 @@ urlpatterns = [
     path('<uuid:workspace_id>/post/judge_code', views.post_judge_code, name='game_creator_post_judge_code'),
     path('<uuid:workspace_id>/post/visualization_code', views.post_visualization_code,
          name='game_creator_post_visualization_code'),
+    path('<uuid:workspace_id>/post/add_agent', views.post_add_agent,
+         name='game_creator_post_add_agent'),
     path('<uuid:game_uuid>/raw/description/', views.get_game_description, name='game_creator_get_game_description'),
     path('<uuid:game_uuid>/raw/judge_code/', views.get_game_judge_code, name='game_creator_get_game_judge_code'),
     path('<uuid:game_uuid>/raw/visualization_code/', views.get_game_visualization_code,

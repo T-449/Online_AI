@@ -96,9 +96,55 @@
                     <button type="submit_judge_code" class="btn btn-primary">Submit</button>
                 </form>
             </div>
-            <div id="menu3" class="tab-pane fade">
-                <h3>Menu 3</h3>
-                <p>Eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
+            <div id="agents" class="tab-pane fade">
+                <br>
+                <form action="{% url 'game_creator_post_add_agent' game.game_uuid %}" method="POST">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="language">Select Language</label>
+                        <select class="form-control" id="submission_language"
+                                name="submission_language">
+                            <option>python</option>
+                            <option>gcc</option>
+                            <option>g++11</option>
+                            <option>g++14</option>
+                            <option>g++20</option>
+                        </select>
+                    </div> <br>
+                    <div class="form-group">
+                        <label for="agent_code">Agent Code</label>
+                        <textarea class="form-control" id="submission_code" rows="10" name="submission_code"></textarea>
+                    </div>
+                    <button type="submit_judge_code" class="btn btn-primary">Submit</button>
+                </form>
+                <h4>Agents</h4>
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <td>submission_uuid</td>
+                            <td>user</td>
+                            <td>language</td>
+                            <td>submission_time</td>
+                        </tr>
+                    </thead>
+                    {% for entry in workspace_agent_entries %}
+                        <tr>
+                            <td>
+                                <a href="{% url 'show_raw_submission' entry.submission.submission_uuid %}">{{ entry.submission.submission_uuid }}</a>
+                            </td>
+                            <td>
+                                <a href="{% url 'viewprofile' entry.submission.user %}">{{ entry.submission.user }}</a>
+                            </td>
+                            <td>
+                                {{ entry.submission.submission_language }}
+                            </td>
+                            <td>
+                                {{ entry.submission.submission_time }}
+                            </td>
+                        </tr>
+
+                {% endfor %}
+                </table>
             </div>
             <div id="permissions" class="tab-pane fade">
                 <br>

@@ -4,9 +4,11 @@ from django.shortcuts import render
 from django.shortcuts import get_object_or_404
 from django.contrib import messages
 
+import submission.views
 from .models import Game, GameCreatorWorkspaceACL, game_creator_validate_workspace_access
 from django.http import HttpRequest, HttpResponse, Http404, HttpResponseRedirect
 from django.urls import reverse
+from submission.models import WorkspaceTestSubmissionEntry
 
 from django.contrib.auth.models import User
 
@@ -25,7 +27,9 @@ def show_workspace_home(request, workspace_id):
     game = get_game_or_validate_requests(request, workspace_id)
     print(game.game_title)
     qs = GameCreatorWorkspaceACL.objects.filter(game=game)
-    return render(request, 'game_creator/game_creator_workspace.html', {'game': game, 'query_list':qs})
+    workspace_agent_entries = WorkspaceTestSubmissionEntry.objects.filter(game=game)
+    return render(request, 'game_creator/game_creator_workspace.html', {'game': game, 'query_list': qs,
+                                                                        'workspace_agent_entries': workspace_agent_entries})
 
 
 def post_game_description(request, workspace_id):
@@ -57,6 +61,10 @@ def post_visualization_code(request, workspace_id):
     game.save()
     messages.success(request, 'Saved')
     return r
+
+
+def post_add_agent(request, workspace_id):
+    return submission.views.post_test_submission(request, workspace_id)
 
 
 def get_game_description(request, game_uuid):
