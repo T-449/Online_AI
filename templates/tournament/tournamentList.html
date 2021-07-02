@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    <title>Tournament List</title>
+{% endblock title %}
+
+{% block content %}
+    <h1>Active Tournaments</h1>
+    <ul>
+        {% for tournament in tournaments %}
+            <a href="{% url 'baseTab' tournament.id %}" class="list-group-item list-group-item-action">{{ tournament.name }}</a>
+        {% endfor %}
+    </ul>
+    <div>
+        {% if show %}
+            <a href="{% url 'createTournament' %}">Create Tournament</a>
+        {% endif %}
+    </div>
+{% endblock content %}
