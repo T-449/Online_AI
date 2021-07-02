@@ -16,8 +16,9 @@ char buff[BUFF_SIZE];
 
 int pid[3];
 int fd[3][2];
-char* process_names[3] = {"zero","one","judge"}; 
-char* process_path[3] = {"./zero","./one","./judge"}; 
+char* names[3] = {"zero","one","judge"};
+char* source_path[3] = {"./zero","./one","./judge"};
+char* source_lang[3] = {"./zero","./one","./judge"};
 
 
 volatile int is_alarm_active;
@@ -92,7 +93,7 @@ void spawn_process(int index) {
 	pid[index] = fork();
 	
 	if(pid[index]==-1) {
-		printf("exec %s failed\n",process_names[index]);
+		printf("exec %s failed\n",names[index]);
 		Exit(-1);
 	}
 	
@@ -100,8 +101,8 @@ void spawn_process(int index) {
 		close(fd[index][1]);
 		dup2(fd[index][0],0);
 		dup2(fd[index][0],1);
-		int ret = execlp(process_path[index],process_names[index],NULL);
-		printf("execlp error at %s\n",process_names[index]);
+		int ret = execlp("./runner.sh", "runner.sh", source_lang[index], source_path[index], names[index], NULL);
+		printf("execlp error at %s\n", names[index]);
 		Exit(-1);
 	}
 
@@ -130,15 +131,23 @@ void handle_messages(int index,int read_bytes) {
 }
 
 
+///comm SOL1_LANG SOL1_SOURCE SOL2_LANG SOL2_SOURCE JUDGE_LANG JUDGE_SOURCE
+///eg: comm python 1.py c++14 2.cpp c++17 judge.cpp
 
 int main(int argc, char* argv []) {
-	assert(argc == 4);
-	process_path[0] = argv[1];
-	process_path[1] = argv[2];
-	process_path[2] = argv[3];
+	assert(argc == 7);
+	source_lang[0] = argv[1];
+	source_path[0] = argv[2];
+
+	source_lang[1] = argv[3];
+    source_path[1] = argv[4];
+
+	source_lang[2] = argv[5];
+    source_path[2] = argv[6];
+
 	signal(SIGALRM,alarm_handler);
 
-	printf("%s %s %s\n",process_path[0],process_path[1],process_path[2]);
+	printf("%s %s %s\n",source_path[0],source_path[1],source_path[2]);
 	socketpair(AF_UNIX,SOCK_STREAM,0,fd[0]);
 	socketpair(AF_UNIX,SOCK_STREAM,0,fd[1]);
 	socketpair(AF_UNIX,SOCK_STREAM,0,fd[2]);

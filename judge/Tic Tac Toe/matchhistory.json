@@ -1,15 +1,10 @@
 {
 	"Result":"Win",
-	"Reason":"Player 1 made three in a row",
+	"Reason":"Player two made an Invalid Move.",
 	"Initial State":"Player 0 to move\n...\n...\n...\n",
 	"Moves":[
 		"1 1",
-		"0 0",
-		"1 0",
-		"0 1",
-		"0 2",
-		"2 1",
-		"1 2"
+		"1 1"
 	]
 }
 
