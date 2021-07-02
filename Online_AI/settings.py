@@ -36,6 +36,7 @@ INSTALLED_APPS = [
 
     'submission.apps.SubmissionConfig',
     'tournament.apps.TournamentConfig',
+    'match.apps.MatchConfig',
 
     'test.apps.TestConfig',
     'users.apps.UsersConfig',

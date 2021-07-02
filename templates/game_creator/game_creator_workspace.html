@@ -146,6 +146,57 @@
                 {% endfor %}
                 </table>
             </div>
+
+            <div id="test_sandbox" class="tab-pane fade">
+                <br>
+                <form action="{% url 'game_creator_post_create_match' game.game_uuid %}" method="POST">
+                    {% csrf_token %}
+                    <div class="form-group">
+
+                        <label for="submission0">Player0 submission</label>
+                        <input class="form-control" type="text" placeholder="submission0"
+                                   id="submission0" name = "submission0" value="">
+
+                    </div> <br>
+                    <div class="form-group">
+                        <label for="submission1">Player1 submission</label>
+                        <input class="form-control" type="text" placeholder="submission0"
+                                   id="submission0" name = "submission1" value="">
+                    </div> <br>
+
+                    <button type="submit" class="btn btn-primary">Create Match</button>
+                </form>
+                <h4>Matches</h4>
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <td>match_uuid</td>
+                            <td>Player0 Agent</td>
+                            <td>Player1 Agent</td>
+                            <td>Status</td>
+                        </tr>
+                    </thead>
+                    {% for entry in workspace_matches %}
+                        <tr>
+                            <td>
+                                {{ entry.match.match_uuid }}
+                            </td>
+                            <td>
+                                <a href="{% url 'show_raw_submission' entry.match.submission0.submission_uuid %}">{{ entry.match.submission0.submission_uuid }}</a>
+                            </td>
+                            <td>
+                                <a href="{% url 'show_raw_submission' entry.match.submission1.submission_uuid %}">{{ entry.match.submission1.submission_uuid }}</a>
+                            </td>
+                            <td>
+                                {{ entry.match.match_phase }}
+                            </td>
+                        </tr>
+
+                {% endfor %}
+                </table>
+            </div>
+
+
             <div id="permissions" class="tab-pane fade">
                 <br>
                 <form action="{% url 'game_creator_send_workspace_invite' game.game_uuid %}" method="POST">

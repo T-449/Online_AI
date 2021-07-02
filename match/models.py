@@ -33,8 +33,8 @@ class MatchManager(models.Manager):
 class Match(models.Model):
     match_uuid = models.UUIDField(default=uuid.uuid4, unique=True)
     match_phase = models.CharField(max_length=10, null=False, default='waiting')
-    submission0 = models.ForeignKey(Submission, on_delete=models.CASCADE)
-    submission1 = models.ForeignKey(Submission, on_delete=models.CASCADE)
+    submission0 = models.ForeignKey(Submission, on_delete=models.CASCADE, related_name='player0_submission')
+    submission1 = models.ForeignKey(Submission, on_delete=models.CASCADE, related_name='player1_submission')
     game = models.ForeignKey(Game, on_delete=models.CASCADE)
 
     objects = MatchManager()
