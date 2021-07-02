@@ -28,13 +28,26 @@
 
 
     <div class="container p-3 my-3 border">
-        <ul class="nav nav-tabs">
-            <li class="active"><a data-toggle="tab" href="#statement">Statement</a></li>
-            <li><a data-toggle="tab" href="#judge_code">Judge Code</a></li>
-            <li><a data-toggle="tab" href="#visualization_code">Visualization Code</a></li>
-            <li><a data-toggle="tab" href="#agents">Agents</a></li>
-            <li><a data-toggle="tab" href="#test_sandbox">Testing Sandbox</a></li>
-            <li><a data-toggle="tab" href="#permissions">Permissions</a></li>
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="active">
+                <a class="nav-link active" id="statement-tab" data-toggle="tab" href="#statement"
+                   role="tab" aria-controls="statement-tab" aria-selected="true">Statement</a></li>
+
+            <li>
+                <a class="nav-link" id="judge-code-tab" data-toggle="tab" href="#judge_code"
+                   role="tab" aria-controls="judge-code-tab" aria-selected="false">Judge Code</a></li>
+            <li>
+                <a class="nav-link" id="visulization-code-tab" data-toggle="tab" href="#visualization_code"
+                   role="tab" aria-controls="visualization-code-tab" aria-selected="false">Visualization Code</a></li>
+            <li>
+                <a class="nav-link" id="agents-tab" data-toggle="tab" href="#agents"
+                   role="tab" aria-controls="agents-tab" aria-selected="false">Agents</a></li>
+            <li>
+                <a class="nav-link" id="testing-sandbox-tab" data-toggle="tab" href="#test_sandbox"
+                   role="tab" aria-controls="testing-sandbox-tab" aria-selected="false">Testing Sandbox</a></li>
+            <li>
+                <a class="nav-link" id="permissions-tab" data-toggle="tab" href="#permissions"
+                   role="tab" aria-controls="permissions-tab" aria-selected="false">Permissions</a></li>
         </ul>
 
         <div class="tab-content">
@@ -146,6 +159,57 @@
                 {% endfor %}
                 </table>
             </div>
+
+            <div id="test_sandbox" class="tab-pane fade">
+                <br>
+                <form action="{% url 'game_creator_post_create_match' game.game_uuid %}" method="POST">
+                    {% csrf_token %}
+                    <div class="form-group">
+
+                        <label for="submission0">Player0 submission</label>
+                        <input class="form-control" type="text" placeholder="submission0"
+                                   id="submission0" name = "submission0" value="">
+
+                    </div> <br>
+                    <div class="form-group">
+                        <label for="submission1">Player1 submission</label>
+                        <input class="form-control" type="text" placeholder="submission0"
+                                   id="submission0" name = "submission1" value="">
+                    </div> <br>
+
+                    <button type="submit" class="btn btn-primary">Create Match</button>
+                </form>
+                <h4>Matches</h4>
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <td>match_uuid</td>
+                            <td>Player0 Agent</td>
+                            <td>Player1 Agent</td>
+                            <td>Status</td>
+                        </tr>
+                    </thead>
+                    {% for entry in workspace_matches %}
+                        <tr>
+                            <td>
+                                {{ entry.match.match_uuid }}
+                            </td>
+                            <td>
+                                <a href="{% url 'show_raw_submission' entry.match.submission0.submission_uuid %}">{{ entry.match.submission0.submission_uuid }}</a>
+                            </td>
+                            <td>
+                                <a href="{% url 'show_raw_submission' entry.match.submission1.submission_uuid %}">{{ entry.match.submission1.submission_uuid }}</a>
+                            </td>
+                            <td>
+                                {{ entry.match.match_phase }}
+                            </td>
+                        </tr>
+
+                {% endfor %}
+                </table>
+            </div>
+
+
             <div id="permissions" class="tab-pane fade">
                 <br>
                 <form action="{% url 'game_creator_send_workspace_invite' game.game_uuid %}" method="POST">
@@ -176,8 +240,33 @@
 
 
 
-
     </div>
+    <script>
+        $(document).ready(() => {
+            let url = location.href.replace(/\/$/, "");
+            if (location.hash) {
+                const hash = url.split("#");
+                $('#myTab a[href="#'+hash[1]+'"]').tab("show");
+                url = location.href.replace(/\/#/, "#");
+                history.replaceState(null, null, url);
+                setTimeout(() => {
+                    $(window).scrollTop(0);
+                }, 400);
+            }
+
+            $('a[data-toggle="tab"]').on("click", function() {
+                let newUrl;
+                const hash = $(this).attr("href");
+                if(hash == "#home") {
+                    newUrl = url.split("#")[0];
+                } else {
+                    newUrl = url.split("#")[0] + hash;
+                }
+                newUrl += "/";
+                history.replaceState(null, null, newUrl);
+            });
+        });
+    </script>
 
     <script type="text/javascript">
         function download_to_textbox(url, el)

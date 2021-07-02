@@ -129,11 +129,11 @@ public:
         }
         else if (hasWon(playerSymbols[1]))   {
             reason = "Player 2 made three in a row";
-            return 0;
+            return 1;
         }
         else if (isFull())   {
             reason = "No moves left for either player";
-            return 0;
+            return 2;
         }
         else return -1;    
     }
