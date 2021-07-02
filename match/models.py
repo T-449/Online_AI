@@ -1,6 +1,9 @@
+import os
 import uuid
 
 from django.db import models
+
+from Online_AI import settings
 from submission.models import Submission
 from game_creator.models import Game
 from tournament.models import TournamentInfo
@@ -38,6 +41,9 @@ class Match(models.Model):
     game = models.ForeignKey(Game, on_delete=models.CASCADE)
 
     objects = MatchManager()
+
+    def get_match_history_filepath(self):
+        return os.path.join(settings.MEDIA_ROOT, 'matches/' + str(self.match_uuid))
 
 class TournamentMatchTable(models.Model):
     match = models.ForeignKey(Match, on_delete=models.CASCADE)
