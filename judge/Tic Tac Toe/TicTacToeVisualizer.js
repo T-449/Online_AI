@@ -1,0 +1,264 @@
+function test() {
+    var json = window.prompt("Enter MatchHistory: ");
+    const history = JSON.parse(json);
+    animate(history);
+}
+
+/**
+ * Utility function to add CSS in multiple passes.
+ * @param {string} styleString
+ */
+
+function addStyle(styleString) {
+    const style = document.createElement('style');
+    style.textContent = styleString;
+    document.head.append(style);
+}
+
+function addStyles() {
+    addStyle(`
+        .tictactoe_board {
+            border-collapse:collapse;
+        }
+    `);
+    
+    addStyle(`
+        .tictactoe_cell {
+            background-color: black;
+            border: 3px solid white;
+            font-size:90px;
+            color:#ffffff;
+            border-radius: 10px 10px 10px 10px;
+        }
+    `);
+
+    addStyle(`
+        .tictactoe_button {
+            background-color: #555555;
+            border: none;
+            color: white;
+            padding: 10px 24px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+        }
+    `);
+    addStyle(`
+        .infobox {
+            background-color: lightgrey;
+            width: 365px;
+            border: 5px;
+            padding: 2px;
+            margin: 5px;
+            text-align: center;
+            font-size: 20px;
+            color: black;
+        }
+    `)
+    addStyle(`
+        .spoilerbutton {
+            display:block;
+            margin: 5px 0;
+        }
+        .spoiler {
+            overflow:hidden;
+            background: #f5f5f5;
+        }
+        .spoiler > div {
+            -webkit-transition: all 0.2s ease;
+            -moz-transition: margin 0.2s ease;
+            -o-transition: all 0.2s ease;
+            transition: margin 0.2s ease;
+        }
+        .spoilerbutton[value="Show"] + .spoiler > div {
+            margin-top:-100%;
+        }
+        .spoilerbutton[value="Hide"] + .spoiler > div {
+            padding:5px;
+        }
+    `);
+}
+
+
+var N_SIZE = 3,
+EMPTY = "&nbsp;",
+boxes = [],
+turn = "X",
+moves = 0,
+timer,
+autoPlay = 0;
+
+function initBoard() {
+    var board = document.createElement('table');
+    board.id = "board";
+    board.setAttribute("border", 1);
+    board.setAttribute("cellspacing", 0);
+    board.className = "tictactoe_board";
+    
+    for (var i = 0; i < N_SIZE; i++) {
+        var row = document.createElement('tr');
+        board.appendChild(row);
+        for (var j = 0; j < N_SIZE; j++) {
+            var cell = document.createElement('td');
+            cell.setAttribute('height', 120);
+            cell.setAttribute('width', 120);
+            cell.setAttribute('align', 'center');
+            cell.setAttribute('valign', 'center');
+            cell.className = "tictactoe_cell";
+            cell.innerHTML = EMPTY;
+            row.appendChild(cell);
+            boxes.push(cell);
+        }
+    }
+
+    document.getElementById("visualizer").appendChild(board);
+}
+
+function nextMove() {
+    stopPlay();
+    nextMoveLoop();
+}
+
+function nextMoveLoop() {
+    if (moves == window.matchHistory.Moves.length)  return;
+    var move = window.matchHistory.Moves[moves];
+    
+    move = move.split(' ');
+    var x = parseInt(move[0]);
+    var y = parseInt(move[1]);
+    if (x < 0 || x >= 3 || y < 0 || y>= 3)  return;
+    var id = x*N_SIZE+y;
+    
+    if (boxes[id].innerHTML == EMPTY) {
+        boxes[id].innerHTML = turn;
+    }
+    turn = (turn === "O" ? "X" : "O");
+
+    moves++;
+    updateInfo();
+}
+
+function previousMove() {
+    stopPlay();
+    if (moves == 0)  return;
+    moves--;
+    var move = window.matchHistory.Moves[moves];
+    
+    move = move.split(' ');
+    var x = parseInt(move[0]);
+    var y = parseInt(move[1]);
+    var id = x*N_SIZE+y;
+    
+    boxes[id].innerHTML = EMPTY;
+    turn = (turn === "O" ? "X" : "O");
+    updateInfo();
+}
+
+function reset() {
+    stopPlay();
+    moves = 0;
+    turn = 'X';
+    for (var i = 0; i < N_SIZE; i++) {
+        for (var j = 0; j < N_SIZE; j++) {
+            boxes[i*N_SIZE+j].innerHTML = EMPTY;
+        }
+    }
+    updateInfo();
+}
+
+function togglePlay() {
+    if (autoPlay === 0)     startPlay();
+    else                    stopPlay();
+}
+
+function startPlay() {
+    autoPlay = 1;
+    window.play_button.innerHTML = "Pause";
+    timer = setInterval(nextMoveLoop, 1000);
+}
+  
+function stopPlay() {
+    autoPlay = 0;
+    window.play_button.innerHTML = "Play";
+    clearInterval(timer); 
+}
+
+function addButtons() {
+    var play_button = document.createElement("button");
+    play_button.className = "tictactoe_button";
+    play_button.innerHTML = "Play";
+    play_button.onclick = togglePlay;
+    document.getElementById("visualizer").appendChild(play_button);
+    window.play_button = play_button;
+
+    var next_button = document.createElement("button");
+    next_button.className = "tictactoe_button";
+    next_button.innerHTML = "Next";
+    next_button.onclick = nextMove;
+    document.getElementById("visualizer").appendChild(next_button);
+
+    var previous_button = document.createElement("button");
+    previous_button.className = "tictactoe_button";
+    previous_button.innerHTML = "Previous";
+    previous_button.onclick = previousMove;
+    document.getElementById("visualizer").appendChild(previous_button);
+
+    var reset_button = document.createElement("button");
+    reset_button.className = "tictactoe_button";
+    reset_button.innerHTML = "Reset";
+    reset_button.onclick = reset;
+    document.getElementById("visualizer").appendChild(reset_button);
+
+
+}
+
+function addInfo() {
+    var matchStatus = document.createElement("div");
+    matchStatus.id = "matchstatus";
+    matchStatus.className = "infobox";
+    document.getElementById("visualizer").appendChild(matchStatus);
+
+
+    var turnInfo = document.createElement("div");
+    turnInfo.id = "turninfo";
+    turnInfo.className = "infobox";
+    document.getElementById("visualizer").appendChild(turnInfo);
+
+    updateInfo();
+}
+
+function updateInfo() {
+    var turnInfo = document.getElementById("turninfo");
+    var matchstatus = document.getElementById("matchstatus");
+    if (moves == window.matchHistory.Moves.length) {
+        if (window.matchHistory.Result == "Win")  {
+            matchstatus.innerHTML = "Player 1 Wins";
+        }
+        else if (window.matchHistory.Result == "Lose")  {
+            matchstatus.innerHTML = "Player 2 Wins";
+        }
+        else if (window.matchHistory.Result == "Draw")  {
+            matchstatus.innerHTML = "Match drawn";
+        }
+
+
+        turnInfo.innerHTML = window.matchHistory.Reason;
+
+    }
+    else {
+        matchstatus.innerHTML = "Game in Progress";
+        turnInfo.innerHTML = "Player " + (turn == 'X' ? '1' : '2')+ "'s turn";
+    }
+}
+
+function animate(history) {
+    window.matchHistory = history;
+
+    addInfo();
+    addStyles();   
+    initBoard();
+    addButtons();
+}
