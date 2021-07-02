@@ -3,4 +3,4 @@ Certainly, everyone is familiar with tic-tac-toe game. The rules are very simple
 In this problem, you must implement an program to Play Tic-Tac Toe.
 
 Input:
-    First, you must read an integer, T, from the 
+    First, you must read an integer, , from the judge.
