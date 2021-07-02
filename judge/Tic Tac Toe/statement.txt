@@ -1,6 +1,15 @@
 Certainly, everyone is familiar with tic-tac-toe game. The rules are very simple indeed. Two players take turns marking the cells in a 3 × 3 grid (one player always draws crosses, the other — noughts). The player who succeeds first in placing three of his marks in a horizontal, vertical or diagonal line wins, and the game is finished. The player who draws crosses goes first. If the grid is filled, but neither Xs, nor 0s form the required line, a draw is announced.
 
-In this problem, you must implement an program to Play Tic-Tac Toe.
+In this problem, you must implement an program to Play Tic-Tac Toe. Rows and Columns are numbered starting from **0**. Cell **(i, j)** is the intersection of row **i** and column **j**.
 
-Input:
-    First, you must read an integer, , from the judge.
+Interaction :
+
+  - First, you must read an integer **P** from the judge. If **P** is **0**, your program will move first, otherwise it will move second. 
+
+  - If its your turn to move, you should print a pair of integers **(x, y)** where **0 <= x,y <= 2** and the cell **(x, y)** is empty. If you print in an invalid format and/or your chosen cell is non-empty, you will lose and the game will terminate automatically . If you take too much time to respond (more than 2 seconds), you will lose and the game will terminate automatically . 
+
+  - If its your opponents to move, you should read from input a pair of integers **(x, y)**. You can assume that this move is valid, otherwise, the game would have already terminated and the correct result determined. 
+
+  - If after your move, you have three in a row, You will win and and the game will terminate automatically. If after your move, no cells are empty, You will win and and the game will terminate automatically. Same applies for your opponent.
+
+  - The judge will automatically kill your program once the game finishes.
