@@ -15,7 +15,7 @@ import django.contrib.auth.models
 
 # Create your models here.
 class SubmissionManager(models.Manager):
-    def create_test_submission(self, user, time, code, language, workspace):
+    def create_test_submission(self, user, time, code, language, workspace, tag):
         submission = self.create(user=user)
         submission.submission_time = time
         submission.submission_language = language
@@ -24,7 +24,7 @@ class SubmissionManager(models.Manager):
         fileutils.write_string_to_file(submission.get_submission_filepath(), code)
 
         try:
-            WorkspaceTestSubmissionEntry.objects.create(game=workspace, submission=submission)
+            WorkspaceTestSubmissionEntry.objects.create(game=workspace, submission=submission, tag=tag)
         except:
             Submission.objects.filter(pk=submission.pk).delete()
 
@@ -77,6 +77,7 @@ class Submission(models.Model):
 class WorkspaceTestSubmissionEntry(models.Model):
     submission = models.ForeignKey(Submission, on_delete=models.CASCADE)
     game = models.ForeignKey(Game, on_delete=models.CASCADE)
+    tag = models.CharField(max_length=100, default="");
 
 
 class TournamentSubmissionEntry(models.Model):

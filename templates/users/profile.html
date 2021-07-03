@@ -123,9 +123,10 @@
                                     <th>Your Games</th>
                                   </tr>
                                 </thead>
+
                                 <tbody>
+
                                 {% for workspace in workspaces %}
-                                <li class="list-group-item">
                                   <tr>
                                     <td>
                                         <a href={% url 'game_creator_show_workspace' workspace_id=workspace.game.game_uuid %}>

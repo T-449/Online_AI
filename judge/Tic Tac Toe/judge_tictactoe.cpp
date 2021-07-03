@@ -257,7 +257,8 @@ void communicateWithPlayer(int player, gameState &currentState) {
 		}
 	}
 	else {
-		assert("unrecognized message" && false);
+	    cerr<<"Unrecognized Message: "<<status<<endl;
+		assert(false);
 		return;
 	}
 }
