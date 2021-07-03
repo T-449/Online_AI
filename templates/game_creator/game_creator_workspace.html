@@ -197,6 +197,7 @@
                 <table class="table table-hover">
                     <thead>
                         <tr>
+                            <td>Time</td>
                             <td>match_uuid</td>
                             <td>Player1 Agent</td>
                             <td>Tag</td>
@@ -208,6 +209,10 @@
                     </thead>
                     {% for entry in workspace_matches %}
                         <tr>
+                            <td>
+                                {{ entry.time }}
+
+                            </td>
                             <td>
                                 <a href="{% url 'show_match_history' entry.match.match_uuid %}">
                                     {{ entry.match.match_uuid }}

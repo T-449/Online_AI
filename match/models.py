@@ -1,7 +1,8 @@
 import os
+import traceback
 import uuid
-
 from django.db import models
+from django.utils import timezone
 
 from Online_AI import settings
 from submission.models import Submission
@@ -29,8 +30,9 @@ class MatchManager(models.Manager):
         match.history_filepath = path+'/matchhistory.json'
         match.save()
         try:
-            WorkspaceMatchTable.objects.create(workspace=workspace, match=match)
+            WorkspaceMatchTable.objects.create(workspace=workspace, match=match, time = timezone.now())
         except:
+            traceback.print_exc()
             WorkspaceMatchTable.objects.filter(pk=match.pk).delete()
 
         return match
@@ -87,3 +89,4 @@ class TournamentMatchTable(models.Model):
 class WorkspaceMatchTable(models.Model):
     match = models.ForeignKey(Match, on_delete=models.CASCADE)
     workspace = models.ForeignKey(Game, on_delete=models.CASCADE)
+    time = models.DateTimeField(null=True)
