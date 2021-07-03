@@ -1,4 +1,5 @@
 import os
+import threading
 
 from django.contrib import messages
 from django.http import Http404, HttpResponseRedirect
@@ -82,7 +83,9 @@ def show_match_history(request, match_uuid):
 
 def judge_match(request, match_uuid):
     match = get_match_or_validate_judge_requests(request, match_uuid)
-    execute_match(match)
+    t = threading.Thread(target=execute_match, args=(match,), kwargs={})
+    t.setDaemon(True)
+    t.start()
     return redirectToCurrent(request)
 
 def delete_match(request, match_uuid):

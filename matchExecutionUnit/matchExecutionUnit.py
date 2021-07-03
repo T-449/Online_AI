@@ -28,6 +28,7 @@ def execute_match(match, dir=SANDBOX):
 
     try:
         match.match_status = 'Running'
+        match.save()
         os.system("cd " + dir + "; ./three-way.out " + match.submission0.submission_language + " ./zero/zero "
               + match.submission1.submission_language + " ./one/one "
               + match.game.game_judge_code_language + " ./judge/judge")
