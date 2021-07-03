@@ -18,3 +18,13 @@ def write_string_to_file(filename, string):
 
 def initialize_with_empty_file(filename):
     write_string_to_file(filename, '')
+
+
+def get_file_content_as_string(filename):
+    data = None
+    try:
+        with open(filename, 'r') as file:
+            data = file.read()
+    except:
+        None
+    return data
