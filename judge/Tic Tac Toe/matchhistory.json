@@ -1,15 +1,9 @@
 {
 	"Result":"Win",
-	"Reason":"Player 1 made three in a row",
+	"Reason":"Player two timed out.",
 	"Initial State":"Player 0 to move\n...\n...\n...\n",
 	"Moves":[
-		"0 0",
-		"0 1",
-		"0 2",
-		"1 0",
-		"1 1",
-		"1 2",
-		"2 0"
+		"0 0"
 	]
 }
 
