@@ -77,7 +77,7 @@
                     <div class="form-group">
                         <label for="language">Select Language</label>
                         <select class="form-control" id="sel1" name="judge_code_language">
-                            <option>g++17</option
+                            <option>g++17</option>
                             <option>g++14</option>
                             <option>g++11</option>
                             <option>python3</option>
@@ -199,23 +199,47 @@
                         <tr>
                             <td>match_uuid</td>
                             <td>Player1 Agent</td>
+                            <td>Tag</td>
                             <td>Player2 Agent</td>
+                            <td>Tag</td>
                             <td>Status</td>
+                            <td>Result</td>
                         </tr>
                     </thead>
                     {% for entry in workspace_matches %}
                         <tr>
                             <td>
-                                {{ entry.match.match_uuid }}
+                                <a href="{% url 'show_match_history' entry.match.match_uuid %}">
+                                    {{ entry.match.match_uuid }}
+                                </a>
+
                             </td>
                             <td>
                                 <a href="{% url 'show_raw_submission' entry.match.submission0.submission_uuid %}">{{ entry.match.submission0.submission_uuid }}</a>
+                            </td>
+
+                            <td>
+                                {{ entry.match.submission0.getWorkspaceTestSubmissionTag }}
                             </td>
                             <td>
                                 <a href="{% url 'show_raw_submission' entry.match.submission1.submission_uuid %}">{{ entry.match.submission1.submission_uuid }}</a>
                             </td>
                             <td>
+                                {{ entry.match.submission1.getWorkspaceTestSubmissionTag }}
+                            </td>
+                            <td>
                                 {{ entry.match.match_status }}
+                            </td>
+                            <td>
+                                {% if entry.match.match_results == None  %}
+                                {% else %}
+                                    {{ entry.match.match_results }}
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a href="{% url 'judge_match' entry.match.match_uuid %}">
+                                    {% if entry.match.match_results == "Not Decided"  %}Judge{% else %}Rejudge{% endif %}
+                                </a>
                             </td>
                         </tr>
 

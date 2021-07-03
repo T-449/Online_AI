@@ -1,12 +1,15 @@
 from django.contrib import messages
 from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
+
+from matchExecutionUnit.matchExecutionUnit import execute_match
 from myutils import fileutils
 # Create your views here.
 from django.urls import reverse
 
 import game_creator
 from match.models import Match
+from myutils.httputils import redirectToCurrent
 from submission.models import Submission
 
 
@@ -37,10 +40,17 @@ def get_match_or_validate_requests(request, match_uuid):
         raise Http404
     return match
 
+def get_match_or_validate_judge_requests(request, match_uuid):
+    match = get_object_or_404(Match, match_uuid=match_uuid)
+
+    if not match.validate_judge_request(request):
+        raise Http404
+    return match
+
 
 def show_match_history(request, match_uuid):
     match = get_match_or_validate_requests(request, match_uuid)
-    match_history = fileutils.get_file_content_as_string(match.get_match_history_filepath())
+    match_history = fileutils.get_file_content_as_string(match.history_filepath)
     match_result = "Not Decided"
     visualizer = fileutils.get_file_content_as_string(match.game.get_visualization_code_filepath())
     iframe_src_doc = "<html><head></head><script type=\"text/javascript\"> " + visualizer + \
@@ -64,3 +74,9 @@ def show_match_history(request, match_uuid):
         "iframe_src_doc": iframe_src_doc
     }
     return render(request, 'match/match_history.html', context)
+
+
+def judge_match(request, match_uuid):
+    match = get_match_or_validate_judge_requests(request, match_uuid)
+    execute_match(match)
+    return redirectToCurrent(request);

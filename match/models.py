@@ -23,8 +23,12 @@ class MatchManager(models.Manager):
         return match
 
     def create_test_match(self, submission0, submission1, workspace):
-        match = self.create(submission0=submission0, submission1=submission1, game=workspace, match_visibility='test')
 
+        match = self.create(submission0=submission0, submission1=submission1, game=workspace, match_visibility='test')
+        path = os.path.join(settings.MEDIA_ROOT, 'matches/' + str(match.match_uuid))
+        os.makedirs(path, exist_ok=True)
+        match.history_filepath = path;
+        match.save()
         try:
             WorkspaceMatchTable.objects.create(workspace=workspace, match=match)
         except:
@@ -35,17 +39,15 @@ class MatchManager(models.Manager):
 
 class Match(models.Model):
     match_uuid = models.UUIDField(default=uuid.uuid4, unique=True)
-    match_status = models.CharField(max_length=10, null=False, default='pending')
-    match_results = models.CharField(max_length=10, null=True)
+    match_status = models.CharField(max_length=10, null=False, default='Pending')
+    match_results = models.CharField(max_length=10, null=False, default='Not Decided')
     match_visibility = models.CharField(max_length=10, null=False, default="private")
     submission0 = models.ForeignKey(Submission, on_delete=models.CASCADE, related_name='player0_submission')
     submission1 = models.ForeignKey(Submission, on_delete=models.CASCADE, related_name='player1_submission')
     game = models.ForeignKey(Game, on_delete=models.CASCADE)
+    history_filepath = models.FilePathField(null=True)
 
     objects = MatchManager()
-
-    def get_match_history_filepath(self):
-        return os.path.join(settings.MEDIA_ROOT, 'matches/' + str(self.match_uuid))
 
     def validate_request(self,request):
         if(self.match_visibility=="public"):
@@ -63,6 +65,17 @@ class Match(models.Model):
 
         submitters = [self.submission0.user, self.submission1.user]
         return user in submitters
+
+    def validate_judge_request(self, request):
+        workspace = self.game
+        user = request.user
+
+        try:
+            GameCreatorWorkspaceACL.objects.get(user=user, game=workspace)
+            return True
+        except:
+            return False
+
 
 
 

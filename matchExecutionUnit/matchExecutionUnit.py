@@ -3,9 +3,9 @@ import shutil
 
 THREE_WAY_PATH = "matchExecutionUnit/three-way.out"
 RUNNER_PATH = "matchExecutionUnit/runner.sh"
+SANDBOX = 'Sandbox/'
 
-
-def execute_match(match, dir):
+def execute_match(match, dir=SANDBOX):
     submission0_filepath = match.submission0.get_submission_filepath()
     submission1_filepath = match.submission1.get_submission_filepath()
     judge_code_filepath = match.game.get_game_judge_code_filepath()
@@ -26,8 +26,8 @@ def execute_match(match, dir):
     os.system("cd " + dir + "; ./three-way.out " + match.submission0.submission_language + " ./zero/zero "
               + match.submission1.submission_language + " ./one/one "
               + match.game.game_judge_code_language + " ./judge/judge")
-    shutil.copy(dir + "/matchhistory.json", match.get_match_history_filepath())
-    os.system("rm -r " + dir)
+    shutil.copy(dir + "/matchhistory.json", match.history_filepath)
+    shutil.rmtree(dir)
 
 # from matchExecutionUnit import matchExecutionUnit
 # from match import models

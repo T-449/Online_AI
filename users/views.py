@@ -23,9 +23,9 @@ def register(request):
 
 
 def view_profile(request, profile_name):
-    workspaces = GameCreatorWorkspaceACL.objects.filter(user=request.user)
     # print(request.user,type(request.user))
     profile_user = get_object_or_404(User, username=profile_name)
+    workspaces = GameCreatorWorkspaceACL.objects.filter(user=profile_user)
     context = {
         'profile_user': profile_user,
         'workspaces' : workspaces

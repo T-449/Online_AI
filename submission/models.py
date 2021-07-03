@@ -45,7 +45,6 @@ class SubmissionManager(models.Manager):
 
         return submission
 
-
 class Submission(models.Model):
     submission_uuid = models.UUIDField(default=uuid.uuid4, unique=True)
     submission_time = models.DateTimeField(null=True)
@@ -73,12 +72,18 @@ class Submission(models.Model):
         else:
             return True
 
+    @property
+    def getWorkspaceTestSubmissionTag(self):
+        try:
+            return WorkspaceTestSubmissionEntry.objects.get(submission=self).tag;
+        except WorkspaceTestSubmissionEntry.DoesNotExist as e:
+            return None
+
 
 class WorkspaceTestSubmissionEntry(models.Model):
     submission = models.ForeignKey(Submission, on_delete=models.CASCADE)
     game = models.ForeignKey(Game, on_delete=models.CASCADE)
     tag = models.CharField(max_length=100, default="");
-
 
 class TournamentSubmissionEntry(models.Model):
     tournament = models.ForeignKey(TournamentInfo, on_delete=models.CASCADE)
