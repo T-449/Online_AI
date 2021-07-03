@@ -1,6 +1,7 @@
 function test() {
     var json = window.prompt("Enter MatchHistory: ");
     const history = JSON.parse(json);
+    console.log(history)
     animate(history);
 }
 

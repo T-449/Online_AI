@@ -53,12 +53,13 @@ def get_match_or_validate_judge_requests(request, match_uuid):
 
 def show_match_history(request, match_uuid):
     match = get_match_or_validate_requests(request, match_uuid)
-    match_history = fileutils.get_file_content_as_string(match.history_filepath)
+    match_history = fileutils.get_file_content_as_string(match.history_filepath).encode('unicode_escape').decode('utf-8')
     match_result = match.match_results
     match_status = match.match_status
     visualizer = fileutils.get_file_content_as_string(match.game.get_visualization_code_filepath())
-    iframe_src_doc = "<html><head></head><script type=\"text/javascript\"> " + visualizer + \
-                     "</script> <body  onload=\"test()\"><div id=\"visualizer\"></div></body></html>"
+    iframe_src_doc = "<html><head><meta charset=\"UTF-8\"><script type=\"text/javascript\"> " + visualizer + \
+                     "</script></head> <body>  <script> document.body.onload=function() {" \
+                     "test(\'" + match_history + "\');}</script><div id=\"visualizer\"></div></body></html>"
     print(iframe_src_doc)
 
     if match.match_results is not None:

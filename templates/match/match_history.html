@@ -1,5 +1,9 @@
 {% extends "base.html" %}
 {% block content %}
-    <iframe srcdoc= "{{ iframe_src_doc }}" </iframe>
-
+    <div class="container" align="center">
+        <div class="embed-responsive embed-responsive-1by1" align="center">
+            <br>
+            <iframe class="embed-responsive-item" align="center" srcdoc= "{{ iframe_src_doc }}" width="600" height="600">  </iframe>
+        </div>
+    </div>
 {% endblock content %}
