@@ -30,7 +30,7 @@ def show_workspace_home(request, workspace_id):
     game = get_game_or_validate_requests(request, workspace_id)
     print(game.game_title)
     qs = GameCreatorWorkspaceACL.objects.filter(game=game)
-    workspace_agent_entries = WorkspaceTestSubmissionEntry.objects.filter(game=game)
+    workspace_agent_entries = WorkspaceTestSubmissionEntry.objects.filter(game=game)[::-1]
     workspace_matches = WorkspaceMatchTable.objects.filter(workspace=game);
     return render(request, 'game_creator/game_creator_workspace.html', {'game': game, 'query_list': qs,
                                                                         'workspace_agent_entries': workspace_agent_entries,

@@ -34,14 +34,16 @@ def show_raw_submission(request, submission_uuid):
 
 
 def post_test_submission(request, workspace_uuid):
-    game = game_creator.views.get_game_or_validate_requests(request, workspace_uuid)
 
     lang = request.POST['submission_language']
     code = request.POST['submission_code']
+    tag = request.POST['tag']
     time = now = timezone.now()
 
+    game = game_creator.views.get_game_or_validate_requests(request, workspace_uuid)
+
     user = request.user
-    submission = models.Submission.objects.create_test_submission(user, time, code, lang, game)
+    submission = models.Submission.objects.create_test_submission(user, time, code, lang, game, tag)
     submission.save()
     r = HttpResponseRedirect(reverse('game_creator_show_workspace', args=(workspace_uuid,)))
     messages.success(request, 'Saved')

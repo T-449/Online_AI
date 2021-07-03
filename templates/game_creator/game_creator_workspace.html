@@ -77,10 +77,11 @@
                     <div class="form-group">
                         <label for="language">Select Language</label>
                         <select class="form-control" id="sel1" name="judge_code_language">
-                            <option>g++17</option>
-                            <option>python</option>
+                            <option>g++17</option
                             <option>g++14</option>
-                            <option>Rust</option>
+                            <option>g++11</option>
+                            <option>python3</option>
+                            <option>python2</option>
                         </select>
                     </div> <br>
                     <div class="form-group">
@@ -98,7 +99,6 @@
                         <label for="language">Select Language</label>
                         <select class="form-control" id="visualization_language_selection"
                                 name="visualization_language">
-                            <option>python</option>
                             <option>javascript</option>
                         </select>
                     </div> <br>
@@ -117,12 +117,17 @@
                         <label for="language">Select Language</label>
                         <select class="form-control" id="submission_language"
                                 name="submission_language">
-                            <option>python</option>
-                            <option>gcc</option>
+                            <option>python2</option>
+                            <option>python3</option>
                             <option>g++11</option>
                             <option>g++14</option>
-                            <option>g++20</option>
+                            <option>g++17</option>
                         </select>
+                         <div class="form-group">
+                            <label for="tag">Tag</label>
+                            <input class="form-control" type="text" placeholder="Tags"
+                                   id="tag" name = "tag">
+                        </div> <br>
                     </div> <br>
                     <div class="form-group">
                         <label for="agent_code">Agent Code</label>
@@ -136,6 +141,7 @@
                         <tr>
                             <td>submission_uuid</td>
                             <td>user</td>
+                            <td>Tag </td>
                             <td>language</td>
                             <td>submission_time</td>
                         </tr>
@@ -147,6 +153,10 @@
                             </td>
                             <td>
                                 <a href="{% url 'viewprofile' entry.submission.user %}">{{ entry.submission.user }}</a>
+                            </td>
+                            <td>
+                                {{ entry.tag }}
+
                             </td>
                             <td>
                                 {{ entry.submission.submission_language }}
@@ -166,13 +176,13 @@
                     {% csrf_token %}
                     <div class="form-group">
 
-                        <label for="submission0">Player0 submission</label>
+                        <label for="submission0">Player1 submission</label>
                         <input class="form-control" type="text" placeholder="submission0"
                                    id="submission0" name = "submission0" value="">
 
                     </div> <br>
                     <div class="form-group">
-                        <label for="submission1">Player1 submission</label>
+                        <label for="submission1">Player2 submission</label>
                         <input class="form-control" type="text" placeholder="submission0"
                                    id="submission0" name = "submission1" value="">
                     </div> <br>
@@ -184,8 +194,8 @@
                     <thead>
                         <tr>
                             <td>match_uuid</td>
-                            <td>Player0 Agent</td>
                             <td>Player1 Agent</td>
+                            <td>Player2 Agent</td>
                             <td>Status</td>
                         </tr>
                     </thead>
