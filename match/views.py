@@ -20,8 +20,8 @@ def post_create_match(request, workspace_uuid):
     game = game_creator.views.get_game_or_validate_requests(request, workspace_uuid)
 
     try:
-        submission0 = Submission.objects.get(submission_uuid=request.POST['submission0'])
-        submission1 = Submission.objects.get(submission_uuid=request.POST['submission1'])
+        submission0 = Submission.objects.get(submission_uuid=request.POST['submission0'].strip())
+        submission1 = Submission.objects.get(submission_uuid=request.POST['submission1'].strip())
     except:
         raise Http404
 
@@ -54,7 +54,8 @@ def get_match_or_validate_judge_requests(request, match_uuid):
 def show_match_history(request, match_uuid):
     match = get_match_or_validate_requests(request, match_uuid)
     match_history = fileutils.get_file_content_as_string(match.history_filepath)
-    match_result = "Not Decided"
+    match_result = match.match_results
+    match_status = match.match_status
     visualizer = fileutils.get_file_content_as_string(match.game.get_visualization_code_filepath())
     iframe_src_doc = "<html><head></head><script type=\"text/javascript\"> " + visualizer + \
                      "</script> <body  onload=\"test()\"><div id=\"visualizer\"></div></body></html>"
