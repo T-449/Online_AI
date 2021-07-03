@@ -23,11 +23,10 @@ class MatchManager(models.Manager):
         return match
 
     def create_test_match(self, submission0, submission1, workspace):
-
         match = self.create(submission0=submission0, submission1=submission1, game=workspace, match_visibility='test')
-        path = os.path.join(settings.MEDIA_ROOT, 'matches/' + str(match.match_uuid))
+        path = os.path.join(settings.MEDIA_ROOT, 'matches/' + str(match.match_uuid)+'/matchhistory.json')
         os.makedirs(path, exist_ok=True)
-        match.history_filepath = path;
+        match.history_filepath = path
         match.save()
         try:
             WorkspaceMatchTable.objects.create(workspace=workspace, match=match)
@@ -35,6 +34,7 @@ class MatchManager(models.Manager):
             WorkspaceMatchTable.objects.filter(pk=match.pk).delete()
 
         return match
+
 
 
 class Match(models.Model):

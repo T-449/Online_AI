@@ -1,5 +1,7 @@
+import json
 import os
 import shutil
+import traceback
 
 THREE_WAY_PATH = "matchExecutionUnit/three-way.out"
 RUNNER_PATH = "matchExecutionUnit/runner.sh"
@@ -23,12 +25,25 @@ def execute_match(match, dir=SANDBOX):
     print("cd " + dir + "; ./three-way.out " + match.submission0.submission_language + " ./zero/zero "
               + match.submission1.submission_language + " ./one/one "
               + match.game.game_judge_code_language + " ./judge/judge")
-    os.system("cd " + dir + "; ./three-way.out " + match.submission0.submission_language + " ./zero/zero "
+
+    try:
+        match.match_status = 'Running'
+        os.system("cd " + dir + "; ./three-way.out " + match.submission0.submission_language + " ./zero/zero "
               + match.submission1.submission_language + " ./one/one "
               + match.game.game_judge_code_language + " ./judge/judge")
-    shutil.copy(dir + "/matchhistory.json", match.history_filepath)
-    shutil.rmtree(dir)
 
+        shutil.copyfile(dir + "/matchhistory.json", match.history_filepath)
+        shutil.rmtree(dir, ignore_errors=True)
+
+        with open(match.history_filepath) as f:
+            data = json.load(f)
+            match.match_results = data['Result']
+            match.match_status = 'Finished'
+    except:
+        match.match_status = 'Error'
+        traceback.print_exc()
+    finally:
+        match.save()
 # from matchExecutionUnit import matchExecutionUnit
 # from match import models
 # m=models.Match.objects.get(pk=2)

@@ -241,6 +241,11 @@
                                     {% if entry.match.match_results == "Not Decided"  %}Judge{% else %}Rejudge{% endif %}
                                 </a>
                             </td>
+                            <td>
+                                <a href="{% url 'delete_match' entry.match.match_uuid %}">
+                                    Delete
+                                </a>
+                            </td>
                         </tr>
 
                 {% endfor %}

@@ -1,7 +1,10 @@
+import os
+
 from django.contrib import messages
 from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 
+from match import models
 from matchExecutionUnit.matchExecutionUnit import execute_match
 from myutils import fileutils
 # Create your views here.
@@ -79,4 +82,13 @@ def show_match_history(request, match_uuid):
 def judge_match(request, match_uuid):
     match = get_match_or_validate_judge_requests(request, match_uuid)
     execute_match(match)
-    return redirectToCurrent(request);
+    return redirectToCurrent(request)
+
+def delete_match(request, match_uuid):
+    match = get_match_or_validate_judge_requests(request, match_uuid)
+    try:
+        os.remove(match.history_filepath)
+    except IsADirectoryError:
+        pass
+    models.Match.objects.filter(match_uuid=match_uuid).delete()
+    return redirectToCurrent(request)
