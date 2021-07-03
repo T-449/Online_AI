@@ -25,9 +25,9 @@ volatile int is_alarm_active;
 
 
 void Exit(int exitCode) {
-	if(pid[0]) kill(pid[0], SIGKILL);
-	if(pid[1]) kill(pid[1], SIGKILL);
-	if(pid[2]) kill(pid[2], SIGKILL);
+	if(pid[0]) killpg(pid[0], SIGKILL);
+	if(pid[1]) killpg(pid[1], SIGKILL);
+	if(pid[2]) killpg(pid[2], SIGKILL);
 	exit(exitCode);
 }
 void alarm_handler(int signum) {
@@ -101,7 +101,11 @@ void spawn_process(int index) {
 		close(fd[index][1]);
 		dup2(fd[index][0],0);
 		dup2(fd[index][0],1);
-		int ret = execlp("./runner.sh", "runner.sh", source_lang[index], source_path[index], names[index], NULL);
+		int ret = setpgid(0,0);
+		if(ret==-1) {
+			Exit(-1);
+		}
+		ret = execlp("./runner.sh", "runner.sh", source_lang[index], source_path[index], names[index], NULL);
 		printf("execlp error at %s\n", names[index]);
 		Exit(-1);
 	}
