@@ -1,9 +1,11 @@
 import os
+
+from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 
 
 from django.http import Http404, HttpResponse, HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.urls import reverse
 
@@ -31,6 +33,15 @@ def show_raw_submission(request, submission_uuid):
             response['Content-Disposition'] = 'inline; filename=' + os.path.basename(file_path)
             return response
     raise Http404
+
+@login_required
+def delete_submission(request, submission_uuid):
+    submission = get_submission_or_validate_requests(request, submission_uuid)
+    file_path = submission.get_submission_filepath()
+
+    models.Submission.objects.filter(submission_uuid=submission_uuid).delete()
+    os.remove(file_path)
+    return  HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 
 def post_test_submission(request, workspace_uuid):

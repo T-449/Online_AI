@@ -164,6 +164,10 @@
                             <td>
                                 {{ entry.submission.submission_time }}
                             </td>
+
+                            <td>
+                                <a href= "{% url 'delete_submission' entry.submission.submission_uuid %}"> Delete</a>
+                            </td>
                         </tr>
 
                 {% endfor %}
