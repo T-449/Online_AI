@@ -123,7 +123,7 @@ function nextMove() {
 }
 
 function nextMoveLoop() {
-    if (moves == window.matchHistory.Moves.length)  return;
+    if (moves === window.matchHistory.Moves.length)  return;
     var move = window.matchHistory.Moves[moves];
     
     move = move.split(' ');
@@ -132,7 +132,7 @@ function nextMoveLoop() {
     if (x < 0 || x >= 3 || y < 0 || y>= 3)  return;
     var id = x*N_SIZE+y;
     
-    if (boxes[id].innerHTML == EMPTY) {
+    if (boxes[id].innerHTML === EMPTY) {
         boxes[id].innerHTML = turn;
     }
     turn = (turn === "O" ? "X" : "O");
@@ -143,7 +143,7 @@ function nextMoveLoop() {
 
 function previousMove() {
     stopPlay();
-    if (moves == 0)  return;
+    if (moves === 0)  return;
     moves--;
     var move = window.matchHistory.Moves[moves];
     
@@ -233,14 +233,15 @@ function addInfo() {
 function updateInfo() {
     var turnInfo = document.getElementById("turninfo");
     var matchstatus = document.getElementById("matchstatus");
-    if (moves == window.matchHistory.Moves.length) {
-        if (window.matchHistory.Result == "Win")  {
+    if (moves === window.matchHistory.Moves.length) {
+        matchstatus.innerHTML = window.matchHistory.Result;
+        if (window.matchHistory.Result === "Win")  {
             matchstatus.innerHTML = "Player 1 Wins";
         }
-        else if (window.matchHistory.Result == "Lose")  {
+        else if (window.matchHistory.Result === "Loss")  {
             matchstatus.innerHTML = "Player 2 Wins";
         }
-        else if (window.matchHistory.Result == "Draw")  {
+        else if (window.matchHistory.Result === "Draw")  {
             matchstatus.innerHTML = "Match drawn";
         }
 
@@ -250,7 +251,7 @@ function updateInfo() {
     }
     else {
         matchstatus.innerHTML = "Game in Progress";
-        turnInfo.innerHTML = "Player " + (turn == 'X' ? '1' : '2')+ "'s turn";
+        turnInfo.innerHTML = "Player " + (turn === 'X' ? '1' : '2')+ "'s turn";
     }
 }
 
