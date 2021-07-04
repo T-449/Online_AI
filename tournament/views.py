@@ -48,13 +48,10 @@ def tournamentCreation(request):
 
 
 def baseTab(request, tournament_id):
-    # tournament_id = request.POST['tournamentid']
-    # tournament_id = 9
     tournament = TournamentInfo.objects.get(id=int(tournament_id))
     game = Game.objects.get(id=tournament.game_id_id)
     visible = True
     registered = False
-    print(request.user.id)
     if request.user.id is not None:
         if TournamentCreatorWorkspaceACL.objects.filter(user_id=request.user.id, tournament_id=tournament_id).exists():
             visible = False
@@ -70,6 +67,7 @@ def baseTab(request, tournament_id):
 
 def reg_unreg(request):
     val = request.POST['register']
+    print("Hello "+val)
     val = val.split()
     if val[0] == 'reg':
         tournament = TournamentInfo.objects.get(id=val[1])
@@ -85,7 +83,15 @@ def reg_unreg(request):
 
 def tournamentList(request):
     tournaments = TournamentInfo.objects.all()
+    myTournaments = TournamentCreatorWorkspaceACL.objects.filter(user_id=request.user.id)
+    myTournamentList = []
+    for tournament in myTournaments:
+        myTournamentList.append(TournamentInfo.objects.get(id=tournament.tournament_id))
+    registeredTournaments = TournamentParticipantWorkspaceACL.objects.filter(user_id=request.user.id)
+    registeredTournamentList = []
+    for tournament in registeredTournaments:
+        registeredTournamentList.append(TournamentInfo.objects.get(id=tournament.tournament_id))
     show = False
     if request.user.id is not None:
         show = True
-    return render(request, 'tournament/tournamentList.html', {'tournaments': tournaments, 'show': show})
+    return render(request, 'tournament/tournamentList.html', {'tournaments': tournaments, 'show': show, 'myTournaments': myTournamentList, 'registeredTournaments': registeredTournamentList})

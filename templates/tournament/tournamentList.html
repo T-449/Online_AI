@@ -6,15 +6,36 @@
 {% endblock title %}
 
 {% block content %}
-    <h1>Active Tournaments</h1>
-    <ul>
-        {% for tournament in tournaments %}
-            <a href="{% url 'baseTab' tournament.id %}" class="list-group-item list-group-item-action">{{ tournament.name }}</a>
-        {% endfor %}
-    </ul>
-    <div>
+    {% if tournaments %}
+        <h1>Active Tournament(s)</h1>
+        <ul>
+            {% for tournament in tournaments %}
+                <a href="{% url 'baseTab' tournament.id %}" class="list-group-item list-group-item-action">{{ tournament.name }}</a>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    {% if myTournaments %}
+        <h1>My Tournament(s)</h1>
+        <ul>
+            {% for tournament in myTournaments %}
+                <a href="{% url 'baseTab' tournament.id %}" class="list-group-item list-group-item-action">{{ tournament.name }}</a>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    {% if registeredTournaments %}
+        <h1>Registered Tournament(s)</h1>
+        <ul>
+            {% for tournament in registeredTournaments %}
+                <a href="{% url 'baseTab' tournament.id %}" class="list-group-item list-group-item-action">{{ tournament.name }}</a>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    <div class="container">
         {% if show %}
-            <a href="{% url 'createTournament' %}">Create Tournament</a>
+            <a href="{% url 'createTournament' %}" class="btn btn-primary btn-lg active" role="button" aria-pressed="true">Create your Tournament</a>
         {% endif %}
     </div>
 {% endblock content %}
