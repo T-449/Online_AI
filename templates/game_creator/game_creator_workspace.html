@@ -254,6 +254,11 @@
                                      <p><span class="glyphicon glyphicon-trash"></span></p>
                                 </a>
                             </td>
+                            <td>
+                                 <a href="{% url 'dump_history' entry.match.match_uuid %}">
+                                    <p><span class="glyphicon glyphicon-download"></span></p>
+                                 </a>
+                            </td>
                         </tr>
 
                 {% endfor %}

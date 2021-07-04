@@ -1,13 +1,9 @@
 {% extends "base.html" %}
+{% block additionalCSS %}
+
+
+{% endblock additionalCSS %}
 {% block content %}
-    <style type="text/css">
-    .jumbotron {
-      padding: 4rem 2rem;
-      margin-bottom: 2rem;
-      background-color: var(--bs-light);
-      border-radius: .3rem;
-    }
-</style>
 
     <div class="container container-fluid" align="center">
         <div class="embed-responsive embed-responsive-1by1" >
@@ -16,10 +12,25 @@
                     <br> vs <br>
                     {{ match.submission1.getDescription }}</h5>
                 </button>
+
                 <br>
-            <iframe class="embed-responsive-item" align="center" srcdoc= "{{ iframe_src_doc }}" width="410" height="600">
+            <iframe class="embed-responsive-item" align="center" srcdoc= "{{ iframe_src_doc }}" width="410" height="520">
             </iframe>
+                <br>
+                 <p>
+                  <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#matchHistory" aria-expanded="false" aria-controls="matchHistory">
+                    Match History
+                  </button>
+
+                 </p>
+                <div class="collapse" id="matchHistory">
+                  <div class="card card-body" align="left">
+                      <pre><code>{{ match_history_raw }}</code></pre>
+                  </div>
+                </div>
             </div>
+
+
 
         </div>
     </div>

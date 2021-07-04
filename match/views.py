@@ -3,7 +3,7 @@ import threading
 from multiprocessing import Queue, Process
 
 from django.contrib import messages
-from django.http import Http404, HttpResponseRedirect
+from django.http import Http404, HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, get_object_or_404
 
 from match import models
@@ -55,7 +55,8 @@ def get_match_or_validate_judge_requests(request, match_uuid):
 
 def show_match_history(request, match_uuid):
     match = get_match_or_validate_requests(request, match_uuid)
-    match_history = fileutils.get_file_content_as_string(match.history_filepath).encode('unicode_escape').decode('utf-8')
+    match_history_raw = fileutils.get_file_content_as_string(match.history_filepath)
+    match_history = match_history_raw.encode('unicode_escape').decode('utf-8')
     match_result = match.match_results
     match_status = match.match_status
     visualizer = fileutils.get_file_content_as_string(match.game.get_visualization_code_filepath())
@@ -67,6 +68,7 @@ def show_match_history(request, match_uuid):
     context = {
         "match": match,
         "result": match_result,
+        "match_history_raw": match_history_raw,
         "match_history": match_history,
         "iframe_src_doc": iframe_src_doc
     }
@@ -89,3 +91,15 @@ def delete_match(request, match_uuid):
         pass
     models.Match.objects.filter(match_uuid=match_uuid).delete()
     return redirectToCurrent(request)
+
+
+def dump_match_history(request, match_uuid):
+    try:
+        match = get_match_or_validate_requests(request, match_uuid)
+        match_history_raw = fileutils.get_file_content_as_string(match.history_filepath)
+
+        response = HttpResponse(match_history_raw, content_type="text/plain")
+        response['Content-Disposition'] = 'inline; '
+        return response
+    except:
+        raise Http404
