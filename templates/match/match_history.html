@@ -1,9 +1,26 @@
 {% extends "base.html" %}
 {% block content %}
-    <div class="container" align="center">
-        <div class="embed-responsive embed-responsive-1by1" align="center">
-            <br>
-            <iframe class="embed-responsive-item" align="center" srcdoc= "{{ iframe_src_doc }}" width="600" height="600">  </iframe>
+    <style type="text/css">
+    .jumbotron {
+      padding: 4rem 2rem;
+      margin-bottom: 2rem;
+      background-color: var(--bs-light);
+      border-radius: .3rem;
+    }
+</style>
+
+    <div class="container container-fluid" align="center">
+        <div class="embed-responsive embed-responsive-1by1" >
+                <button type="button" class="btn btn-secondary btn-lg btn-block">
+                    <h5> {{ match.submission0.getDescription }}
+                    <br> vs <br>
+                    {{ match.submission1.getDescription }}</h5>
+                </button>
+                <br>
+            <iframe class="embed-responsive-item" align="center" srcdoc= "{{ iframe_src_doc }}" width="410" height="600">
+            </iframe>
+            </div>
+
         </div>
     </div>
 {% endblock content %}

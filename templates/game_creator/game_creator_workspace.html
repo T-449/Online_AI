@@ -86,7 +86,7 @@
                     </div> <br>
                     <div class="form-group">
                         <label for="judge_code">Judge Code</label>
-                        <textarea class="form-control" id="judge_code" rows="10" name="judge_code"></textarea>
+                        <pre><code><textarea class="form-control" id="judge_code" rows="25" name="judge_code"></textarea></code></pre>
                     </div>
                     <button type="submit_judge_code" class="btn btn-primary">Submit</button>
                 </form>
@@ -101,10 +101,10 @@
                                 name="visualization_language">
                             <option>javascript</option>
                         </select>
-                    </div> <br>
+                    </div>
                     <div class="form-group">
-                        <label for="judge_code">Judge Code</label>
-                        <textarea class="form-control" id="visualization_code" rows="10" name="visualization_code"></textarea>
+                        <label for="judge_code">Visualization Code</label>
+                        <pre><code><textarea  class="form-control" id="visualization_code" rows="25" name="visualization_code"></textarea></code></pre>
                     </div>
                     <button type="submit_judge_code" class="btn btn-primary">Submit</button>
                 </form>
@@ -127,11 +127,11 @@
                             <label for="tag">Tag</label>
                             <input class="form-control" type="text" placeholder="Tags"
                                    id="tag" name = "tag">
-                        </div> <br>
-                    </div> <br>
+                        </div>
+                    </div>
                     <div class="form-group">
                         <label for="agent_code">Agent Code</label>
-                        <textarea class="form-control" id="submission_code" rows="10" name="submission_code"></textarea>
+                        <pre><code><textarea class="form-control" id="submission_code" rows="15" name="submission_code"></textarea></code></pre>
                     </div>
                     <button type="submit_judge_code" class="btn btn-primary">Submit</button>
                 </form>
@@ -166,7 +166,10 @@
                             </td>
 
                             <td>
-                                <a href= "{% url 'delete_submission' entry.submission.submission_uuid %}"> Delete</a>
+                                <a href= "{% url 'delete_submission' entry.submission.submission_uuid %}">
+                                    <p><span class="glyphicon glyphicon-trash"></span></p>
+
+                                </a>
                             </td>
                         </tr>
 
@@ -238,7 +241,7 @@
                             <td>
                                 {% if entry.match.match_results == None  %}
                                 {% else %}
-                                    {{ entry.match.match_results }}
+                                    {{ entry.match.resultDescription }}
                                 {% endif %}
                             </td>
                             <td>
@@ -248,7 +251,7 @@
                             </td>
                             <td>
                                 <a href="{% url 'delete_match' entry.match.match_uuid %}">
-                                    Delete
+                                     <p><span class="glyphicon glyphicon-trash"></span></p>
                                 </a>
                             </td>
                         </tr>

@@ -51,6 +51,21 @@ class Match(models.Model):
 
     objects = MatchManager()
 
+    @property
+    def resultDescription(self):
+        if self.match_results is not None:
+            if self.match_results.lower() == "not decided":
+                match_result = "Not Decided"
+            elif self.match_results.lower() == "win":
+                match_result = "Player 1 won"
+            elif self.match_results.lower() == "loss":
+                match_result = "Player 2 won"
+            elif self.match_results.lower() == "draw":
+                match_result = "Game drawn"
+            else:
+                match_result = "Error"
+        return  match_result
+
     def validate_request(self,request):
         if(self.match_visibility=="public"):
             return True

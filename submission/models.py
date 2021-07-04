@@ -79,6 +79,13 @@ class Submission(models.Model):
         except WorkspaceTestSubmissionEntry.DoesNotExist as e:
             return None
 
+    @property
+    def getDescription(self):
+        ans = self.user.username;
+        if (self.submission_status == 'test'):
+            ans += " (" + self.getWorkspaceTestSubmissionTag + ")"
+        return ans
+
 
 class WorkspaceTestSubmissionEntry(models.Model):
     submission = models.ForeignKey(Submission, on_delete=models.CASCADE)

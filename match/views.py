@@ -64,16 +64,6 @@ def show_match_history(request, match_uuid):
                      "test(\'" + match_history + "\');}</script><div id=\"visualizer\"></div></body></html>"
     print(iframe_src_doc)
 
-    if match.match_results is not None:
-        if match.match_results == "win":
-            match_result = "Player 1(" + match.submission0.user.username + ") won"
-        elif match.match_results == "Player":
-            match_result = "Player 2(" + match.submission1.user.username + ") won"
-        elif match.match_results == "draw":
-            match_result = "The Game drawn"
-        else:
-            match_result = "Error"
-
     context = {
         "match": match,
         "result": match_result,
