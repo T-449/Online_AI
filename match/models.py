@@ -7,7 +7,7 @@ from django.utils import timezone
 from Online_AI import settings
 from submission.models import Submission
 from game_creator.models import Game, GameCreatorWorkspaceACL
-from tournament.models import TournamentInfo
+from tournament.models import Tournament
 
 
 # Create your models here.
@@ -98,7 +98,7 @@ class Match(models.Model):
 
 class TournamentMatchTable(models.Model):
     match = models.ForeignKey(Match, on_delete=models.CASCADE)
-    tournament = models.ForeignKey(TournamentInfo, on_delete=models.CASCADE)
+    tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE)
 
 
 class WorkspaceMatchTable(models.Model):

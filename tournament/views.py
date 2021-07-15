@@ -5,7 +5,7 @@ from datetime import datetime
 
 from django.contrib.auth.models import User
 from game_creator.models import Game, GameCreatorWorkspaceACL
-from tournament.models import TournamentInfo, TournamentCreatorWorkspaceACL, TournamentParticipantWorkspaceACL
+from tournament.models import Tournament, TournamentCreatorACL, TournamentRegistration
 
 
 def generateRandomString(characters):
@@ -37,27 +37,27 @@ def tournamentCreation(request):
                         0, 0)
     game_id = request.POST['game']
     game = Game.objects.get(id=int(game_id))
-    tournament = TournamentInfo(name=request.POST['tournamentname'], game_id=game, startTime=start_time,
-                                endTime=end_time, description=request.POST['description'])
+    tournament = Tournament(name=request.POST['tournamentname'], game_id=game, startTime=start_time,
+                            endTime=end_time, description=request.POST['description'])
     tournament.save()
-    tournament = TournamentInfo.objects.latest('id')
+    tournament = Tournament.objects.latest('id')
     user = User.objects.get(id=request.user.id)
-    tournamentCreator = TournamentCreatorWorkspaceACL(user=user, tournament=tournament)
+    tournamentCreator = TournamentCreatorACL(user=user, tournament=tournament)
     tournamentCreator.save()
     return baseTab(request, tournament.id)
 
 
 def baseTab(request, tournament_id):
-    tournament = TournamentInfo.objects.get(id=int(tournament_id))
+    tournament = Tournament.objects.get(id=int(tournament_id))
     game = Game.objects.get(id=tournament.game_id_id)
     visible = True
     registered = False
     if request.user.id is not None:
-        if TournamentCreatorWorkspaceACL.objects.filter(user_id=request.user.id, tournament_id=tournament_id).exists():
+        if TournamentCreatorACL.objects.filter(user_id=request.user.id, tournament_id=tournament_id).exists():
             visible = False
         else:
-            if TournamentParticipantWorkspaceACL.objects.filter(user_id=request.user.id,
-                                                                tournament_id=tournament_id).exists():
+            if TournamentRegistration.objects.filter(user_id=request.user.id,
+                                                     tournament_id=tournament_id).exists():
                 registered = True
     else:
         visible = False
@@ -70,27 +70,27 @@ def reg_unreg(request):
     print("Hello "+val)
     val = val.split()
     if val[0] == 'reg':
-        tournament = TournamentInfo.objects.get(id=val[1])
+        tournament = Tournament.objects.get(id=val[1])
         user = User.objects.get(id=request.user.id)
-        tournamentParticipant = TournamentParticipantWorkspaceACL(user=user, tournament=tournament)
+        tournamentParticipant = TournamentRegistration(user=user, tournament=tournament)
         tournamentParticipant.save()
     else:
-        tournamentParticipant = TournamentParticipantWorkspaceACL.objects.get(user_id=request.user.id,
-                                                                              tournament_id=int(val[1]))
+        tournamentParticipant = TournamentRegistration.objects.get(user_id=request.user.id,
+                                                                   tournament_id=int(val[1]))
         tournamentParticipant.delete()
     return baseTab(request, int(val[1]))
 
 
 def tournamentList(request):
-    tournaments = TournamentInfo.objects.all()
-    myTournaments = TournamentCreatorWorkspaceACL.objects.filter(user_id=request.user.id)
+    tournaments = Tournament.objects.all()
+    myTournaments = TournamentCreatorACL.objects.filter(user_id=request.user.id)
     myTournamentList = []
     for tournament in myTournaments:
-        myTournamentList.append(TournamentInfo.objects.get(id=tournament.tournament_id))
-    registeredTournaments = TournamentParticipantWorkspaceACL.objects.filter(user_id=request.user.id)
+        myTournamentList.append(Tournament.objects.get(id=tournament.tournament_id))
+    registeredTournaments = TournamentRegistration.objects.filter(user_id=request.user.id)
     registeredTournamentList = []
     for tournament in registeredTournaments:
-        registeredTournamentList.append(TournamentInfo.objects.get(id=tournament.tournament_id))
+        registeredTournamentList.append(Tournament.objects.get(id=tournament.tournament_id))
     show = False
     if request.user.id is not None:
         show = True

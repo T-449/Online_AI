@@ -8,7 +8,7 @@ from django.db import models
 from game_creator.models import Game
 from game_creator.models import GameCreatorWorkspaceACL
 
-from tournament.models import TournamentInfo
+from tournament.models import Tournament
 
 import django.contrib.auth.models
 
@@ -93,7 +93,7 @@ class WorkspaceTestSubmissionEntry(models.Model):
     tag = models.CharField(max_length=100, default="");
 
 class TournamentSubmissionEntry(models.Model):
-    tournament = models.ForeignKey(TournamentInfo, on_delete=models.CASCADE)
+    tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE)
     submission = models.ForeignKey(Game, on_delete=models.CASCADE)
 
 # from submission.models import Submission
