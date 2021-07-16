@@ -10,7 +10,7 @@
         <h1>Active Tournament(s)</h1>
         <ul>
             {% for tournament in tournaments %}
-                <a href="{% url 'baseTab' tournament.id %}" class="list-group-item list-group-item-action">{{ tournament.name }}</a>
+                <a href="{% url 'show_tournament_workspace' tournament.tournament_uuid %}" class="list-group-item list-group-item-action">{{ tournament.name }}</a>
             {% endfor %}
         </ul>
     {% endif %}
@@ -19,7 +19,7 @@
         <h1>My Tournament(s)</h1>
         <ul>
             {% for tournament in myTournaments %}
-                <a href="{% url 'baseTab' tournament.id %}" class="list-group-item list-group-item-action">{{ tournament.name }}</a>
+                <a href="{% url 'show_tournament_workspace' tournament.tournament_uuid %}" class="list-group-item list-group-item-action">{{ tournament.name }}</a>
             {% endfor %}
         </ul>
     {% endif %}
@@ -28,14 +28,14 @@
         <h1>Registered Tournament(s)</h1>
         <ul>
             {% for tournament in registeredTournaments %}
-                <a href="{% url 'baseTab' tournament.id %}" class="list-group-item list-group-item-action">{{ tournament.name }}</a>
+                <a href="{% url 'show_tournament_workspace' tournament.tournament_uuid %}" class="list-group-item list-group-item-action">{{ tournament.name }}</a>
             {% endfor %}
         </ul>
     {% endif %}
 
     <div class="container">
         {% if show %}
-            <a href="{% url 'createTournament' %}" class="btn btn-primary btn-lg active" role="button" aria-pressed="true">Create your Tournament</a>
+            <a href="{% url 'show_tournament_creator_page' %}" class="btn btn-primary btn-lg active" role="button" aria-pressed="true">Create your Tournament</a>
         {% endif %}
     </div>
 {% endblock content %}

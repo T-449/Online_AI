@@ -1,18 +1,32 @@
 import django.contrib.auth.models
 from django.db import models
 from game_creator.models import Game
+import uuid
 
 
 # Create your models here.
 
+class TournamentManager(models.Manager):
+    def create_tournament(self, creator, game, name, description, start_time, end_time, phase):
+        tournament = self.create(game=game, name=name, description=description,
+                                 start_time=start_time, end_time=end_time, phase=phase)
+        try:
+            TournamentCreatorACL.objects.create(user=creator,tournament=tournament)
+        except:
+            Tournament.objects.filter(pk=tournament.pk).delete()
+            return None
+        return tournament
+
 class Tournament(models.Model):
-    game_id = models.ForeignKey(Game, on_delete=models.CASCADE)
+    game = models.ForeignKey(Game, on_delete=models.CASCADE)
     name = models.CharField(max_length=36, null=False, default="MyTournament")
     description = models.CharField(max_length=330, null=True)
-    startTime = models.DateTimeField(null=True)
-    endTime = models.DateTimeField(null=True)
+    start_time = models.DateTimeField(null=True)
+    end_time = models.DateTimeField(null=True)
     phase = models.CharField(max_length=20, null=False, default="Registration")
+    tournament_uuid = models.UUIDField(default=uuid.uuid4, unique=True)
 
+    objects = TournamentManager()
 
 class TournamentCreatorACL(models.Model):
     user = models.ForeignKey(django.contrib.auth.models.User, on_delete=models.CASCADE)

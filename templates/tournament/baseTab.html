@@ -14,7 +14,7 @@
 {% endblock title %}
 
 {% block content %}
-    <form action="reg_unreg" method="post">
+    <form action="{% url 'register_tournament' tournament.tournament_uuid %}" method="post">
 
     {% csrf_token %}
   <div class="content">
@@ -44,14 +44,14 @@
             <div class="row">
               <div class="col-md-12 form-group">
                 <label for="startTime" class="col-form-label">Start Time</label>
-                <h5>{{ tournament.startTime }}</h5>
+                <h5>{{ tournament.start_time }}</h5>
               </div>
             </div>
 
             <div class="row">
               <div class="col-md-12 form-group">
                 <label for="endTime" class="col-form-label">End Time</label>
-                <h5>{{ tournament.endTime }}</h5>
+                <h5>{{ tournament.end_time }}</h5>
               </div>
             </div>
 

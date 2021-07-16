@@ -1,0 +1,340 @@
+{% extends "base.html" %}
+{% block content %}
+    <link rel="stylesheet" type="text/css" media="screen" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-markdown/2.10.0/css/bootstrap-markdown.min.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+{#    <script src="https://code.jquery.com/jquery-1.12.4.min.js"> </script>#}
+{#    <script src="https://use.fontawesome.com/f9b4728164.js"></script>#}
+{#    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>#}
+{#    <script src="http://www.codingdrama.com/bootstrap-markdown/js/to-markdown.js"></script>#}
+{#    <script src="http://www.codingdrama.com/bootstrap-markdown/js/markdown.js"></script>#}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-markdown/2.10.0/js/bootstrap-markdown.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/0.3.5/marked.min.js"></script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+{#    #}
+{#    <script#}
+{#  src="https://code.jquery.com/jquery-3.4.1.min.js"#}
+{#  integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="#}
+{#  crossorigin="anonymous"></script>#}
+{##}
+<script text="javascript">
+    setTimeout(fade_out, 3000);
+    function fade_out() {
+        $(".alert.alert-success").fadeOut().empty();
+    }
+</script>
+
+
+    <div class="container p-3 my-3 border">
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="active">
+                <a class="nav-link active" id="tournament-description-tab" data-toggle="tab" href="#tournament"
+                   role="tab" aria-controls="tournament-description-tab" aria-selected="true">Tournament</a></li>
+            <li>
+                <a class="nav-link" id="problem-description-tab" data-toggle="tab" href="#problem"
+                   role="tab" aria-controls="problem-description-tab" aria-selected="false">Problem</a></li>
+            <li>
+                <a class="nav-link" id="submission-tab" data-toggle="tab" href="#submit"
+                   role="tab" aria-controls="submission-tab" aria-selected="false">Submit</a></li>
+            <li>
+                <a class="nav-link" id="submissions" data-toggle="tab" href="#submissions"
+                   role="tab" aria-controls="submissions" aria-selected="false">Submissions</a></li>
+            <li>
+                <a class="nav-link" id="testing-sandbox-tab" data-toggle="tab" href="#test_sandbox"
+                   role="tab" aria-controls="testing-sandbox-tab" aria-selected="false">Testing Sandbox</a></li>
+            <li>
+                <a class="nav-link" id="matches" data-toggle="tab" href="#matches"
+                   role="tab" aria-controls="matches" aria-selected="false">Matches</a></li>
+            <li>
+                <a class="nav-link" id="ranklist" data-toggle="tab" href="#ranklist"
+                   role="tab" aria-controls="ranklist" aria-selected="false">Ranklist</a></li>
+        </ul>
+
+        <div class="tab-content">
+            <div id="statement" class="tab-pane fade in active">
+                <br>
+                <form action="{% url 'game_creator_post_description' game.game_uuid%}" method="POST">
+                   {% csrf_token %}
+                        <div class="form-group">
+                            <label for="Title">Title</label>
+                            <input class="form-control" type="text" placeholder="Title"
+                                   id="Title" name = "title" value="{{ game.game_title }}">
+                        </div> <br>
+                        <div class="form-group">
+                            <label for="Body">Body</label>
+
+                            <textarea class="form-control" id="Body" data-provide="markdown"
+                                      name = "description" rows="10"></textarea>
+
+                        </div>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
+            </div>
+            <div id="judge_code" class="tab-pane fade">
+                <br>
+                <form action="{% url 'game_creator_post_judge_code' game.game_uuid %}" method="POST">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="language">Select Language</label>
+                        <select class="form-control" id="sel1" name="judge_code_language">
+                            <option>g++17</option>
+                            <option>g++14</option>
+                            <option>g++11</option>
+                            <option>python3</option>
+                            <option>python2</option>
+                        </select>
+                    </div> <br>
+                    <div class="form-group">
+                        <label for="judge_code">Judge Code</label>
+                        <pre><code><textarea class="form-control" id="judge_code" rows="25" name="judge_code"></textarea></code></pre>
+                    </div>
+                    <button type="submit_judge_code" class="btn btn-primary">Submit</button>
+                </form>
+             </div>
+            <div id="visualization_code" class="tab-pane fade">
+                <br>
+                <form action="{% url 'game_creator_post_visualization_code' game.game_uuid %}" method="POST">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="language">Select Language</label>
+                        <select class="form-control" id="visualization_language_selection"
+                                name="visualization_language">
+                            <option>javascript</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="judge_code">Visualization Code</label>
+                        <pre><code><textarea  class="form-control" id="visualization_code" rows="25" name="visualization_code"></textarea></code></pre>
+                    </div>
+                    <button type="submit_judge_code" class="btn btn-primary">Submit</button>
+                </form>
+            </div>
+            <div id="agents" class="tab-pane fade">
+                <br>
+                <form action="{% url 'game_creator_post_add_agent' game.game_uuid %}" method="POST">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="language">Select Language</label>
+                        <select class="form-control" id="submission_language"
+                                name="submission_language">
+                            <option>python2</option>
+                            <option>python3</option>
+                            <option>g++11</option>
+                            <option>g++14</option>
+                            <option>g++17</option>
+                        </select>
+                         <div class="form-group">
+                            <label for="tag">Tag</label>
+                            <input class="form-control" type="text" placeholder="Tags"
+                                   id="tag" name = "tag">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="agent_code">Agent Code</label>
+                        <pre><code><textarea class="form-control" id="submission_code" rows="15" name="submission_code"></textarea></code></pre>
+                    </div>
+                    <button type="submit_judge_code" class="btn btn-primary">Submit</button>
+                </form>
+                <h4>Agents</h4>
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <td>submission_uuid</td>
+                            <td>user</td>
+                            <td>Tag </td>
+                            <td>language</td>
+                            <td>submission_time</td>
+                        </tr>
+                    </thead>
+                    {% for entry in workspace_agent_entries %}
+                        <tr>
+                            <td>
+                                <a href="{% url 'show_raw_submission' entry.submission.submission_uuid %}">{{ entry.submission.submission_uuid }}</a>
+                            </td>
+                            <td>
+                                <a href="{% url 'viewprofile' entry.submission.user %}">{{ entry.submission.user }}</a>
+                            </td>
+                            <td>
+                                {{ entry.tag }}
+
+                            </td>
+                            <td>
+                                {{ entry.submission.submission_language }}
+                            </td>
+                            <td>
+                                {{ entry.submission.submission_time }}
+                            </td>
+
+                            <td>
+                                <a href= "{% url 'delete_submission' entry.submission.submission_uuid %}">
+                                    <p><span class="glyphicon glyphicon-trash"></span></p>
+
+                                </a>
+                            </td>
+                        </tr>
+
+                {% endfor %}
+                </table>
+            </div>
+            <div id="test_sandbox" class="tab-pane fade">
+                <br>
+                <form action="{% url 'game_creator_post_create_match' game.game_uuid %}" method="POST">
+                    {% csrf_token %}
+                    <div class="form-group">
+
+                        <label for="submission0">Player1 submission</label>
+                        <input class="form-control" type="text" placeholder="submission0"
+                                   id="submission0" name = "submission0" value="">
+
+                    </div> <br>
+                    <div class="form-group">
+                        <label for="submission1">Player2 submission</label>
+                        <input class="form-control" type="text" placeholder="submission0"
+                                   id="submission0" name = "submission1" value="">
+                    </div> <br>
+
+                    <button type="submit" class="btn btn-primary">Create Match</button>
+                </form>
+                <h4>Matches</h4>
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <td>Time</td>
+                            <td>match_uuid</td>
+                            <td>Player1 Agent</td>
+                            <td>Tag</td>
+                            <td>Player2 Agent</td>
+                            <td>Tag</td>
+                            <td>Status</td>
+                            <td>Result</td>
+                        </tr>
+                    </thead>
+                    {% for entry in workspace_matches %}
+                        <tr>
+                            <td>
+                                {{ entry.time }}
+
+                            </td>
+                            <td>
+                                <a href="{% url 'show_match_history' entry.match.match_uuid %}">
+                                    {{ entry.match.match_uuid }}
+                                </a>
+
+                            </td>
+                            <td>
+                                <a href="{% url 'show_raw_submission' entry.match.submission0.submission_uuid %}">{{ entry.match.submission0.submission_uuid }}</a>
+                            </td>
+
+                            <td>
+                                {{ entry.match.submission0.getWorkspaceTestSubmissionTag }}
+                            </td>
+                            <td>
+                                <a href="{% url 'show_raw_submission' entry.match.submission1.submission_uuid %}">{{ entry.match.submission1.submission_uuid }}</a>
+                            </td>
+                            <td>
+                                {{ entry.match.submission1.getWorkspaceTestSubmissionTag }}
+                            </td>
+                            <td>
+                                {{ entry.match.match_status }}
+                            </td>
+                            <td>
+                                {% if entry.match.match_results == None  %}
+                                {% else %}
+                                    {{ entry.match.resultDescription }}
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a href="{% url 'judge_match' entry.match.match_uuid %}">
+                                    {% if entry.match.match_results == "Not Decided"  %}Judge{% else %}Rejudge{% endif %}
+                                </a>
+                            </td>
+                            <td>
+                                <a href="{% url 'delete_match' entry.match.match_uuid %}">
+                                     <p><span class="glyphicon glyphicon-trash"></span></p>
+                                </a>
+                            </td>
+                            <td>
+                                 <a href="{% url 'dump_history' entry.match.match_uuid %}">
+                                    <p><span class="glyphicon glyphicon-download"></span></p>
+                                 </a>
+                            </td>
+                        </tr>
+
+                {% endfor %}
+                </table>
+            </div>
+            <div id="permissions" class="tab-pane fade">
+                <br>
+                <form action="{% url 'game_creator_send_workspace_invite' game.game_uuid %}" method="POST">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="judge_code">Invite User</label>
+                        <input type="text" class="form-control" id="user_invite" rows="1" name="user_invite"></input>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Invite</button>
+                </form>
+                <hr>
+                <h4>Editors</h4>
+                <table class="table table-hover">
+                    <thead>
+                        User Name
+                    </thead>
+                    {% for query in query_list %}
+                        <tr>
+                            <td>
+                                <a href="{% url 'viewprofile' query.user.username %}">{{ query.user.username }}</a>
+                            </td>
+                        </tr>
+
+                {% endfor %}
+                </table>
+            </div>
+        </div>
+    </div>
+    <script>
+        $(document).ready(() => {
+            let url = location.href.replace(/\/$/, "");
+            if (location.hash) {
+                const hash = url.split("#");
+                $('#myTab a[href="#'+hash[1]+'"]').tab("show");
+                url = location.href.replace(/\/#/, "#");
+                history.replaceState(null, null, url);
+                setTimeout(() => {
+                    $(window).scrollTop(0);
+                }, 400);
+            }
+
+            $('a[data-toggle="tab"]').on("click", function() {
+                let newUrl;
+                const hash = $(this).attr("href");
+                if(hash == "#home") {
+                    newUrl = url.split("#")[0];
+                } else {
+                    newUrl = url.split("#")[0] + hash;
+                }
+                newUrl += "/";
+                history.replaceState(null, null, newUrl);
+            });
+        });
+    </script>
+
+    <script type="text/javascript">
+        function download_to_textbox(url, el)
+        {
+            $.get(url, null, function(data)
+            {
+              el.val(data);
+            }, "text");
+        }
+
+        download_to_textbox("{% url 'game_creator_get_game_description' game.game_uuid %}",
+            $("textarea[name='description']"));
+        download_to_textbox("{% url 'game_creator_get_game_judge_code' game.game_uuid %}",
+            $("textarea[name='judge_code']"));
+        download_to_textbox("{% url 'game_creator_get_game_visualization_code' game.game_uuid %}",
+            $("textarea[name='visualization_code']"));
+    </script>
+
+{% endblock content %}

@@ -21,7 +21,7 @@
       <p class="lead">We respect your privacy. The information you provide here is kept secure and only used for enhancing your
       experience in our platform.</p>
     </div>
-        <form action="tournamentCreation" method="post" class="needs-validation" novalidate>
+        <form action= "{% url 'post_create_tournament' %}"method="post" class="needs-validation" novalidate>
             {% csrf_token %}
           <div class="row g-3">
             <div class="col-sm-6">
@@ -37,7 +37,7 @@
               <select class="form-select" name="game" id="game" required>
                 <option value="">Choose a game...</option>
                   {% for game in games %}
-                    <option value="{{ game.id }}">{{ game.game_title }}</option>
+                    <option value="{{ game.pk }}">{{ game.game_title }}</option>
                   {% endfor %}
               </select>
               <div class="invalid-feedback">

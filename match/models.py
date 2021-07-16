@@ -14,7 +14,7 @@ from tournament.models import Tournament
 
 class MatchManager(models.Manager):
     def create_tournament_match(self, submission0, submission1, tournament):
-        match = self.create(submission0=submission0, submission1=submission1, game=tournament.game_id)
+        match = self.create(submission0=submission0, submission1=submission1, game=tournament.game)
 
         try:
             TournamentMatchTable.objects.create(tournament=tournament, match=match)
