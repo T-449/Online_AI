@@ -61,7 +61,7 @@ def show_tournament_workspace(request, tournament_uuid):
                 registered = True
     else:
         visible = False
-    return render(request, 'tournament/baseTab.html',
+    return render(request, 'tournament/tournament_tabs.html',
                   {'tournament': tournament, 'game': game.game_title, 'visible': visible, 'registered': registered})
 
 
