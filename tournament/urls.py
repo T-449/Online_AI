@@ -7,4 +7,6 @@ urlpatterns = [
     path('<uuid:tournament_uuid>', views.show_tournament_workspace, name='show_tournament_workspace'),
     path('<uuid:tournament_uuid>/register', views.reg_unreg, name='register_tournament'),
     path('tournamentList', views.tournamentList, name='tournamentList'),
+    path('<uuid:tournament_uuid>/submission', views.add_submission, name='add_submission'),
+    path('<uuid:tournament_uuid>/phasechange', views.change_phase, name='change_phase'),
 ]

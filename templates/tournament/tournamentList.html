@@ -20,6 +20,16 @@
         <ul>
             {% for tournament in myTournaments %}
                 <a href="{% url 'show_tournament_workspace' tournament.tournament_uuid %}" class="list-group-item list-group-item-action">{{ tournament.name }}</a>
+                <form action="{% url 'change_phase' tournament.tournament_uuid %}" method="post">
+                    {% csrf_token %}
+                    <label for="changedphase">Change phase</label>
+                    <select id="changedphase" name="changedphase">
+                        <option value="Registration">Registration</option>
+                        <option value="Matchmaking">Matchmaking</option>
+                        <option value="Closing">Closing</option>
+                    </select>
+                    <input type="submit" value="Change">
+                </form>
             {% endfor %}
         </ul>
     {% endif %}

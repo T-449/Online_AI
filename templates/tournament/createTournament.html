@@ -45,6 +45,26 @@
               </div>
             </div>
 
+            <div class="col-md-5">
+              <label for="tournamentType" class="form-label">Tournament Type</label>
+              <select class="form-select" name="tournamentType" id="tournamentType" required>
+                <option value="">Choose...</option>
+                  <option value="roundrobin">Round Robin</option>
+                  <option value="knockout">KnockOut</option>
+              </select>
+              <div class="invalid-feedback">
+                Please select a valid tournament type.
+              </div>
+            </div>
+
+            <div class="col-md-5">
+              <label for="maxmatches" class="form-label">Max Match Generation Limit</label>
+              <input type="number" class="form-control" name="maxMatches" id="maxMatches" min="0" max="5">
+              <div class="invalid-feedback">
+                Please select a valid number within 0 to 5.
+              </div>
+            </div>
+
             <div class="col-12">
               <label for="description" class="form-label">Description</label>
               <div class="input-group has-validation">
