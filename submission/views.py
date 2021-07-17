@@ -55,7 +55,6 @@ def post_test_submission(request, workspace_uuid):
 
     user = request.user
     submission = models.Submission.objects.create_test_submission(user, time, code, lang, game, tag)
-    submission.save()
     r = HttpResponseRedirect(reverse('game_creator_show_workspace', args=(workspace_uuid,)))
     messages.success(request, 'Saved')
     return r

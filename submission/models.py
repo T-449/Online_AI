@@ -16,10 +16,7 @@ import django.contrib.auth.models
 # Create your models here.
 class SubmissionManager(models.Manager):
     def create_test_submission(self, user, time, code, language, workspace, tag):
-        submission = self.create(user=user)
-        submission.submission_time = time
-        submission.submission_language = language
-        submission.submission_status = "test"
+        submission = self.create(user=user, submission_time=time, submission_status="test", submission_language=language)
 
         fileutils.write_string_to_file(submission.get_submission_filepath(), code)
 
@@ -31,10 +28,8 @@ class SubmissionManager(models.Manager):
         return submission
 
     def create_tournament_submission(self, user, time, code, language, tournament):
-        submission = self.create(user=user)
-        submission.submission_time = time
-        submission.submission_language = language
-        submission.submission_status = "private"
+        submission = self.create(user=user, submission_time=time, submission_status="private",
+                                 submission_language=language)
 
         fileutils.write_string_to_file(submission.get_submission_filepath(), code)
 
@@ -44,6 +39,7 @@ class SubmissionManager(models.Manager):
             Submission.objects.filter(pk=submission.pk).delete()
 
         return submission
+
 
 class Submission(models.Model):
     submission_uuid = models.UUIDField(default=uuid.uuid4, unique=True)
@@ -90,11 +86,12 @@ class Submission(models.Model):
 class WorkspaceTestSubmissionEntry(models.Model):
     submission = models.ForeignKey(Submission, on_delete=models.CASCADE)
     game = models.ForeignKey(Game, on_delete=models.CASCADE)
-    tag = models.CharField(max_length=100, default="");
+    tag = models.CharField(max_length=100, default="")
+
 
 class TournamentSubmissionEntry(models.Model):
     tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE)
-    submission = models.ForeignKey(Game, on_delete=models.CASCADE)
+    submission = models.ForeignKey(Submission, on_delete=models.CASCADE)
 
 # from submission.models import Submission
 # from django.contrib.auth.models import User
