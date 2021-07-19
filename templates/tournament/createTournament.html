@@ -49,8 +49,9 @@
               <label for="tournamentType" class="form-label">Tournament Type</label>
               <select class="form-select" name="tournamentType" id="tournamentType" required>
                 <option value="">Choose...</option>
-                  <option value="roundrobin">Round Robin</option>
-                  <option value="knockout">KnockOut</option>
+                  {% for option in tournament_types %}
+                    <option value="{{ option }}">{{ option }}</option>
+                  {% endfor %}
               </select>
               <div class="invalid-feedback">
                 Please select a valid tournament type.

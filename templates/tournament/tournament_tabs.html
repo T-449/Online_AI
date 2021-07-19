@@ -97,14 +97,14 @@
                                     <div class="row">
                                         <div class="col-md-12 form-group">
                                             <label for="phase" class="col-form-label">Phase</label>
-                                            <h5>{{ tournament.phase }}</h5>
+                                            <h5>{{ tournament.get_phase_display }}</h5>
                                         </div>
                                     </div>
 
                                     <div class="row">
                                         <div class="col-md-12 form-group">
                                             <label for="tournamentType" class="col-form-label">Tournament Type</label>
-                                            <h5>{{ tournament.tournament_type }}</h5>
+                                            <h5>{{ tournament.get_tournament_type_display }}</h5>
                                         </div>
                                     </div>
 

@@ -24,9 +24,9 @@
                     {% csrf_token %}
                     <label for="changedphase">Change phase</label>
                     <select id="changedphase" name="changedphase">
-                        <option value="Registration">Registration</option>
-                        <option value="Matchmaking">Matchmaking</option>
-                        <option value="Closing">Closing</option>
+                        {% for option in tournament_phases %}
+                            <option value="{{ option }}">{{ option }}</option>
+                        {% endfor %}
                     </select>
                     <input type="submit" value="Change">
                 </form>
