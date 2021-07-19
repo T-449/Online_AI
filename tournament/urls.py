@@ -9,4 +9,7 @@ urlpatterns = [
     path('tournamentList', views.tournamentList, name='tournamentList'),
     path('<uuid:tournament_uuid>/submission', views.add_submission, name='add_submission'),
     path('<uuid:tournament_uuid>/phasechange', views.change_phase, name='change_phase'),
+    path('<uuid:tournament_uuid>/create_test_match', views.tournament_post_create_test_match,
+         name='tournament_post_create_test_match'),
+
 ]

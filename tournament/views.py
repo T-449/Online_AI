@@ -1,5 +1,5 @@
-from django.http import HttpResponseRedirect
-from django.shortcuts import render
+from django.http import HttpResponseRedirect, Http404
+from django.shortcuts import render, get_object_or_404
 import random
 import string
 from datetime import datetime
@@ -9,6 +9,7 @@ from django.utils import timezone
 from django.contrib import messages
 
 from game_creator.models import Game, GameCreatorWorkspaceACL
+from match.models import Match, TournamentTestMatchTable
 from tournament.models import Tournament, TournamentCreatorACL, TournamentRegistration
 from submission.models import Submission
 
@@ -76,8 +77,11 @@ def show_tournament_workspace(request, tournament_uuid):
                 registered = True
     else:
         visible = False
+
+    tournament_test_matches = TournamentTestMatchTable.objects.filter(user=request.user)
     return render(request, 'tournament/tournament_tabs.html',
-                  {'tournament': tournament, 'game': game.game_title, 'visible': visible, 'registered': registered})
+                  {'tournament': tournament, 'game': game.game_title, 'visible': visible, 'registered': registered,
+                   'tournament_test_matches':tournament_test_matches})
 
 
 def reg_unreg(request, tournament_uuid):
@@ -143,3 +147,23 @@ def change_phase(request, tournament_uuid):
         None
 
     return HttpResponseRedirect(reverse('show_tournament_workspace',args=(tournament_uuid,)))
+
+def tournament_post_create_test_match(request,tournament_uuid):
+    tournament = get_object_or_404(Tournament,tournament_uuid=tournament_uuid)
+
+    try:
+        submission0 = Submission.objects.get(submission_uuid=request.POST['submission0'].strip())
+        submission1 = Submission.objects.get(submission_uuid=request.POST['submission1'].strip())
+    except:
+        raise Http404
+
+    #user = request.user
+    #if not submission0.validate_access(user) or not submission1.validate_access(user):
+    #    raise Http404
+
+    Match.objects.create_tournament_test_match(submission0=submission0,submission1=submission1,
+                                               tournament=tournament,user=request.user)
+    r = HttpResponseRedirect(reverse('show_tournament_workspace', args=(tournament_uuid,)))
+
+    return r
+
