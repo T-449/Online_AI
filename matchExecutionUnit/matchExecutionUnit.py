@@ -4,6 +4,8 @@ import shutil
 import signal
 import traceback
 
+from match.models import Match
+
 THREE_WAY_PATH = "matchExecutionUnit/three-way.out"
 RUNNER_PATH = "matchExecutionUnit/runner.sh"
 SANDBOX = 'Sandbox/'
@@ -30,7 +32,7 @@ def execute_match(match, dir=SANDBOX):
                   + match.game.game_judge_code_language + " ./judge/judge")
 
         try:
-            match.match_status = 'Running'
+            match.match_status = Match.MatchStatus.RUNNING
             match.save()
             os.system("cd " + dir + "; ./three-way.out " + match.submission0.submission_language + " ./zero/zero "
                   + match.submission1.submission_language + " ./one/one "
@@ -42,9 +44,9 @@ def execute_match(match, dir=SANDBOX):
             with open(match.history_filepath) as f:
                 data = json.load(f)
                 match.match_results = data['Result']
-                match.match_status = 'Finished'
+                match.match_status = Match.MatchStatus.ENDED
         except:
-            match.match_status = 'Error'
+            match.match_status = Match.MatchStatus.ERROR
             traceback.print_exc()
         finally:
             match.save()
