@@ -31,10 +31,10 @@ class Tournament(models.Model):
         ROUND_ROBIN = 'rr'
 
     game = models.ForeignKey(Game, on_delete=models.CASCADE)
-    name = models.CharField(max_length=36, null=False, default="MyTournament")
-    description = models.CharField(max_length=330, null=True)
-    start_time = models.DateTimeField(null=True)
-    end_time = models.DateTimeField(null=True)
+    name = models.CharField(max_length=36, null=False)
+    description = models.CharField(max_length=330, null=False, default="")
+    start_time = models.DateTimeField(null=False)
+    end_time = models.DateTimeField(null=False)
     phase = models.CharField(max_length=5, choices=TournamentPhase.choices,
                              default=TournamentPhase.OPEN_FOR_REGISTRATION)
     tournament_uuid = models.UUIDField(default=uuid.uuid4, unique=True)

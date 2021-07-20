@@ -1,5 +1,6 @@
 {% extends "base.html" %}
-{% block content %}
+{% block additionalCSS %}
+
     <link rel="stylesheet" type="text/css" media="screen" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-markdown/2.10.0/css/bootstrap-markdown.min.css">
     <link rel="stylesheet" type="text/css" media="screen" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
 {#    <script src="https://code.jquery.com/jquery-1.12.4.min.js"> </script>#}
@@ -19,12 +20,9 @@
 {#  integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="#}
 {#  crossorigin="anonymous"></script>#}
 {##}
-<script text="javascript">
-    setTimeout(fade_out, 3000);
-    function fade_out() {
-        $(".alert.alert-success").fadeOut().empty();
-    }
-</script>
+{% endblock additionalCSS %}
+{% block content %}
+
 
 
     <div class="container p-3 my-3 border">
@@ -59,23 +57,20 @@
                     <div class="content">
 
                         <div class="container">
+
                             <div class="row">
                                 <div class="col-md-5 mr-auto">
-                                    <h2>Description</h2>
+                                    <h2>{{ tournament.name }}</h2>
                                     <p class="mb-5">{{ tournament.description }}</p>
                                 </div>
 
                                 <div class="col-md-6">
                                     <div class="row">
-                                        <div class="col-md-12 form-group">
-                                            <label for="name" class="col-form-label">Tournament Name</label>
-                                            <h5>{{ tournament.name }}</h5>
-                                        </div>
+                                        &nbsp;
                                     </div>
-
                                     <div class="row">
                                         <div class="col-md-12 form-group">
-                                            <label for="email" class="col-form-label">Game</label>
+                                            <label for="game" class="col-form-label">Game</label>
                                             <h5>{{ game }}</h5>
                                         </div>
                                     </div>
@@ -83,14 +78,14 @@
                                     <div class="row">
                                         <div class="col-md-12 form-group">
                                             <label for="startTime" class="col-form-label">Start Time</label>
-                                            <h5>{{ tournament.start_time }}</h5>
+                                            <h5>{{ tournament.start_time|date:" d F Y," }} {{ tournament.start_time|time:"H:i e" }}</h5>
                                         </div>
                                     </div>
 
                                     <div class="row">
                                         <div class="col-md-12 form-group">
                                             <label for="endTime" class="col-form-label">End Time</label>
-                                            <h5>{{ tournament.end_time }}</h5>
+                                            <h5>{{ tournament.end_time|date:" d F Y," }} {{ tournament.end_time|time:"H:i e" }}</h5>
                                         </div>
                                     </div>
 
@@ -103,14 +98,14 @@
 
                                     <div class="row">
                                         <div class="col-md-12 form-group">
-                                            <label for="tournamentType" class="col-form-label">Tournament Type</label>
+                                            <label for="tournamentType" class="col-form-label">Tournament Format</label>
                                             <h5>{{ tournament.get_tournament_type_display }}</h5>
                                         </div>
                                     </div>
 
                                     <div class="row">
                                         <div class="col-md-12 form-group">
-                                            <label for="maxMatches" class="col-form-label">Max Match Generation Limit</label>
+                                            <label for="maxMatches" class="col-form-label">Test Match Generation Limit</label>
                                             <h5>{{ tournament.max_match_generation_limit }}</h5>
                                         </div>
                                     </div>
@@ -132,7 +127,6 @@
                                                 {% if registered %}
                                                     <input id="register" name="register" type="hidden">
                                                     <input type="submit" onclick="addValueunreg()" value="Unregister" id="mybutton" class="btn btn-danger rounded-0 py-2 px-4">
-                                                    <a href="#" class="btn btn-primary btn-lg active" role="button" aria-pressed="true">Make your submission</a>
                                                 {% else %}
                                                     <input id="register" name="register" type="hidden">
                                                     <input type="submit" onclick="addValuereg()" value="Register" id="mybutton" class="btn btn-success rounded-0 py-2 px-4">
@@ -145,7 +139,7 @@
                         </div>
                     </div>
                     <div class="container">
-                        <a href="{% url 'tournamentList' %}" class="btn btn-primary btn-lg active" role="button" aria-pressed="true">Go to tournament list</a>
+                        <a href="{% url 'tournamentList' %}" class="btn btn-primary active" role="button" aria-pressed="true">Go to tournament list</a>
                     </div>
                 </form>
             </div>

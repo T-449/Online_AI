@@ -31,16 +31,13 @@ def show_tournament_creator_page(request):
 
 
 def create_tournament(request):
-    given_datetime = request.POST['starttime']
-    given_datetime = given_datetime.split('T')
-    givendate = (given_datetime[0]).split('-')
-    giventime = (given_datetime[1]).split(':')
+    givendate = request.POST['startdate'].split('-')
+    giventime = request.POST['starttime'].split(':')
     start_time = datetime(int(givendate[0]), int(givendate[1]), int(givendate[2]), int(giventime[0]), int(giventime[1]),
                           0, 0)
-    given_datetime = request.POST['endtime']
-    given_datetime = given_datetime.split('T')
-    givendate = (given_datetime[0]).split('-')
-    giventime = (given_datetime[1]).split(':')
+
+    givendate = request.POST['enddate'].split('-')
+    giventime = request.POST['endtime'].split(':')
     end_time = datetime(int(givendate[0]), int(givendate[1]), int(givendate[2]), int(giventime[0]), int(giventime[1]),
                         0, 0)
     game_id = request.POST['game']

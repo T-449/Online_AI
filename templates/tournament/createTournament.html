@@ -60,9 +60,9 @@
 
             <div class="col-md-5">
               <label for="maxmatches" class="form-label">Max Match Generation Limit</label>
-              <input type="number" class="form-control" name="maxMatches" id="maxMatches" min="0" max="5">
+              <input type="number" class="form-control" name="maxMatches" id="maxMatches" min="0" max="20">
               <div class="invalid-feedback">
-                Please select a valid number within 0 to 5.
+                Please select a valid number within 0 to 20.
               </div>
             </div>
 
@@ -75,12 +75,14 @@
 
             <div class="col-12">
               <label for="startTime" class="form-label">Start Time</label>
-              <input type="datetime-local" name="starttime" id="starttime">
+              <input type="date" name="startdate" id="startdate">
+                <input type="time" name="starttime" id="starttime" value="00:00">
             </div>
 
             <div class="col-12">
               <label for="endTime" class="form-label">End Time</label>
-              <input type="datetime-local" name="endtime" id="endtime">
+              <input type="date" name="enddate" id="enddate">
+                <input type="time" name="endtime" id="endtime" value="00:00">
             </div>
 
 
