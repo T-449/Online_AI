@@ -15,7 +15,6 @@ from tournament.models import Tournament, TournamentCreatorACL, TournamentRegist
 from submission.models import Submission, TournamentSubmissionEntry, WorkspaceTestSubmissionEntry
 
 
-
 # Create your views here.
 
 def show_tournament_creator_page(request):
@@ -155,9 +154,17 @@ def tournament_post_create_test_match(request, tournament_uuid):
     tournament = get_object_or_404(Tournament, tournament_uuid=tournament_uuid)
     game = tournament.game
 
+    r = HttpResponseRedirect(reverse('show_tournament_workspace', args=(tournament_uuid,)))
+
+    user_matches = TournamentTestMatchTable.objects.filter(tournament=tournament, user=request.user)
+    print(user_matches,len(user_matches),tournament.max_match_generation_limit)
+    if len(user_matches) >= tournament.max_match_generation_limit:
+        return r
+
     user_submissions = TournamentSubmissionEntry.objects.filter(tournament=tournament,
-                                                                submission__user=request.user).values_list(
-        'submission',flat=True)
+                                                                submission__user=request.user).values_list('submission',
+                                                                                                           flat=True)
+
     test_agents = WorkspaceTestSubmissionEntry.objects.filter(game=game).values_list('submission', flat=True)
     try:
         submission0 = Submission.objects.get(submission_uuid=request.POST['submission0'].strip())
@@ -179,5 +186,4 @@ def tournament_post_create_test_match(request, tournament_uuid):
 
     Match.objects.create_tournament_test_match(submission0=submission0, submission1=submission1,
                                                tournament=tournament, user=request.user)
-    r = HttpResponseRedirect(reverse('show_tournament_workspace', args=(tournament_uuid,)))
     return r
