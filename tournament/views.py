@@ -63,14 +63,14 @@ def update_tournament(request, tournament_uuid):
 def post_create_tournament(request):
     givendate = request.POST['startdate'].split('-')
     giventime = request.POST['starttime'].split(':')
-    start_time = datetime(int(givendate[0]), int(givendate[1]), int(givendate[2]), int(giventime[0]), int(giventime[1]),
-                          0, 0)
+    start_time = datetime(int(givendate[0]), int(givendate[1]), int(givendate[2]),
+                          int(giventime[0]), int(giventime[1]), int(giventime[2]), 0)
     start_time = make_aware(start_time)
 
     givendate = request.POST['enddate'].split('-')
     giventime = request.POST['endtime'].split(':')
-    end_time = datetime(int(givendate[0]), int(givendate[1]), int(givendate[2]), int(giventime[0]), int(giventime[1]),
-                        0, 0)
+    end_time = datetime(int(givendate[0]), int(givendate[1]), int(givendate[2]),
+                          int(giventime[0]), int(giventime[1]), int(giventime[2]), 0)
     end_time = make_aware(end_time)
     game_id = request.POST['game']
 
@@ -94,15 +94,15 @@ def post_create_tournament(request):
 def post_update_tournament(request, tournament_uuid):
     givendate = request.POST['startdate'].split('-')
     giventime = request.POST['starttime'].split(':')
-    start_time = datetime(int(givendate[0]), int(givendate[1]), int(givendate[2]), int(giventime[0]), int(giventime[1]),
-                          0, 0)
+    start_time = datetime(int(givendate[0]), int(givendate[1]), int(givendate[2]),
+                          int(giventime[0]), int(giventime[1]), int(giventime[2]), 0)
     start_time = make_aware(start_time)
 
 
     givendate = request.POST['enddate'].split('-')
     giventime = request.POST['endtime'].split(':')
-    end_time = datetime(int(givendate[0]), int(givendate[1]), int(givendate[2]), int(giventime[0]), int(giventime[1]),
-                        0, 0)
+    end_time = datetime(int(givendate[0]), int(givendate[1]), int(givendate[2]),
+                        int(giventime[0]), int(giventime[1]), int(giventime[2]), 0)
     end_time = make_aware(end_time)
 
 

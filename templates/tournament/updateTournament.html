@@ -79,14 +79,14 @@
             <div class="col-12">
               <label for="startTime" class="form-label">Start Time</label>
                 <input type="date" name="startdate" id="startdate" value={{ tournament.start_time | date:"Y-m-d" }}>
-                <input type="time" name="starttime" id="starttime" value={{ tournament.start_time | time:"H:i" }}>
+                <input type="time" name="starttime" id="starttime" step="1" value={{ tournament.start_time | time:"H:i:s" }}>
                 {{ servertime|time:"e" }}
             </div>
 
             <div class="col-12">
               <label for="endTime" class="form-label">End Time </label>
                 <input type="date" name="enddate" id="enddate" value={{ tournament.end_time | date:"Y-m-d" }}>
-                <input type="time" name="endtime" id="endtime" value={{ tournament.end_time | time:"H:i" }}>
+                <input type="time" name="endtime" id="endtime" step="1" value={{ tournament.end_time | time:"H:i:s" }}>
                 {{ servertime|time:"e" }}
             </div>
 
