@@ -10,8 +10,10 @@ from django.contrib import messages
 
 from game_creator.models import Game, GameCreatorWorkspaceACL
 from match.models import Match, TournamentTestMatchTable
+from myutils.fileutils import get_file_content_as_string
 from tournament.models import Tournament, TournamentCreatorACL, TournamentRegistration
 from submission.models import Submission, TournamentSubmissionEntry, WorkspaceTestSubmissionEntry
+
 
 
 def generateRandomString(characters):
@@ -67,6 +69,7 @@ def create_tournament(request):
 def show_tournament_workspace(request, tournament_uuid):
     tournament = Tournament.objects.get(tournament_uuid=tournament_uuid)
     game = tournament.game
+    game_description = get_file_content_as_string(game.get_game_description_filepath())
     visible = True
     registered = False
     if request.user.id is not None:
@@ -83,7 +86,7 @@ def show_tournament_workspace(request, tournament_uuid):
 
     return render(request, 'tournament/tournament_tabs.html',
                   {'tournament': tournament, 'game': game.game_title, 'visible': visible, 'registered': registered,
-                   'tournament_test_matches': tournament_test_matches})
+                   'tournament_test_matches': tournament_test_matches, 'game_description': game_description})
 
 
 def reg_unreg(request, tournament_uuid):
@@ -180,5 +183,4 @@ def tournament_post_create_test_match(request, tournament_uuid):
     Match.objects.create_tournament_test_match(submission0=submission0, submission1=submission1,
                                                tournament=tournament, user=request.user)
     r = HttpResponseRedirect(reverse('show_tournament_workspace', args=(tournament_uuid,)))
-
     return r
