@@ -30,19 +30,20 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+# Project Apps
     'home.apps.HomeConfig',
-
     'game_creator.apps.GameCreatorConfig',
-
     'submission.apps.SubmissionConfig',
     'tournament.apps.TournamentConfig',
     'match.apps.MatchConfig',
-
-    'test.apps.TestConfig',
     'users.apps.UsersConfig',
+    'test.apps.TestConfig',
 
+    # Dependencies
     'crispy_forms',
+    "django_cron",
 
+# Django Builtins
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
