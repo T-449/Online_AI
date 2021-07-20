@@ -11,7 +11,7 @@ from django.contrib import messages
 from game_creator.models import Game, GameCreatorWorkspaceACL
 from match.models import Match, TournamentTestMatchTable
 from tournament.models import Tournament, TournamentCreatorACL, TournamentRegistration
-from submission.models import Submission
+from submission.models import Submission, TournamentSubmissionEntry, WorkspaceTestSubmissionEntry
 
 
 def generateRandomString(characters):
@@ -28,7 +28,8 @@ def show_tournament_creator_page(request):
         print(game)
     tournament_types = Tournament.TournamentType.names
 
-    return render(request, 'tournament/createTournament.html', {'games': gameList,'tournament_types':tournament_types})
+    return render(request, 'tournament/createTournament.html',
+                  {'games': gameList, 'tournament_types': tournament_types})
 
 
 def create_tournament(request):
@@ -51,16 +52,16 @@ def create_tournament(request):
     print(game, user)
     try:
         tournament = Tournament.objects.create_tournament(creator=user, name=request.POST['tournamentname'], game=game,
-                                                      start_time=start_time, end_time=end_time,
-                                                      description=request.POST['description'],
-                                                      phase=Tournament.TournamentPhase.OPEN_FOR_REGISTRATION,
-                                                      tournament_type=Tournament.TournamentType[
-                                                          request.POST['tournamentType']],
-                                                      max_match_generation_limit=int(request.POST['maxMatches']))
+                                                          start_time=start_time, end_time=end_time,
+                                                          description=request.POST['description'],
+                                                          phase=Tournament.TournamentPhase.OPEN_FOR_REGISTRATION,
+                                                          tournament_type=Tournament.TournamentType[
+                                                              request.POST['tournamentType']],
+                                                          max_match_generation_limit=int(request.POST['maxMatches']))
     except:
         print("Noooooooooooo!")
         return HttpResponseRedirect(reverse('tournamentList'))
-    return HttpResponseRedirect(reverse('show_tournament_workspace',args=(tournament.tournament_uuid,)))
+    return HttpResponseRedirect(reverse('show_tournament_workspace', args=(tournament.tournament_uuid,)))
 
 
 def show_tournament_workspace(request, tournament_uuid):
@@ -79,9 +80,10 @@ def show_tournament_workspace(request, tournament_uuid):
         visible = False
 
     tournament_test_matches = TournamentTestMatchTable.objects.filter(user=request.user)
+
     return render(request, 'tournament/tournament_tabs.html',
                   {'tournament': tournament, 'game': game.game_title, 'visible': visible, 'registered': registered,
-                   'tournament_test_matches':tournament_test_matches})
+                   'tournament_test_matches': tournament_test_matches})
 
 
 def reg_unreg(request, tournament_uuid):
@@ -119,7 +121,7 @@ def tournamentList(request):
         show = True
     return render(request, 'tournament/tournamentList.html',
                   {'tournaments': tournaments, 'show': show, 'myTournaments': myTournamentList,
-                   'registeredTournaments': registeredTournamentList, 'tournament_phases':tournament_phases})
+                   'registeredTournaments': registeredTournamentList, 'tournament_phases': tournament_phases})
 
 
 def add_submission(request, tournament_uuid):
@@ -146,24 +148,37 @@ def change_phase(request, tournament_uuid):
     except:
         None
 
-    return HttpResponseRedirect(reverse('show_tournament_workspace',args=(tournament_uuid,)))
+    return HttpResponseRedirect(reverse('show_tournament_workspace', args=(tournament_uuid,)))
 
-def tournament_post_create_test_match(request,tournament_uuid):
-    tournament = get_object_or_404(Tournament,tournament_uuid=tournament_uuid)
 
+def tournament_post_create_test_match(request, tournament_uuid):
+    tournament = get_object_or_404(Tournament, tournament_uuid=tournament_uuid)
+    game = tournament.game
+
+    user_submissions = TournamentSubmissionEntry.objects.filter(tournament=tournament,
+                                                                submission__user=request.user).values_list(
+        'submission',flat=True)
+    test_agents = WorkspaceTestSubmissionEntry.objects.filter(game=game).values_list('submission', flat=True)
     try:
         submission0 = Submission.objects.get(submission_uuid=request.POST['submission0'].strip())
         submission1 = Submission.objects.get(submission_uuid=request.POST['submission1'].strip())
     except:
         raise Http404
 
-    #user = request.user
-    #if not submission0.validate_access(user) or not submission1.validate_access(user):
-    #    raise Http404
+    if submission0.pk not in user_submissions and submission0.pk not in test_agents:
+        print(submission0)
+        print(user_submissions)
+        print(test_agents)
+        raise Http404
 
-    Match.objects.create_tournament_test_match(submission0=submission0,submission1=submission1,
-                                               tournament=tournament,user=request.user)
+    if submission1.pk not in user_submissions and submission1.pk not in test_agents:
+        print(submission0)
+        print(user_submissions)
+        print(test_agents)
+        raise Http404
+
+    Match.objects.create_tournament_test_match(submission0=submission0, submission1=submission1,
+                                               tournament=tournament, user=request.user)
     r = HttpResponseRedirect(reverse('show_tournament_workspace', args=(tournament_uuid,)))
 
     return r
-

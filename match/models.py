@@ -31,7 +31,7 @@ class MatchManager(models.Manager):
         os.makedirs(path, exist_ok=True)
         return match
 
-    def create_tournament_test_match(self, submission0, submission1, tournament,user):
+    def create_tournament_test_match(self, submission0, submission1, tournament, user):
         match = self.create(submission0=submission0, submission1=submission1, game=tournament.game,
                             match_visibility=Match.MatchVisibility.PRIVATE)
 
@@ -111,8 +111,8 @@ class Match(models.Model):
 
         if self.match_visibility == Match.MatchVisibility.PRIVATE:
             u = TournamentTestMatchTable.objects.get(match=self).user
-            print(u,user,u==user)
-            return u==user
+            print(u, user, u == user)
+            return u == user
         elif self.match_visibility == Match.MatchVisibility.PUBLIC:
             return True
         elif self.match_visibility == Match.MatchVisibility.WORKSPACE_TEST_MATCH:
@@ -141,7 +141,8 @@ class TournamentMatchTable(models.Model):
 class TournamentTestMatchTable(models.Model):
     match = models.ForeignKey(Match, on_delete=models.CASCADE)
     tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE)
-    user = models.ForeignKey(django.contrib.auth.models.User,on_delete=models.CASCADE)
+    user = models.ForeignKey(django.contrib.auth.models.User, on_delete=models.CASCADE)
+
 
 class WorkspaceMatchTable(models.Model):
     match = models.ForeignKey(Match, on_delete=models.CASCADE)

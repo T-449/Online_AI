@@ -17,4 +17,6 @@ urlpatterns = [
          name='game_creator_get_game_visualization_code'),
     path('<uuid:workspace_id>/send_invite', views.send_invite,
          name='game_creator_send_workspace_invite'),
+    path('<uuid:workspace_id>/post/update_test_agents', views.update_workspace_test_agents,
+         name='game_creator_post_update_test_agents'),
 ]

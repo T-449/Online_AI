@@ -49,12 +49,13 @@ class Submission(models.Model):
         PUBLIC = 0
         PRIVATE = 1
         TEST = 2
+
     submission_uuid = models.UUIDField(default=uuid.uuid4, unique=True)
     submission_time = models.DateTimeField(null=True)
     user = models.ForeignKey(django.contrib.auth.models.User, on_delete=models.CASCADE)
     submission_language = models.CharField(max_length=10, default='')
     submission_visibility = models.IntegerField(choices=SubmissionVisibility.choices,
-                                                default=SubmissionVisibility.PRIVATE,null=False)
+                                                default=SubmissionVisibility.PRIVATE, null=False)
 
     objects = SubmissionManager()
 
@@ -95,6 +96,7 @@ class WorkspaceTestSubmissionEntry(models.Model):
     submission = models.ForeignKey(Submission, on_delete=models.CASCADE)
     game = models.ForeignKey(Game, on_delete=models.CASCADE)
     tag = models.CharField(max_length=100, default="")
+    is_test = models.BooleanField(default=False, null=False)
 
 
 class TournamentSubmissionEntry(models.Model):

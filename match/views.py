@@ -91,6 +91,8 @@ def delete_match(request, match_uuid):
         os.remove(match.history_filepath)
     except IsADirectoryError:
         pass
+    except FileNotFoundError:
+        pass
     models.Match.objects.filter(match_uuid=match_uuid).delete()
     return redirectToCurrent(request)
 

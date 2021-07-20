@@ -37,7 +37,7 @@ def show_workspace_home(request, workspace_id):
         'workspace_agent_entries': workspace_agent_entries,
         'workspace_matches': workspace_matches
     }
-    return render(request, 'game_creator/game_creator_workspace.html',context)
+    return render(request, 'game_creator/game_creator_workspace.html', context)
 
 
 def post_game_description(request, workspace_id):
@@ -123,4 +123,19 @@ def send_invite(request, workspace_id):
         raise Http404
 
     messages.success(request, 'invite sent')
+    return HttpResponseRedirect(reverse('game_creator_show_workspace', args=(workspace_id,)))
+
+
+def update_workspace_test_agents(request, workspace_id):
+    game = get_game_or_validate_requests(request, workspace_id)
+    print(request.POST)
+    sid = request.POST.getlist('submission_check_box')
+    entries = WorkspaceTestSubmissionEntry.objects.filter(game=game)
+    for entry in entries:
+        print(entry.submission.submission_uuid, str(entry.submission.submission_uuid) in sid)
+        if str(entry.submission.submission_uuid) in sid:
+            entry.is_test = True
+        else:
+            entry.is_test = False
+        entry.save()
     return HttpResponseRedirect(reverse('game_creator_show_workspace', args=(workspace_id,)))
