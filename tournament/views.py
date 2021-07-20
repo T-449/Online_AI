@@ -16,10 +16,6 @@ from submission.models import Submission, TournamentSubmissionEntry, WorkspaceTe
 
 
 
-def generateRandomString(characters):
-    return ''.join(random.choices(string.ascii_uppercase + string.digits, k=characters))
-
-
 # Create your views here.
 
 def show_tournament_creator_page(request):
