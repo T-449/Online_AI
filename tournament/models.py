@@ -1,5 +1,8 @@
+import datetime
+
 import django.contrib.auth.models
 from django.db import models
+from django.utils import timezone
 from game_creator.models import Game
 import uuid
 
@@ -43,6 +46,21 @@ class Tournament(models.Model):
 
     objects = TournamentManager()
 
+    @property
+    def shouldHaveStarted(self):
+        return timezone.now() >= self.start_time
+
+    @property
+    def shouldHaveEnded(self):
+        return timezone.now() >= self.end_time
+
+    @property
+    def shouldBeRunning(self):
+        return self.shouldHaveStarted and not self.shouldHaveEnded
+
+    @property
+    def getTypeName(self):
+        return self.TournamentType(self.tournament_type).name
 
 class TournamentCreatorACL(models.Model):
     user = models.ForeignKey(django.contrib.auth.models.User, on_delete=models.CASCADE)

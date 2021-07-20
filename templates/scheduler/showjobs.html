@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    <title>Tournament List</title>
+{% endblock title %}
+
+{% block content %}
+    {% if tournaments %}
+        <h1>Scheduled Jobs</h1>
+        <ul>
+            {% for job in jobs %}
+                {{ job }}
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+{% endblock content %}

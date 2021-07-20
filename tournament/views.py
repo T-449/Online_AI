@@ -1,13 +1,18 @@
+import traceback
+from datetime import datetime
+
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 import random
 import string
-from datetime import datetime
 
 from django.urls import reverse
 from django.utils import timezone
 from django.contrib import messages
+from django.utils.timezone import get_default_timezone, get_current_timezone, make_aware
 
+from Online_AI import settings
+from Online_AI.settings import MAX_TEST_GENERATION_LIMIT
 from game_creator.models import Game, GameCreatorWorkspaceACL
 from tournament.models import Tournament, TournamentCreatorACL, TournamentRegistration
 from submission.models import Submission
@@ -19,7 +24,7 @@ def generateRandomString(characters):
 
 # Create your views here.
 
-def show_tournament_creator_page(request):
+def create_tournament(request):
     games = GameCreatorWorkspaceACL.objects.filter(user_id=request.user.id)
     gameList = []
     for game in games:
@@ -27,24 +32,51 @@ def show_tournament_creator_page(request):
         print(game)
     tournament_types = Tournament.TournamentType.names
 
-    return render(request, 'tournament/createTournament.html', {'games': gameList,'tournament_types':tournament_types})
+    print(timezone.now())
+    context = {
+        'games': gameList,
+        'tournament_types': tournament_types,
+        'servertime': timezone.now(),
+        'MAX_TEST_GENERATION_LIMIT' : MAX_TEST_GENERATION_LIMIT
+    }
+    return render(request, 'tournament/createTournament.html', context)
 
 
-def create_tournament(request):
+def update_tournament(request, tournament_uuid):
+    tournament = Tournament.objects.get(tournament_uuid=tournament_uuid)
+    games = GameCreatorWorkspaceACL.objects.filter(user_id=request.user.id)
+    gameList = []
+    for game in games:
+        gameList.append(game.game)
+        print(game)
+    tournament_types = Tournament.TournamentType.names
+
+    context = {
+        'tournament' : tournament,
+        'games': gameList,
+        'tournament_types': tournament_types,
+        'servertime': timezone.now(),
+        'MAX_TEST_GENERATION_LIMIT': MAX_TEST_GENERATION_LIMIT
+    }
+    return render(request, 'tournament/updateTournament.html', context)
+
+def post_create_tournament(request):
     givendate = request.POST['startdate'].split('-')
     giventime = request.POST['starttime'].split(':')
     start_time = datetime(int(givendate[0]), int(givendate[1]), int(givendate[2]), int(giventime[0]), int(giventime[1]),
                           0, 0)
+    start_time = make_aware(start_time)
 
     givendate = request.POST['enddate'].split('-')
     giventime = request.POST['endtime'].split(':')
     end_time = datetime(int(givendate[0]), int(givendate[1]), int(givendate[2]), int(giventime[0]), int(giventime[1]),
                         0, 0)
+    end_time = make_aware(end_time)
     game_id = request.POST['game']
-    print(game_id)
+
     game = Game.objects.get(pk=game_id)
     user = request.user
-    print(game, user)
+
     try:
         tournament = Tournament.objects.create_tournament(creator=user, name=request.POST['tournamentname'], game=game,
                                                       start_time=start_time, end_time=end_time,
@@ -53,11 +85,44 @@ def create_tournament(request):
                                                       tournament_type=Tournament.TournamentType[
                                                           request.POST['tournamentType']],
                                                       max_match_generation_limit=int(request.POST['maxMatches']))
-    except:
-        print("Noooooooooooo!")
-        return HttpResponseRedirect(reverse('tournamentList'))
+    except Exception as e:
+        traceback.print_exc(e)
+        HttpResponseRedirect(reverse('tournamentList'))
     return HttpResponseRedirect(reverse('show_tournament_workspace',args=(tournament.tournament_uuid,)))
 
+
+def post_update_tournament(request, tournament_uuid):
+    givendate = request.POST['startdate'].split('-')
+    giventime = request.POST['starttime'].split(':')
+    start_time = datetime(int(givendate[0]), int(givendate[1]), int(givendate[2]), int(giventime[0]), int(giventime[1]),
+                          0, 0)
+    start_time = make_aware(start_time)
+
+
+    givendate = request.POST['enddate'].split('-')
+    giventime = request.POST['endtime'].split(':')
+    end_time = datetime(int(givendate[0]), int(givendate[1]), int(givendate[2]), int(giventime[0]), int(giventime[1]),
+                        0, 0)
+    end_time = make_aware(end_time)
+
+
+    game_id = request.POST['game']
+    game = Game.objects.get(pk=game_id)
+
+    tournament = Tournament.objects.get(tournament_uuid=tournament_uuid)
+    try:
+        tournament.name = request.POST['tournamentname']
+        tournament.game = game
+        tournament.start_time=start_time
+        tournament.end_time=end_time
+        tournament.type=request.POST['tournamentType']
+        tournament.max_match_generation_limit=int(request.POST['maxMatches'])
+        tournament.save()
+        print(str(tournament.start_time), str(tournament.end_time))
+    except Exception as e:
+        traceback.print_exc(e)
+        HttpResponseRedirect(reverse('tournamentList'))
+    return HttpResponseRedirect(reverse('show_tournament_workspace',args=(tournament.tournament_uuid,)))
 
 def show_tournament_workspace(request, tournament_uuid):
     tournament = Tournament.objects.get(tournament_uuid=tournament_uuid)

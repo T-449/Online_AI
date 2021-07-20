@@ -1,33 +1,69 @@
+import sys
+import threading
+
 import schedule
 import time
 
+from django.utils import timezone
+from tendo.singleton import SingleInstanceException
+
+from Online_AI.settings import ERROR_MARGIN_SECS
 from tournament.models import Tournament
+from tendo import singleton
+
+def autoOpenSubmission(tournament):
+    currentTime = timezone.now()
+    sys.stdout.write("Opening Subs " + tournament.name + " at " + str(currentTime))
+    sys.stdout.flush()
+
+    print(tournament.phase)
+    if tournament.phase == tournament.TournamentPhase.OPEN_FOR_REGISTRATION:
+        time_difference = tournament.start_time - currentTime
+
+        if abs(time_difference.total_seconds()) <= ERROR_MARGIN_SECS:
+            tournament.phase = tournament.TournamentPhase.OPEN_FOR_SUBMISSION
+            tournament.save()
+            return schedule.CancelJob
+
+def autoCloseSubmission(tournament):
+    currentTime = timezone.now()
+    sys.stdout.write("Closing Subs " + tournament.name + " at " + str(currentTime))
+    sys.stdout.flush()
+
+    if tournament.phase == tournament.TournamentPhase.OPEN_FOR_SUBMISSION:
+        time_difference = tournament.end_time - currentTime
+        if abs(time_difference.total_seconds()) <= ERROR_MARGIN_SECS:
+            tournament.phase = tournament.TournamentPhase.MATCH_EXECUTION
+            tournament.save()
+            return schedule.CancelJob
+
+class Scheduler(threading.Thread):
+    def __init__(self, name):
+        threading.Thread.__init__(self)
+        self.name = name
+
+    def run(self):
+        try:
+            lock = singleton.SingleInstance()
+        except SingleInstanceException as e:
+            return
+
+        sys.stdout.write("Scheduler Started.\n")
 
 
-def job():
-    print("I'm working...")
+        tournaments = Tournament.objects.all()
+        for tournament in tournaments:
+            if (not tournament.shouldHaveStarted):
+                starttime = str(timezone.localtime(tournament.start_time).time())
+                schedule.every().day.at(starttime).do(autoOpenSubmission, tournament=tournament)
+                sys.stdout.write(tournament.name + " Scheduled to start at " + str(starttime) + "\n")
 
-def job2():
-    print("I'm eating...")
+            if (not tournament.shouldHaveEnded):
+                endtime = str(timezone.localtime(tournament.end_time).time())
+                schedule.every().day.at(endtime).do(autoCloseSubmission, tournament=tournament)
+                sys.stdout.write(tournament.name + " Scheduled to end at " + str(endtime) + "\n")
+        sys.stdout.flush()
 
-
-
-
-
-def run():
-    tournaments = Tournament.objects.all()
-    tournament_phases = Tournament.TournamentPhase.names
-
-    for tournament in tournaments:
-        if (not tournament.shouldHaveStarted and
-            tournament.phase == tournament.TournamentPhase.OPEN_FOR_REGISTRATION):
-            print(tournament.name + "Should start at" + tournament.start_time)
-
-        if (not tournament.shouldHaveEnded and
-                tournament.phase == tournament.TournamentPhase.OPEN_FOR_SUBMISSION):
-            print(tournament.name + "Should end at" + tournament.end_time)
-
-    while True:
-        schedule.run_pending()
-        time.sleep(1)
-
+        while True:
+            schedule.run_pending()
+            time.sleep(1)

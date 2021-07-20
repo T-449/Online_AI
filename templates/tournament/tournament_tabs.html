@@ -131,7 +131,9 @@
                                                     <input id="register" name="register" type="hidden">
                                                     <input type="submit" onclick="addValuereg()" value="Register" id="mybutton" class="btn btn-success rounded-0 py-2 px-4">
                                                 {% endif %}
-                                            {% endif %}
+                                            {% else %}
+                                                <a href="{% url 'update_tournament' tournament.tournament_uuid%}" class="btn btn-primary active" role="button" aria-pressed="true">Update</a>
+                                            {% endif%}
                                         </div>
                                     </div>
                                 </div>
