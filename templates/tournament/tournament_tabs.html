@@ -160,7 +160,12 @@
 
                     <div class="row">
                         <div class="col-md-12 form-group">
-                            <h5>{{ game_description }}</h5>
+                            <div id="content"></div>
+                                <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+                                <script>
+                                    document.getElementById('content').innerHTML =
+                                    marked("{{ game_description }}");
+                                </script>
                         </div>
                     </div>
                 </form>

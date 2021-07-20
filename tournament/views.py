@@ -69,7 +69,8 @@ def create_tournament(request):
 def show_tournament_workspace(request, tournament_uuid):
     tournament = Tournament.objects.get(tournament_uuid=tournament_uuid)
     game = tournament.game
-    game_description = get_file_content_as_string(game.get_game_description_filepath())
+    game_description = get_file_content_as_string(game.get_game_description_filepath()).encode('unicode_escape'
+                                                                                               ).decode('utf-8')
     visible = True
     registered = False
     if request.user.id is not None:
