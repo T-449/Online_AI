@@ -29,10 +29,8 @@ def create_tournament(request):
     gameList = []
     for game in games:
         gameList.append(game.game)
-        print(game)
     tournament_types = Tournament.TournamentType.names
 
-    print(timezone.now())
     context = {
         'games': gameList,
         'tournament_types': tournament_types,
@@ -48,7 +46,6 @@ def update_tournament(request, tournament_uuid):
     gameList = []
     for game in games:
         gameList.append(game.game)
-        print(game)
     tournament_types = Tournament.TournamentType.names
 
     context = {
@@ -118,7 +115,6 @@ def post_update_tournament(request, tournament_uuid):
         tournament.type=request.POST['tournamentType']
         tournament.max_match_generation_limit=int(request.POST['maxMatches'])
         tournament.save()
-        print(str(tournament.start_time), str(tournament.end_time))
     except Exception as e:
         traceback.print_exc(e)
         HttpResponseRedirect(reverse('tournamentList'))
