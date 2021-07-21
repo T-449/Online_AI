@@ -30,24 +30,42 @@
             <li class="active">
                 <a class="nav-link active" id="tournament-description-tab" data-toggle="tab" href="#tournament"
                    role="tab" aria-controls="tournament-description-tab" aria-selected="true">Tournament</a></li>
-            <li>
-                <a class="nav-link" id="problem-description-tab" data-toggle="tab" href="#problem"
-                   role="tab" aria-controls="problem-description-tab" aria-selected="false">Problem</a></li>
-            <li>
-                <a class="nav-link" id="submission-tab" data-toggle="tab" href="#submit"
-                   role="tab" aria-controls="submission-tab" aria-selected="false">Submit</a></li>
-            <li>
+
+            {% if not visible or tournament.phase != tournamentPhases.OPEN_FOR_REGISTRATION and registered %}
+                <li>
+                    <a class="nav-link" id="problem-description-tab" data-toggle="tab" href="#problem"
+                       role="tab" aria-controls="problem-description-tab" aria-selected="false">Problem</a></li>
+            {% endif %}
+
+            {% if tournament.phase == tournamentPhases.OPEN_FOR_SUBMISSION and registered %}
+                <li>
+                    <a class="nav-link" id="submission-tab" data-toggle="tab" href="#submit"
+                       role="tab" aria-controls="submission-tab" aria-selected="false">Submit</a></li>
+            {% endif %}
+
+            {% if tournament.phase != tournamentPhases.OPEN_FOR_REGISTRATION and registered %}
+                <li>
                 <a class="nav-link" id="submissions-tab" data-toggle="tab" href="#submissions"
                    role="tab" aria-controls="submissions" aria-selected="false">Submissions</a></li>
-            <li>
+            {% endif %}
+
+            {% if not visible or tournament.phase != tournamentPhases.OPEN_FOR_REGISTRATION and registered %}
+                <li>
                 <a class="nav-link" id="testing-sandbox-tab" data-toggle="tab" href="#test_sandbox"
                    role="tab" aria-controls="testing-sandbox-tab" aria-selected="false">Testing Sandbox</a></li>
-            <li>
-                <a class="nav-link" id="matches" data-toggle="tab" href="#matches"
-                   role="tab" aria-controls="matches" aria-selected="false">Matches</a></li>
-            <li>
-                <a class="nav-link" id="ranklist" data-toggle="tab" href="#ranklist"
-                   role="tab" aria-controls="ranklist" aria-selected="false">Ranklist</a></li>
+            {% endif %}
+
+            {% if tournament.phase == tournamentPhases.MATCH_EXECUTION and registered %}
+                <li>
+                    <a class="nav-link" id="matches" data-toggle="tab" href="#matches"
+                       role="tab" aria-controls="matches" aria-selected="false">Matches</a></li>
+            {% endif %}
+
+            {% if tournament.phase == tournamentPhases.TOURNAMENT_ENDED %}
+                <li>
+                    <a class="nav-link" id="ranklist" data-toggle="tab" href="#ranklist"
+                       role="tab" aria-controls="ranklist" aria-selected="false">Ranklist</a></li>
+            {% endif %}
         </ul>
 
         <div class="tab-content">
@@ -123,17 +141,19 @@
 
                                     <div class="row">
                                         <div class="col-md-12">
-                                            {% if visible %}
-                                                {% if registered %}
-                                                    <input id="register" name="register" type="hidden">
-                                                    <input type="submit" onclick="addValueunreg()" value="Unregister" id="mybutton" class="btn btn-danger rounded-0 py-2 px-4">
+                                            {% if tournament.phase == tournamentPhases.OPEN_FOR_REGISTRATION %}
+                                                {% if visible %}
+                                                    {% if registered %}
+                                                        <input id="register" name="register" type="hidden">
+                                                        <input type="submit" onclick="addValueunreg()" value="Unregister" id="mybutton" class="btn btn-danger rounded-0 py-2 px-4">
+                                                    {% else %}
+                                                        <input id="register" name="register" type="hidden">
+                                                        <input type="submit" onclick="addValuereg()" value="Register" id="mybutton" class="btn btn-success rounded-0 py-2 px-4">
+                                                    {% endif %}
                                                 {% else %}
-                                                    <input id="register" name="register" type="hidden">
-                                                    <input type="submit" onclick="addValuereg()" value="Register" id="mybutton" class="btn btn-success rounded-0 py-2 px-4">
-                                                {% endif %}
-                                            {% else %}
-                                                <a href="{% url 'update_tournament' tournament.tournament_uuid%}" class="btn btn-primary active" role="button" aria-pressed="true">Update</a>
-                                            {% endif%}
+                                                    <a href="{% url 'update_tournament' tournament.tournament_uuid%}" class="btn btn-primary active" role="button" aria-pressed="true">Update</a>
+                                                {% endif%}
+                                            {% endif %}
                                         </div>
                                     </div>
                                 </div>
