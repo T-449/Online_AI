@@ -16,6 +16,7 @@ from match.models import Match, TournamentTestMatchTable
 from myutils.fileutils import get_file_content_as_string
 from tournament.models import Tournament, TournamentCreatorACL, TournamentRegistration
 from submission.models import Submission, TournamentSubmissionEntry, WorkspaceTestSubmissionEntry
+from itertools import chain
 
 
 # Create your views here.
@@ -31,10 +32,9 @@ def create_tournament(request):
         'games': gameList,
         'tournament_types': tournament_types,
         'servertime': timezone.now(),
-        'MAX_TEST_GENERATION_LIMIT' : MAX_TEST_GENERATION_LIMIT
+        'MAX_TEST_GENERATION_LIMIT': MAX_TEST_GENERATION_LIMIT
     }
     return render(request, 'tournament/createTournament.html', context)
-
 
 
 def update_tournament(request, tournament_uuid):
@@ -46,13 +46,14 @@ def update_tournament(request, tournament_uuid):
     tournament_types = Tournament.TournamentType.names
 
     context = {
-        'tournament' : tournament,
+        'tournament': tournament,
         'games': gameList,
         'tournament_types': tournament_types,
         'servertime': timezone.now(),
         'MAX_TEST_GENERATION_LIMIT': MAX_TEST_GENERATION_LIMIT
     }
     return render(request, 'tournament/updateTournament.html', context)
+
 
 def post_create_tournament(request):
     givendate = request.POST['startdate'].split('-')
@@ -64,7 +65,7 @@ def post_create_tournament(request):
     givendate = request.POST['enddate'].split('-')
     giventime = request.POST['endtime'].split(':')
     end_time = datetime(int(givendate[0]), int(givendate[1]), int(givendate[2]),
-                          int(giventime[0]), int(giventime[1]), int(giventime[2]), 0)
+                        int(giventime[0]), int(giventime[1]), int(giventime[2]), 0)
     end_time = make_aware(end_time)
     game_id = request.POST['game']
 
@@ -72,16 +73,17 @@ def post_create_tournament(request):
     user = request.user
 
     try:
-        tournament = Tournament.objects.create_tournament(creator=user, name=request.POST['tournamentname'], game=game,                                                      start_time=start_time, end_time=end_time,
-                                                      description=request.POST['description'],
-                                                      phase=Tournament.TournamentPhase.OPEN_FOR_REGISTRATION,
-                                                      tournament_type=Tournament.TournamentType[
-                                                          request.POST['tournamentType']],
-                                                      max_match_generation_limit=int(request.POST['maxMatches']))
+        tournament = Tournament.objects.create_tournament(creator=user, name=request.POST['tournamentname'], game=game,
+                                                          start_time=start_time, end_time=end_time,
+                                                          description=request.POST['description'],
+                                                          phase=Tournament.TournamentPhase.OPEN_FOR_REGISTRATION,
+                                                          tournament_type=Tournament.TournamentType[
+                                                              request.POST['tournamentType']],
+                                                          max_match_generation_limit=int(request.POST['maxMatches']))
     except Exception as e:
         traceback.print_exc(e)
         return HttpResponseRedirect(reverse('tournamentList'))
-    return HttpResponseRedirect(reverse('show_tournament_workspace',args=(tournament.tournament_uuid,)))
+    return HttpResponseRedirect(reverse('show_tournament_workspace', args=(tournament.tournament_uuid,)))
 
 
 def post_update_tournament(request, tournament_uuid):
@@ -91,13 +93,11 @@ def post_update_tournament(request, tournament_uuid):
                           int(giventime[0]), int(giventime[1]), int(giventime[2]), 0)
     start_time = make_aware(start_time)
 
-
     givendate = request.POST['enddate'].split('-')
     giventime = request.POST['endtime'].split(':')
     end_time = datetime(int(givendate[0]), int(givendate[1]), int(givendate[2]),
                         int(giventime[0]), int(giventime[1]), int(giventime[2]), 0)
     end_time = make_aware(end_time)
-
 
     game_id = request.POST['game']
     game = Game.objects.get(pk=game_id)
@@ -106,15 +106,16 @@ def post_update_tournament(request, tournament_uuid):
     try:
         tournament.name = request.POST['tournamentname']
         tournament.game = game
-        tournament.start_time=start_time
-        tournament.end_time=end_time
-        tournament.type=request.POST['tournamentType']
-        tournament.max_match_generation_limit=int(request.POST['maxMatches'])
+        tournament.start_time = start_time
+        tournament.end_time = end_time
+        tournament.type = request.POST['tournamentType']
+        tournament.max_match_generation_limit = int(request.POST['maxMatches'])
         tournament.save()
     except Exception as e:
         traceback.print_exc(e)
         HttpResponseRedirect(reverse('tournamentList'))
-    return HttpResponseRedirect(reverse('show_tournament_workspace',args=(tournament.tournament_uuid,)))
+    return HttpResponseRedirect(reverse('show_tournament_workspace', args=(tournament.tournament_uuid,)))
+
 
 def show_tournament_workspace(request, tournament_uuid):
     tournament = Tournament.objects.get(tournament_uuid=tournament_uuid)
@@ -133,13 +134,17 @@ def show_tournament_workspace(request, tournament_uuid):
     else:
         visible = False
 
+    tournamentCreator = TournamentCreatorACL.objects.get(tournament=tournament)
+    testSubmissions = WorkspaceTestSubmissionEntry.objects.all().filter(submission__user=tournamentCreator.user)
     tournament_test_matches = TournamentTestMatchTable.objects.filter(user=request.user)
-    submission_list = []
-    entries = TournamentSubmissionEntry.objects.all().filter(submission__user=request.user)
+
+    submissions = TournamentSubmissionEntry.objects.all().filter(submission__user=request.user)
+    submissionList = list(chain(testSubmissions, submissions))
+
     return render(request, 'tournament/tournament_tabs.html',
                   {'tournament': tournament, 'game': game.game_title, 'visible': visible, 'registered': registered,
                    'tournament_test_matches': tournament_test_matches, 'game_description': game_description,
-                   'entries': entries})
+                   'entries': submissions, 'testEntries': submissionList})
 
 
 def reg_unreg(request, tournament_uuid):

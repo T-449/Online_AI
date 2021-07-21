@@ -244,14 +244,22 @@
                     <div class="form-group">
 
                         <label for="submission0">Player1 submission</label>
-                        <input class="form-control" type="text" placeholder="submission0"
-                                   id="submission0" name = "submission0" value="">
-
+                        <select class="form-select" name="submission0" id="submission0" required>
+                            <option value="">Choose a submission...</option>
+                            {% for entry in testEntries %}
+                                <option value="{{ entry.submission.submission_uuid }}">{{ entry.submission.submission_uuid }}</option>
+                            {% endfor %}
+                        </select>
                     </div> <br>
                     <div class="form-group">
                         <label for="submission1">Player2 submission</label>
-                        <input class="form-control" type="text" placeholder="submission0"
-                                   id="submission0" name = "submission1" value="">
+                        <select class="form-select" name="submission1" id="submission1" required>
+                            <option value="">Choose a submission...</option>
+                            {% for entry in testEntries %}
+                                <option value="{{ entry.submission.submission_uuid }}">{{ entry.submission.submission_uuid }}</option>
+                            {% endfor %}
+                        </select>
+
                     </div> <br>
 
                     <button type="submit" class="btn btn-primary">Create Match</button>
