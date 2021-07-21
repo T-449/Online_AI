@@ -134,10 +134,12 @@ def show_tournament_workspace(request, tournament_uuid):
         visible = False
 
     tournament_test_matches = TournamentTestMatchTable.objects.filter(user=request.user)
-
+    submission_list = []
+    entries = TournamentSubmissionEntry.objects.all().filter(submission__user=request.user)
     return render(request, 'tournament/tournament_tabs.html',
                   {'tournament': tournament, 'game': game.game_title, 'visible': visible, 'registered': registered,
-                   'tournament_test_matches': tournament_test_matches, 'game_description': game_description})
+                   'tournament_test_matches': tournament_test_matches, 'game_description': game_description,
+                   'entries': entries})
 
 
 def reg_unreg(request, tournament_uuid):
