@@ -82,12 +82,15 @@ def judge_match(request, match_uuid):
     p = Process(target=execute_match, args=(match,))
     p.start()
 
-
     return redirectToCurrent(request)
 
 
 def delete_match(request, match_uuid):
     match = get_match_or_validate_judge_requests(request, match_uuid)
+    if match.match_visibility != Match.MatchVisibility.WORKSPACE_TEST_MATCH:
+        print("User ", request.user, " is trying to delete match ", match)
+        messages.error(request, "You can not delete this match")
+        return redirectToCurrent(request)
     try:
         os.remove(match.history_filepath)
     except IsADirectoryError:

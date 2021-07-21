@@ -7,6 +7,8 @@ from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
 from django.utils import timezone
 from django.contrib import messages
+
+from django.contrib.auth.decorators import login_required
 from django.utils.timezone import get_default_timezone, get_current_timezone, make_aware
 
 from Online_AI import settings
@@ -21,6 +23,7 @@ from itertools import chain
 
 # Create your views here.
 
+@login_required
 def create_tournament(request):
     games = GameCreatorWorkspaceACL.objects.filter(user_id=request.user.id)
     gameList = []
@@ -37,6 +40,7 @@ def create_tournament(request):
     return render(request, 'tournament/createTournament.html', context)
 
 
+@login_required
 def update_tournament(request, tournament_uuid):
     tournament = Tournament.objects.get(tournament_uuid=tournament_uuid)
     games = GameCreatorWorkspaceACL.objects.filter(user_id=request.user.id)
@@ -55,6 +59,7 @@ def update_tournament(request, tournament_uuid):
     return render(request, 'tournament/updateTournament.html', context)
 
 
+@login_required
 def post_create_tournament(request):
     givendate = request.POST['startdate'].split('-')
     giventime = request.POST['starttime'].split(':')
@@ -133,19 +138,25 @@ def show_tournament_workspace(request, tournament_uuid):
                 registered = True
     else:
         visible = False
+    test_agents = WorkspaceTestSubmissionEntry.objects.filter(game=game, is_test=True).values_list('submission',
+                                                                                                   flat=True)
+    tournament_test_matches = []
+    user_submissions = []
+    submissions = []
+    if request.user.is_authenticated:
+        tournament_test_matches = TournamentTestMatchTable.objects.filter(user=request.user, tournament=tournament)
+        user_submissions = TournamentSubmissionEntry.objects.filter(tournament=tournament,
+                                                                    submission__user=request.user).values_list(
+            'submission',
+            flat=True)
+        submissions = TournamentSubmissionEntry.objects.all().filter(submission__user=request.user)
 
-    tournament_test_matches = TournamentTestMatchTable.objects.filter(user=request.user, tournament=tournament)
-
-    user_submissions = TournamentSubmissionEntry.objects.filter(tournament=tournament,
-                                                                submission__user=request.user).values_list('submission',
-                                                                                                           flat=True)
-    test_agents = WorkspaceTestSubmissionEntry.objects.filter(game=game,is_test=True).values_list('submission', flat=True)
-
-    submissions = TournamentSubmissionEntry.objects.all().filter(submission__user=request.user)
     submission_list_pk = list(chain(test_agents, user_submissions))
+
     submission_list = []
     for pk in submission_list_pk:
         submission_list.append(Submission.objects.get(pk=pk))
+
     return render(request, 'tournament/tournament_tabs.html',
                   {'tournament': tournament, 'game': game.game_title, 'visible': visible, 'registered': registered,
                    'tournament_test_matches': tournament_test_matches, 'game_description': game_description,
@@ -153,11 +164,19 @@ def show_tournament_workspace(request, tournament_uuid):
                    'tournamentPhases': Tournament.TournamentPhase})
 
 
+@login_required
 def reg_unreg(request, tournament_uuid):
     val = request.POST['register']
     val = val.split()
     tournament = Tournament.objects.get(tournament_uuid=tournament_uuid)
     user = request.user
+
+    r = HttpResponseRedirect(reverse('tournamentList'))
+
+    if tournament.phase != Tournament.TournamentPhase.OPEN_FOR_REGISTRATION:
+        print("User ", user, " is trying to register")
+        messages.error(request, "Registration time is over")
+        return r
 
     if val[0] == 'reg':
         try:
@@ -168,8 +187,8 @@ def reg_unreg(request, tournament_uuid):
         try:
             TournamentRegistration.objects.get(tournament=tournament, user=user).delete()
         except Exception as e:
-            traceback.print_exc(e)
-    return show_tournament_workspace(request, tournament_uuid)
+            traceback.print_exc(limit=None)
+    return HttpResponseRedirect(reverse('show_tournament_workspace', args=(tournament_uuid,)))
 
 
 def tournamentList(request):
@@ -191,8 +210,23 @@ def tournamentList(request):
                    'registeredTournaments': registeredTournamentList, 'tournament_phases': tournament_phases})
 
 
+@login_required
 def add_submission(request, tournament_uuid):
     tournament = Tournament.objects.get(tournament_uuid=tournament_uuid)
+    r = HttpResponseRedirect(reverse('show_tournament_workspace', args=(tournament_uuid,)))
+
+    if tournament.phase != Tournament.TournamentPhase.OPEN_FOR_SUBMISSION:
+        print("submission out of phase")
+        messages.error(request, "Submission window has been closed")
+        return r
+
+    try:
+        TournamentRegistration.objects.get(tournament=tournament, user=request.user)
+    except:
+        print("unregistered user ", request.user, " trying to submit code in tournament ", tournament)
+        messages.error(request, "You are not Registered For this tournament")
+        return r
+
     Submission.objects.create_tournament_submission(user=request.user,
                                                     code=request.POST['submission_code'],
                                                     language=request.POST['submission_language'],
@@ -218,39 +252,61 @@ def change_phase(request, tournament_uuid):
     return HttpResponseRedirect(reverse('show_tournament_workspace', args=(tournament_uuid,)))
 
 
+@login_required
 def tournament_post_create_test_match(request, tournament_uuid):
     tournament = get_object_or_404(Tournament, tournament_uuid=tournament_uuid)
     game = tournament.game
 
     r = HttpResponseRedirect(reverse('show_tournament_workspace', args=(tournament_uuid,)))
 
+    if tournament.phase != Tournament.TournamentPhase.OPEN_FOR_SUBMISSION:
+        print("test match creation is out of phase")
+        messages.error(request, "Submission window has been closed")
+        return r
+
+    try:
+        TournamentRegistration.objects.get(tournament=tournament, user=request.user)
+    except:
+        print("unregistered user ", request.user, " trying to create  test match in tournament ", tournament)
+        messages.error(request, "You are not Registered For this tournament")
+        return r
+
     user_matches = TournamentTestMatchTable.objects.filter(tournament=tournament, user=request.user)
     print(user_matches, len(user_matches), tournament.max_match_generation_limit)
     if len(user_matches) >= tournament.max_match_generation_limit:
-        print(len(user_matches))
+        print("user ", request.user, " has already created ", len(user_matches), " match; max_limit: ",
+              tournament.max_match_generation_limit)
+        messages.error(request, "You can not create any more matches")
         return r
 
     user_submissions = TournamentSubmissionEntry.objects.filter(tournament=tournament,
                                                                 submission__user=request.user).values_list('submission',
                                                                                                            flat=True)
-    test_agents = WorkspaceTestSubmissionEntry.objects.filter(game=game,is_test=True).values_list('submission', flat=True)
+    test_agents = WorkspaceTestSubmissionEntry.objects.filter(game=game, is_test=True).values_list('submission',
+                                                                                                   flat=True)
     try:
         submission0 = Submission.objects.get(submission_uuid=request.POST['submission0'].strip())
         submission1 = Submission.objects.get(submission_uuid=request.POST['submission1'].strip())
     except:
-        raise Http404
+        print("User ", request.user, " making invalid submission")
+        messages.error(request, "Invalid Submission")
+        return r
 
     if submission0.pk not in user_submissions and submission0.pk not in test_agents:
         print(submission0)
         print(user_submissions)
         print(test_agents)
-        raise Http404
+        print("User ", request.user, " making invalid submission")
+        messages.error(request, "Invalid Submission")
+        return r
 
     if submission1.pk not in user_submissions and submission1.pk not in test_agents:
         print(submission0)
         print(user_submissions)
         print(test_agents)
-        raise Http404
+        print("User ", request.user, " making invalid submission")
+        messages.error(request, "Invalid Submission")
+        return r
 
     Match.objects.create_tournament_test_match(submission0=submission0, submission1=submission1,
                                                tournament=tournament, user=request.user)

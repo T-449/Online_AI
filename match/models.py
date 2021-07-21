@@ -125,12 +125,19 @@ class Match(models.Model):
     def validate_judge_request(self, request):
         workspace = self.game
         user = request.user
-        return True
-        try:
-            GameCreatorWorkspaceACL.objects.get(user=user, game=workspace)
-            return True
-        except:
+        if self.match_visibility == Match.MatchVisibility.PUBLIC:
             return False
+        elif self.match_visibility == Match.MatchVisibility.WORKSPACE_TEST_MATCH:
+            try:
+                GameCreatorWorkspaceACL.objects.get(user=user, game=workspace)
+                return True
+            except:
+                return False
+        elif self.match_visibility == Match.MatchVisibility.PRIVATE:
+            try:
+                return TournamentTestMatchTable.objects.get(match=self).user == user
+            except:
+                return False
 
 
 class TournamentMatchTable(models.Model):
