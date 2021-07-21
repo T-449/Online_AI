@@ -1,10 +1,8 @@
 import traceback
 from datetime import datetime
 
-from django.http import HttpResponseRedirect
-from django.shortcuts import render
-import random
-import string
+from django.http import HttpResponseRedirect, Http404
+from django.shortcuts import render, get_object_or_404
 
 from django.urls import reverse
 from django.utils import timezone
@@ -14,12 +12,10 @@ from django.utils.timezone import get_default_timezone, get_current_timezone, ma
 from Online_AI import settings
 from Online_AI.settings import MAX_TEST_GENERATION_LIMIT
 from game_creator.models import Game, GameCreatorWorkspaceACL
+from match.models import Match, TournamentTestMatchTable
+from myutils.fileutils import get_file_content_as_string
 from tournament.models import Tournament, TournamentCreatorACL, TournamentRegistration
-from submission.models import Submission
-
-
-def generateRandomString(characters):
-    return ''.join(random.choices(string.ascii_uppercase + string.digits, k=characters))
+from submission.models import Submission, TournamentSubmissionEntry, WorkspaceTestSubmissionEntry
 
 
 # Create your views here.
@@ -38,6 +34,7 @@ def create_tournament(request):
         'MAX_TEST_GENERATION_LIMIT' : MAX_TEST_GENERATION_LIMIT
     }
     return render(request, 'tournament/createTournament.html', context)
+
 
 
 def update_tournament(request, tournament_uuid):
@@ -75,8 +72,7 @@ def post_create_tournament(request):
     user = request.user
 
     try:
-        tournament = Tournament.objects.create_tournament(creator=user, name=request.POST['tournamentname'], game=game,
-                                                      start_time=start_time, end_time=end_time,
+        tournament = Tournament.objects.create_tournament(creator=user, name=request.POST['tournamentname'], game=game,                                                      start_time=start_time, end_time=end_time,
                                                       description=request.POST['description'],
                                                       phase=Tournament.TournamentPhase.OPEN_FOR_REGISTRATION,
                                                       tournament_type=Tournament.TournamentType[
@@ -84,7 +80,7 @@ def post_create_tournament(request):
                                                       max_match_generation_limit=int(request.POST['maxMatches']))
     except Exception as e:
         traceback.print_exc(e)
-        HttpResponseRedirect(reverse('tournamentList'))
+        return HttpResponseRedirect(reverse('tournamentList'))
     return HttpResponseRedirect(reverse('show_tournament_workspace',args=(tournament.tournament_uuid,)))
 
 
@@ -123,6 +119,8 @@ def post_update_tournament(request, tournament_uuid):
 def show_tournament_workspace(request, tournament_uuid):
     tournament = Tournament.objects.get(tournament_uuid=tournament_uuid)
     game = tournament.game
+    game_description = get_file_content_as_string(game.get_game_description_filepath()).encode('unicode_escape'
+                                                                                               ).decode('utf-8')
     visible = True
     registered = False
     if request.user.id is not None:
@@ -134,8 +132,12 @@ def show_tournament_workspace(request, tournament_uuid):
                 registered = True
     else:
         visible = False
+
+    tournament_test_matches = TournamentTestMatchTable.objects.filter(user=request.user)
+
     return render(request, 'tournament/tournament_tabs.html',
-                  {'tournament': tournament, 'game': game.game_title, 'visible': visible, 'registered': registered})
+                  {'tournament': tournament, 'game': game.game_title, 'visible': visible, 'registered': registered,
+                   'tournament_test_matches': tournament_test_matches, 'game_description': game_description})
 
 
 def reg_unreg(request, tournament_uuid):
@@ -152,8 +154,8 @@ def reg_unreg(request, tournament_uuid):
     else:
         try:
             TournamentRegistration.objects.get(tournament=tournament, user=user).delete()
-        except:
-            None
+        except Exception as e:
+            traceback.print_exc(e)
     return show_tournament_workspace(request, tournament_uuid)
 
 
@@ -173,7 +175,7 @@ def tournamentList(request):
         show = True
     return render(request, 'tournament/tournamentList.html',
                   {'tournaments': tournaments, 'show': show, 'myTournaments': myTournamentList,
-                   'registeredTournaments': registeredTournamentList, 'tournament_phases':tournament_phases})
+                   'registeredTournaments': registeredTournamentList, 'tournament_phases': tournament_phases})
 
 
 def add_submission(request, tournament_uuid):
@@ -197,7 +199,46 @@ def change_phase(request, tournament_uuid):
     try:
         tournament.phase = Tournament.TournamentPhase[request.POST['changedphase']]
         tournament.save()
-    except:
-        None
+    except Exception as e:
+        traceback.print_exc(e)
 
-    return HttpResponseRedirect(reverse('show_tournament_workspace',args=(tournament_uuid,)))
+    return HttpResponseRedirect(reverse('show_tournament_workspace', args=(tournament_uuid,)))
+
+
+def tournament_post_create_test_match(request, tournament_uuid):
+    tournament = get_object_or_404(Tournament, tournament_uuid=tournament_uuid)
+    game = tournament.game
+
+    r = HttpResponseRedirect(reverse('show_tournament_workspace', args=(tournament_uuid,)))
+
+    user_matches = TournamentTestMatchTable.objects.filter(tournament=tournament, user=request.user)
+    print(user_matches,len(user_matches),tournament.max_match_generation_limit)
+    if len(user_matches) >= tournament.max_match_generation_limit:
+        return r
+
+    user_submissions = TournamentSubmissionEntry.objects.filter(tournament=tournament,
+                                                                submission__user=request.user).values_list('submission',
+                                                                                                           flat=True)
+
+    test_agents = WorkspaceTestSubmissionEntry.objects.filter(game=game).values_list('submission', flat=True)
+    try:
+        submission0 = Submission.objects.get(submission_uuid=request.POST['submission0'].strip())
+        submission1 = Submission.objects.get(submission_uuid=request.POST['submission1'].strip())
+    except:
+        raise Http404
+
+    if submission0.pk not in user_submissions and submission0.pk not in test_agents:
+        print(submission0)
+        print(user_submissions)
+        print(test_agents)
+        raise Http404
+
+    if submission1.pk not in user_submissions and submission1.pk not in test_agents:
+        print(submission0)
+        print(user_submissions)
+        print(test_agents)
+        raise Http404
+
+    Match.objects.create_tournament_test_match(submission0=submission0, submission1=submission1,
+                                               tournament=tournament, user=request.user)
+    return r

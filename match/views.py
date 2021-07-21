@@ -45,6 +45,7 @@ def get_match_or_validate_requests(request, match_uuid):
         raise Http404
     return match
 
+
 def get_match_or_validate_judge_requests(request, match_uuid):
     match = get_object_or_404(Match, match_uuid=match_uuid)
 
@@ -81,13 +82,17 @@ def judge_match(request, match_uuid):
     p = Process(target=execute_match, args=(match,))
     p.start()
 
+
     return redirectToCurrent(request)
+
 
 def delete_match(request, match_uuid):
     match = get_match_or_validate_judge_requests(request, match_uuid)
     try:
         os.remove(match.history_filepath)
     except IsADirectoryError:
+        pass
+    except FileNotFoundError:
         pass
     models.Match.objects.filter(match_uuid=match_uuid).delete()
     return redirectToCurrent(request)

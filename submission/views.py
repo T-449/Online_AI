@@ -49,7 +49,7 @@ def post_test_submission(request, workspace_uuid):
     lang = request.POST['submission_language']
     code = request.POST['submission_code']
     tag = request.POST['tag']
-    time = now = timezone.now()
+    time = timezone.now()
 
     game = game_creator.views.get_game_or_validate_requests(request, workspace_uuid)
 

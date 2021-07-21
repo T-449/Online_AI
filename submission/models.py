@@ -16,7 +16,9 @@ import django.contrib.auth.models
 # Create your models here.
 class SubmissionManager(models.Manager):
     def create_test_submission(self, user, time, code, language, workspace, tag):
-        submission = self.create(user=user, submission_time=time, submission_status="test", submission_language=language)
+        submission = self.create(user=user, submission_time=time,
+                                 submission_visibility=Submission.SubmissionVisibility.TEST,
+                                 submission_language=language)
 
         fileutils.write_string_to_file(submission.get_submission_filepath(), code)
 
@@ -28,7 +30,8 @@ class SubmissionManager(models.Manager):
         return submission
 
     def create_tournament_submission(self, user, time, code, language, tournament):
-        submission = self.create(user=user, submission_time=time, submission_status="private",
+        submission = self.create(user=user, submission_time=time,
+                                 submission_status=Submission.SubmissionVisibility.PRIVATE,
                                  submission_language=language)
 
         fileutils.write_string_to_file(submission.get_submission_filepath(), code)
@@ -42,11 +45,17 @@ class SubmissionManager(models.Manager):
 
 
 class Submission(models.Model):
+    class SubmissionVisibility(models.IntegerChoices):
+        PUBLIC = 0
+        PRIVATE = 1
+        TEST = 2
+
     submission_uuid = models.UUIDField(default=uuid.uuid4, unique=True)
     submission_time = models.DateTimeField(null=True)
     user = models.ForeignKey(django.contrib.auth.models.User, on_delete=models.CASCADE)
     submission_language = models.CharField(max_length=10, default='')
-    submission_status = models.CharField(max_length=10, default='public')
+    submission_visibility = models.IntegerField(choices=SubmissionVisibility.choices,
+                                                default=SubmissionVisibility.PRIVATE, null=False)
 
     objects = SubmissionManager()
 
@@ -60,9 +69,9 @@ class Submission(models.Model):
         return os.path.join(settings.MEDIA_ROOT, 'submissions', str(self.submission_uuid))
 
     def validate_access(self, user):
-        if self.submission_status == "private":
+        if self.submission_visibility == Submission.SubmissionVisibility.PRIVATE:
             return self.user == user
-        elif self.submission_status == "test":
+        elif self.submission_visibility == Submission.SubmissionVisibility.TEST:
             game = WorkspaceTestSubmissionEntry.objects.get(submission=self).game
             return game_creator.models.game_creator_validate_workspace_access(user, game)
         else:
@@ -78,7 +87,7 @@ class Submission(models.Model):
     @property
     def getDescription(self):
         ans = self.user.username;
-        if (self.submission_status == 'test'):
+        if self.submission_visibility == Submission.SubmissionVisibility.TEST:
             ans += " (" + self.getWorkspaceTestSubmissionTag + ")"
         return ans
 
@@ -87,6 +96,7 @@ class WorkspaceTestSubmissionEntry(models.Model):
     submission = models.ForeignKey(Submission, on_delete=models.CASCADE)
     game = models.ForeignKey(Game, on_delete=models.CASCADE)
     tag = models.CharField(max_length=100, default="")
+    is_test = models.BooleanField(default=False, null=False)
 
 
 class TournamentSubmissionEntry(models.Model):
