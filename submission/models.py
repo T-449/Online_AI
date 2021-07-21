@@ -31,7 +31,7 @@ class SubmissionManager(models.Manager):
 
     def create_tournament_submission(self, user, time, code, language, tournament):
         submission = self.create(user=user, submission_time=time,
-                                 submission_status=Submission.SubmissionVisibility.PRIVATE,
+                                 submission_visibility=Submission.SubmissionVisibility.PRIVATE,
                                  submission_language=language)
 
         fileutils.write_string_to_file(submission.get_submission_filepath(), code)
