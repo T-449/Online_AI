@@ -157,7 +157,7 @@ def tournament_post_create_test_match(request, tournament_uuid):
     r = HttpResponseRedirect(reverse('show_tournament_workspace', args=(tournament_uuid,)))
 
     user_matches = TournamentTestMatchTable.objects.filter(tournament=tournament, user=request.user)
-    print(user_matches,len(user_matches),tournament.max_match_generation_limit)
+    print(user_matches, len(user_matches), tournament.max_match_generation_limit)
     if len(user_matches) >= tournament.max_match_generation_limit:
         return r
 
