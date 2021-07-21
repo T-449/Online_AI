@@ -6,42 +6,48 @@
 {% endblock title %}
 
 {% block content %}
-    {% if tournaments %}
-        <h1>Active Tournament(s)</h1>
-        <ul>
-            {% for tournament in tournaments %}
-                <a href="{% url 'show_tournament_workspace' tournament.tournament_uuid %}" class="list-group-item list-group-item-action">{{ tournament.name }}</a>
-            {% endfor %}
-        </ul>
-    {% endif %}
+    <div class="container">
+        {% if tournaments %}
+            <h1>Active Tournament(s)</h1>
+            <ul>
+                {% for tournament in tournaments %}
+                    <a href="{% url 'show_tournament_workspace' tournament.tournament_uuid %}" class="list-group-item list-group-item-action">{{ tournament.name }}</a>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </div>
 
-    {% if myTournaments %}
-        <h1>My Tournament(s)</h1>
-        <ul>
-            {% for tournament in myTournaments %}
-                <a href="{% url 'show_tournament_workspace' tournament.tournament_uuid %}" class="list-group-item list-group-item-action">{{ tournament.name }}</a>
-                <form action="{% url 'change_phase' tournament.tournament_uuid %}" method="post">
-                    {% csrf_token %}
-                    <label for="changedphase">Change phase</label>
-                    <select id="changedphase" name="changedphase">
-                        {% for option in tournament_phases %}
-                            <option value="{{ option }}">{{ option }}</option>
-                        {% endfor %}
-                    </select>
-                    <input type="submit" value="Change">
-                </form>
-            {% endfor %}
-        </ul>
-    {% endif %}
+    <div class="container">
 
-    {% if registeredTournaments %}
-        <h1>Registered Tournament(s)</h1>
-        <ul>
-            {% for tournament in registeredTournaments %}
-                <a href="{% url 'show_tournament_workspace' tournament.tournament_uuid %}" class="list-group-item list-group-item-action">{{ tournament.name }}</a>
-            {% endfor %}
-        </ul>
-    {% endif %}
+        {% if myTournaments %}
+            <h1>My Tournament(s)</h1>
+            <ul>
+                {% for tournament in myTournaments %}
+                    <a href="{% url 'show_tournament_workspace' tournament.tournament_uuid %}" class="list-group-item list-group-item-action">{{ tournament.name }}</a>
+                    <form action="{% url 'change_phase' tournament.tournament_uuid %}" method="post">
+                        {% csrf_token %}
+                        <label for="changedphase">Change phase</label>
+                        <select id="changedphase" name="changedphase">
+                            {% for option in tournament_phases %}
+                                <option value="{{ option }}">{{ option }}</option>
+                            {% endfor %}
+                        </select>
+                        <input type="submit" value="Change">
+                    </form>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </div>
+    <div class="container">
+        {% if registeredTournaments %}
+            <h1>Registered Tournament(s)</h1>
+            <ul>
+                {% for tournament in registeredTournaments %}
+                    <a href="{% url 'show_tournament_workspace' tournament.tournament_uuid %}" class="list-group-item list-group-item-action">{{ tournament.name }}</a>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </div>
 
     <div class="container">
         {% if show %}

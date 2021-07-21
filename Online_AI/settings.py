@@ -14,6 +14,7 @@ from pathlib import Path
 import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Quick-start development settings - unsuitable for production
@@ -30,19 +31,20 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+# Project Apps
     'home.apps.HomeConfig',
-
     'game_creator.apps.GameCreatorConfig',
-
     'submission.apps.SubmissionConfig',
     'tournament.apps.TournamentConfig',
     'match.apps.MatchConfig',
-
-    'test.apps.TestConfig',
     'users.apps.UsersConfig',
+    'scheduler.apps.SchedulerConfig',
+    'test.apps.TestConfig',
 
+    # Dependencies
     'crispy_forms',
 
+# Django Builtins
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -115,7 +117,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Dhaka'
 
 USE_I18N = True
 USE_L10N = True 
@@ -134,11 +136,18 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 MEDIA_URL = '/media/'
 
 
-
-
+# for crispy forms
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
+# for login redirection
 LOGIN_REDIRECT_URL = 'home'
 LOGIN_URL = 'login'
+
+# Error margin for changing tournament phases
+ERROR_MARGIN_SECS = 2
+
+# maximum test generation value
+MAX_TEST_GENERATION_LIMIT = 256
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field

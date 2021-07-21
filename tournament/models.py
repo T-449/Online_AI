@@ -1,5 +1,9 @@
+import datetime
+
 import django.contrib.auth.models
 from django.db import models
+
+from django.utils import timezone
 from game_creator.models import Game
 import uuid
 
@@ -31,10 +35,10 @@ class Tournament(models.Model):
         ROUND_ROBIN = 'rr'
 
     game = models.ForeignKey(Game, on_delete=models.CASCADE)
-    name = models.CharField(max_length=36, null=False, default="MyTournament")
-    description = models.CharField(max_length=330, null=True)
-    start_time = models.DateTimeField(null=True)
-    end_time = models.DateTimeField(null=True)
+    name = models.CharField(max_length=36, null=False)
+    description = models.CharField(max_length=330, null=False, default="")
+    start_time = models.DateTimeField(null=False)
+    end_time = models.DateTimeField(null=False)
     phase = models.CharField(max_length=5, choices=TournamentPhase.choices,
                              default=TournamentPhase.OPEN_FOR_REGISTRATION)
     tournament_uuid = models.UUIDField(default=uuid.uuid4, unique=True)
@@ -43,6 +47,21 @@ class Tournament(models.Model):
 
     objects = TournamentManager()
 
+    @property
+    def shouldHaveStarted(self):
+        return timezone.now() >= self.start_time
+
+    @property
+    def shouldHaveEnded(self):
+        return timezone.now() >= self.end_time
+
+    @property
+    def shouldBeRunning(self):
+        return self.shouldHaveStarted and not self.shouldHaveEnded
+
+    @property
+    def getTypeName(self):
+        return self.TournamentType(self.tournament_type).name
 
 class TournamentCreatorACL(models.Model):
     user = models.ForeignKey(django.contrib.auth.models.User, on_delete=models.CASCADE)

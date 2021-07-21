@@ -9,7 +9,7 @@
 {% endblock additionalCSS %}
 
 {% block title %}
-    <title>{{ profile_user.username }} Create Tournament - OnlineAI</title>
+    <title>{{ profile_user.username }} Update Tournament - OnlineAI</title>
 {% endblock title %}
 
 {% block content %}
@@ -17,15 +17,14 @@
   <main>
     <div class="py-5 text-center">
       <img class="d-block mx-auto mb-4" src="{% static 'assets/brand/freeLogo.jpeg' %}" alt="" width="200" height="200">
-
-
+      <h2> Update Tournament: {{ tournament.name }}</h2>
     </div>
-        <form action= "{% url 'post_create_tournament' %}"method="post" class="needs-validation" novalidate>
+        <form action= "{% url 'post_update_tournament' tournament.tournament_uuid %}"method="post" class="needs-validation" novalidate>
             {% csrf_token %}
           <div class="row g-3">
             <div class="col-sm-6">
               <label for="tournamentName" class="form-label">Tournament name</label>
-              <input type="text" class="form-control" name="tournamentname" id="tournamentname" placeholder="" value="" required>
+              <input type="text" class="form-control" name="tournamentname" id="tournamentname" placeholder="" value={{ tournament.name }}>
               <div class="invalid-feedback">
                 Valid tournament name is required.
               </div>
@@ -34,9 +33,12 @@
             <div class="col-md-5">
               <label for="game" class="form-label">Game</label>
               <select class="form-select" name="game" id="game" required>
-                <option value="">Choose a game...</option>
+                  <option value="{{ tournament.game.pk }}">{{ tournament.game.game_title }}</option>
+
                   {% for game in games %}
-                    <option value="{{ game.pk }}">{{ game.game_title }}</option>
+                      {% if game.pk != tournament.game.pk %}
+                          <option value="{{ game.pk }}">{{ game.game_title }}</option>
+                      {% endif %}
                   {% endfor %}
               </select>
               <div class="invalid-feedback">
@@ -47,9 +49,11 @@
             <div class="col-md-5">
               <label for="tournamentType" class="form-label">Tournament Type</label>
               <select class="form-select" name="tournamentType" id="tournamentType" required>
-                <option value="">Choose...</option>
+                <option value="{{ tournament.tournament_type }}">{{ tournament.getTypeName }}</option>
                   {% for option in tournament_types %}
-                    <option value="{{ option }}">{{ option }}</option>
+                      {% if tournament.getTypeName != option %}
+                        <option value="{{ option }}">{{ option }}</option>
+                      {% endif %}
                   {% endfor %}
               </select>
               <div class="invalid-feedback">
@@ -59,7 +63,7 @@
 
             <div class="col-md-5">
               <label for="maxmatches" class="form-label">Max Match Generation Limit</label>
-              <input type="number" class="form-control" name="maxMatches" id="maxMatches" min="0" max={{  MAX_TEST_GENERATION_LIMIT }} value="0">
+              <input type="number" class="form-control" name="maxMatches" id="maxMatches" min="0" max={{ MAX_TEST_GENERATION_LIMIT}}, value={{ tournament.max_match_generation_limit }}>
               <div class="invalid-feedback">
                 Please select a valid number within 0 to {{ MAX_TEST_GENERATION_LIMIT }}.
               </div>
@@ -73,16 +77,16 @@
             </div>
 
             <div class="col-12">
-              <label for="startTime" class="form-label" >Start Time</label>
-                <input type="date" name="startdate" id="startdate"  required value={{ servertime|date:"Y-m-d" }}>
-                <input type="time" name="starttime" id="starttime" step="1" required value="00:00:00">
+              <label for="startTime" class="form-label">Start Time</label>
+                <input type="date" name="startdate" id="startdate" value={{ tournament.start_time | date:"Y-m-d" }}>
+                <input type="time" name="starttime" id="starttime" step="1" value={{ tournament.start_time | time:"H:i:s" }}>
                 {{ servertime|time:"e" }}
             </div>
 
             <div class="col-12">
               <label for="endTime" class="form-label">End Time </label>
-                <input type="date" name="enddate" id="enddate"  required value="{{ servertime|date:"Y-m-d" }}">
-                <input type="time" name="endtime" id="endtime" step="1" required value="00:00:00">
+                <input type="date" name="enddate" id="enddate" value={{ tournament.end_time | date:"Y-m-d" }}>
+                <input type="time" name="endtime" id="endtime" step="1" value={{ tournament.end_time | time:"H:i:s" }}>
                 {{ servertime|time:"e" }}
             </div>
 
@@ -90,7 +94,7 @@
 
           <hr class="my-4">
 
-          <button class="w-100 btn btn-primary btn-lg" type="submit">Create my tournament</button>
+          <button class="w-100 btn btn-primary btn-lg" type="submit">Update tournament</button>
           </div>
         </form>
   </main>

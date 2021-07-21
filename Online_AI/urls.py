@@ -20,15 +20,13 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 
-import test.views
-
 urlpatterns = [
                   path('admin/', admin.site.urls),
-                  path('test/', include('test.urls')),
                   path('workspace/', include('game_creator.urls')),
                   path('submission/', include('submission.urls')),
                   path('match/', include('match.urls')),
                   path('tournament/', include('tournament.urls')),
+                  path('scheduler/', include('scheduler.urls')),
                   path('', include('users.urls'))
 
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

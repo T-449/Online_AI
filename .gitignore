@@ -1,18 +1,17 @@
 .idea/
-.fuse_hidden*
-media/
+.vscode/
+judge/.vscode/*
 venv/
+
+media/
+testdir2/
+SandBox/
+
+db.sqlite3*
+.fuse_hidden*
 
 __pycache__/
 Online_AI/__pycache__/
 *.pyc
 
-db.sqlite3
-db.sqlite3.bak
-db.sqlite3.bak2
 
-judge/.vscode/*
-.vscode/
-
-testdir2/
-SandBox/

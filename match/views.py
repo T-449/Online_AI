@@ -82,6 +82,7 @@ def judge_match(request, match_uuid):
     p = Process(target=execute_match, args=(match,))
     p.start()
 
+
     return redirectToCurrent(request)
 
 
