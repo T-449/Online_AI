@@ -247,7 +247,7 @@
                         <select class="form-select" name="submission0" id="submission0" required>
                             <option value="">Choose a submission...</option>
                             {% for entry in testEntries %}
-                                <option value="{{ entry.submission.submission_uuid }}">{{ entry.submission.submission_uuid }}</option>
+                                <option value="{{ entry.submission_uuid }}">{{ entry.submission_uuid }}</option>
                             {% endfor %}
                         </select>
                     </div> <br>
@@ -256,7 +256,7 @@
                         <select class="form-select" name="submission1" id="submission1" required>
                             <option value="">Choose a submission...</option>
                             {% for entry in testEntries %}
-                                <option value="{{ entry.submission.submission_uuid }}">{{ entry.submission.submission_uuid }}</option>
+                                <option value="{{ entry.submission_uuid }}">{{ entry.submission_uuid }}</option>
                             {% endfor %}
                         </select>
 

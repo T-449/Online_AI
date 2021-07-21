@@ -134,17 +134,22 @@ def show_tournament_workspace(request, tournament_uuid):
     else:
         visible = False
 
-    tournamentCreator = TournamentCreatorACL.objects.get(tournament=tournament)
-    testSubmissions = WorkspaceTestSubmissionEntry.objects.all().filter(submission__user=tournamentCreator.user)
-    tournament_test_matches = TournamentTestMatchTable.objects.filter(user=request.user)
+    tournament_test_matches = TournamentTestMatchTable.objects.filter(user=request.user, tournament=tournament)
+
+    user_submissions = TournamentSubmissionEntry.objects.filter(tournament=tournament,
+                                                                submission__user=request.user).values_list('submission',
+                                                                                                           flat=True)
+    test_agents = WorkspaceTestSubmissionEntry.objects.filter(game=game,is_test=True).values_list('submission', flat=True)
 
     submissions = TournamentSubmissionEntry.objects.all().filter(submission__user=request.user)
-    submissionList = list(chain(testSubmissions, submissions))
-
+    submission_list_pk = list(chain(test_agents, user_submissions))
+    submission_list = []
+    for pk in submission_list_pk:
+        submission_list.append(Submission.objects.get(pk=pk))
     return render(request, 'tournament/tournament_tabs.html',
                   {'tournament': tournament, 'game': game.game_title, 'visible': visible, 'registered': registered,
                    'tournament_test_matches': tournament_test_matches, 'game_description': game_description,
-                   'entries': submissions, 'testEntries': submissionList})
+                   'entries': submissions, 'testEntries': submission_list})
 
 
 def reg_unreg(request, tournament_uuid):
@@ -221,13 +226,13 @@ def tournament_post_create_test_match(request, tournament_uuid):
     user_matches = TournamentTestMatchTable.objects.filter(tournament=tournament, user=request.user)
     print(user_matches, len(user_matches), tournament.max_match_generation_limit)
     if len(user_matches) >= tournament.max_match_generation_limit:
+        print(len(user_matches))
         return r
 
     user_submissions = TournamentSubmissionEntry.objects.filter(tournament=tournament,
                                                                 submission__user=request.user).values_list('submission',
                                                                                                            flat=True)
-
-    test_agents = WorkspaceTestSubmissionEntry.objects.filter(game=game).values_list('submission', flat=True)
+    test_agents = WorkspaceTestSubmissionEntry.objects.filter(game=game,is_test=True).values_list('submission', flat=True)
     try:
         submission0 = Submission.objects.get(submission_uuid=request.POST['submission0'].strip())
         submission1 = Submission.objects.get(submission_uuid=request.POST['submission1'].strip())
