@@ -17,6 +17,7 @@ from game_creator.models import Game, GameCreatorWorkspaceACL
 from match.models import Match, TournamentTestMatchTable, TournamentMatchTable
 from match_generator.round_robin_match_generator import RoundRobinMatchGenerator
 from myutils.fileutils import get_file_content_as_string
+from ranklist.victory_count_rank_generator import VictoryCountRankGenerator
 from tournament.models import Tournament, TournamentCreatorACL, TournamentRegistration
 from submission.models import Submission, TournamentSubmissionEntry, WorkspaceTestSubmissionEntry
 from itertools import chain
@@ -128,6 +129,9 @@ def show_tournament_workspace(request, tournament_uuid):
     game = tournament.game
     game_description = get_file_content_as_string(game.get_game_description_filepath()).encode('unicode_escape'
                                                                                                ).decode('utf-8')
+
+    #VictoryCountRankGenerator(tournament).generate_ranklist()
+
     visible = True
     registered = False
     if request.user.id is not None:

@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'scheduler.apps.SchedulerConfig',
     'test.apps.TestConfig',
     'judge_queue.apps.JudgeQueueConfig',
+    'ranklist.apps.RanklistConfig',
 
     # Dependencies
     'crispy_forms',
