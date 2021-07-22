@@ -6,7 +6,7 @@ from django.contrib import messages
 from django.http import Http404, HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, get_object_or_404
 
-import judge_queue.models
+from judge_queue.judge_queue import GlobalJudgeQueue
 from match import models
 from matchExecutionUnit.matchExecutionUnit import execute_match
 from myutils import fileutils
@@ -82,7 +82,7 @@ def show_match_history(request, match_uuid):
 def judge_match(request, match_uuid):
     match = get_match_or_validate_judge_requests(request, match_uuid)
     print("Hello ", match, os.getpid(), os.getpgrp())
-    judge_queue.models.JudgeQueueModels.judge_queue.submit(match)
+    GlobalJudgeQueue.judge_queue.submit(match)
 
     #p = Process(target=execute_match, args=(match,))
     #p.start()

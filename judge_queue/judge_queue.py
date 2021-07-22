@@ -23,3 +23,7 @@ class JudgeQueue:
         t = self.executor.submit(execute_submitted_match,match)
         print(self.executor)
 
+MAX_TEST_GENERATION_LIMIT = 3
+
+class GlobalJudgeQueue:
+    judge_queue = JudgeQueue(max_workers=MAX_TEST_GENERATION_LIMIT)
