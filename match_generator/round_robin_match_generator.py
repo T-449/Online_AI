@@ -39,3 +39,4 @@ class RoundRobinMatchGenerator:
                                                               tournament=self.tournament)
                 self.judge_queue.submit(match)
                 print(match)
+        self.judge_queue.shutdown()
