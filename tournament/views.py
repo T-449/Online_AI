@@ -164,7 +164,7 @@ def show_tournament_workspace(request, tournament_uuid):
 
     generatedMatches = []
 
-    if tournament.phase == Tournament.TournamentPhase.MATCH_EXECUTION:
+    if tournament.phase == Tournament.TournamentPhase.MATCH_EXECUTION or tournament.phase == Tournament.TournamentPhase.TOURNAMENT_ENDED:
         generatedMatches = TournamentMatchTable.objects.filter(tournament=tournament)
 
     return render(request, 'tournament/tournament_tabs.html',
