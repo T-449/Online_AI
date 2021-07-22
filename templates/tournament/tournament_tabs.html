@@ -55,10 +55,12 @@
                    role="tab" aria-controls="testing-sandbox-tab" aria-selected="false">Testing Sandbox</a></li>
             {% endif %}
 
-            {% if tournament.phase == tournamentPhases.MATCH_EXECUTION and registered %}
-                <li>
-                    <a class="nav-link" id="matches" data-toggle="tab" href="#matches"
-                       role="tab" aria-controls="matches" aria-selected="false">Matches</a></li>
+            {% if tournament.phase == tournamentPhases.MATCH_EXECUTION %}
+                {% if registered or not visible %}
+                    <li>
+                        <a class="nav-link" id="matches" data-toggle="tab" href="#generatedMatches"
+                           role="tab" aria-controls="matches" aria-selected="false">Matches</a></li>
+                {% endif %}
             {% endif %}
 
             {% if tournament.phase == tournamentPhases.TOURNAMENT_ENDED %}
@@ -288,21 +290,15 @@
                 <table class="table table-hover">
                     <thead>
                         <tr>
-                            <td>Time</td>
                             <td>match_uuid</td>
                             <td>Player1 Agent</td>
-                            <td>Tag</td>
                             <td>Player2 Agent</td>
-                            <td>Tag</td>
                             <td>Status</td>
                             <td>Result</td>
                         </tr>
                     </thead>
                     {% for entry in tournament_test_matches %}
                         <tr>
-                            <td>
-                                A
-                            </td>
                             <td>
                                 <a href="{% url 'show_match_history' entry.match.match_uuid %}">
                                     {{ entry.match.match_uuid }}
@@ -313,15 +309,11 @@
                                 <a href="{% url 'show_raw_submission' entry.match.submission0.submission_uuid %}">{{ entry.match.submission0.submission_uuid }}</a>
                             </td>
 
-                            <td>
-                                {{ entry.match.submission0.getWorkspaceTestSubmissionTag }}
-                            </td>
+
                             <td>
                                 <a href="{% url 'show_raw_submission' entry.match.submission1.submission_uuid %}">{{ entry.match.submission1.submission_uuid }}</a>
                             </td>
-                            <td>
-                                {{ entry.match.submission1.getWorkspaceTestSubmissionTag }}
-                            </td>
+
                             <td>
                                 {{ entry.match.get_match_status_display }}
                             </td>
@@ -336,11 +328,7 @@
                                     {% if entry.match.match_results == "Not Decided"  %}Judge{% else %}Rejudge{% endif %}
                                 </a>
                             </td>
-                            <td>
-                                <a href="{% url 'delete_match' entry.match.match_uuid %}">
-                                     <p><span class="glyphicon glyphicon-trash"></span></p>
-                                </a>
-                            </td>
+
                             <td>
                                  <a href="{% url 'dump_history' entry.match.match_uuid %}">
                                     <p><span class="glyphicon glyphicon-download"></span></p>
@@ -349,6 +337,42 @@
                         </tr>
 
                 {% endfor %}
+                </table>
+            </div>
+
+            <div id="generatedMatches" class="tab-pane fade">
+                <br>
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <td>match_uuid</td>
+                            <td>Player1 Agent</td>
+                            <td>User</td>
+                            <td>Player2 Agent</td>
+                            <td>User</td>
+                            <td>Status</td>
+                            <td>Result</td>
+                        </tr>
+                    </thead>
+                    {% for entry in matchEntries %}
+                        <td>{{ entry.match.match_uuid }}</td>
+
+                        <td>
+                            <a href="{% url 'show_raw_submission' entry.match.submission0.submission_uuid %}">{{ entry.match.submission0.submission_uuid }}</a>
+                        </td>
+
+                        <td>{{ entry.match.submission0.user.username }}</td>
+
+                        <td>
+                            <a href="{% url 'show_raw_submission' entry.match.submission1.submission_uuid %}">{{ entry.match.submission1.submission_uuid }}</a>
+                        </td>
+
+                        <td>{{ entry.match.submission1.user.username }}</td>
+
+                        <td>{{ entry.match.match_status }}</td>
+
+                        <td>{{ entry.match.match_results }}</td>
+                    {% endfor %}
                 </table>
             </div>
 

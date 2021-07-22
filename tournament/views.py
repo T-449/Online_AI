@@ -14,7 +14,7 @@ from django.utils.timezone import get_default_timezone, get_current_timezone, ma
 from Online_AI import settings
 from Online_AI.settings import MAX_TEST_GENERATION_LIMIT
 from game_creator.models import Game, GameCreatorWorkspaceACL
-from match.models import Match, TournamentTestMatchTable
+from match.models import Match, TournamentTestMatchTable, TournamentMatchTable
 from match_generator.round_robin_match_generator import RoundRobinMatchGenerator
 from myutils.fileutils import get_file_content_as_string
 from tournament.models import Tournament, TournamentCreatorACL, TournamentRegistration
@@ -158,14 +158,16 @@ def show_tournament_workspace(request, tournament_uuid):
     for pk in submission_list_pk:
         submission_list.append(Submission.objects.get(pk=pk))
 
+    generatedMatches = []
+
     if tournament.phase == Tournament.TournamentPhase.MATCH_EXECUTION:
-        generatedMatches = Match.objects.filter()
+        generatedMatches = TournamentMatchTable.objects.filter(tournament=tournament)
 
     return render(request, 'tournament/tournament_tabs.html',
                   {'tournament': tournament, 'game': game.game_title, 'visible': visible, 'registered': registered,
                    'tournament_test_matches': tournament_test_matches, 'game_description': game_description,
                    'entries': submissions, 'testEntries': submission_list,
-                   'tournamentPhases': Tournament.TournamentPhase})
+                   'tournamentPhases': Tournament.TournamentPhase, 'matchEntries': generatedMatches})
 
 
 @login_required
