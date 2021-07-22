@@ -370,7 +370,15 @@
 
                             <td>{{ entry.match.submission1.user.username }}</td>
 
-                            <td>{{ entry.match.match_status }}</td>
+                            {% if entry.match.match_status == 2 %}
+                                <td>Ended</td>
+                            {% elif entry.match.match_status == 1 %}
+                                <td>Running</td>
+                            {% elif entry.match.match_status == 0 %}
+                                <td>Pending</td>
+                            {% else %}
+                                <td>Error</td>
+                            {% endif %}
 
                             <td>{{ entry.match.match_results }}</td>
                         </tr>
