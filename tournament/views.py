@@ -158,6 +158,9 @@ def show_tournament_workspace(request, tournament_uuid):
     for pk in submission_list_pk:
         submission_list.append(Submission.objects.get(pk=pk))
 
+    if tournament.phase == Tournament.TournamentPhase.MATCH_EXECUTION:
+        generatedMatches = Match.objects.filter()
+
     return render(request, 'tournament/tournament_tabs.html',
                   {'tournament': tournament, 'game': game.game_title, 'visible': visible, 'registered': registered,
                    'tournament_test_matches': tournament_test_matches, 'game_description': game_description,
@@ -247,6 +250,10 @@ def change_phase(request, tournament_uuid):
     try:
         tournament.phase = Tournament.TournamentPhase[request.POST['changedphase']]
         tournament.save()
+
+        if tournament.phase == Tournament.TournamentPhase.MATCH_EXECUTION:
+            matchGenerator = RoundRobinMatchGenerator(tournament)
+            matchGenerator.run()
     except Exception as e:
         traceback.print_exc(e)
 
