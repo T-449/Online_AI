@@ -55,7 +55,7 @@
                    role="tab" aria-controls="testing-sandbox-tab" aria-selected="false">Testing Sandbox</a></li>
             {% endif %}
 
-            {% if tournament.phase == tournamentPhases.MATCH_EXECUTION %}
+            {% if tournament.phase == tournamentPhases.MATCH_EXECUTION or tournament.phase == tournamentPhases.TOURNAMENT_ENDED %}
                 {% if registered or not visible %}
                     <li>
                         <a class="nav-link" id="matches" data-toggle="tab" href="#generatedMatches"
@@ -355,23 +355,25 @@
                         </tr>
                     </thead>
                     {% for entry in matchEntries %}
-                        <td>{{ entry.match.match_uuid }}</td>
+                        <tr>
+                            <td>{{ entry.match.match_uuid }}</td>
 
-                        <td>
-                            <a href="{% url 'show_raw_submission' entry.match.submission0.submission_uuid %}">{{ entry.match.submission0.submission_uuid }}</a>
-                        </td>
+                            <td>
+                                <a href="{% url 'show_raw_submission' entry.match.submission0.submission_uuid %}">{{ entry.match.submission0.submission_uuid }}</a>
+                            </td>
 
-                        <td>{{ entry.match.submission0.user.username }}</td>
+                            <td>{{ entry.match.submission0.user.username }}</td>
 
-                        <td>
-                            <a href="{% url 'show_raw_submission' entry.match.submission1.submission_uuid %}">{{ entry.match.submission1.submission_uuid }}</a>
-                        </td>
+                            <td>
+                                <a href="{% url 'show_raw_submission' entry.match.submission1.submission_uuid %}">{{ entry.match.submission1.submission_uuid }}</a>
+                            </td>
 
-                        <td>{{ entry.match.submission1.user.username }}</td>
+                            <td>{{ entry.match.submission1.user.username }}</td>
 
-                        <td>{{ entry.match.match_status }}</td>
+                            <td>{{ entry.match.match_status }}</td>
 
-                        <td>{{ entry.match.match_results }}</td>
+                            <td>{{ entry.match.match_results }}</td>
+                        </tr>
                     {% endfor %}
                 </table>
             </div>
