@@ -21,6 +21,7 @@ from ranklist.victory_count_rank_generator import VictoryCountRankGenerator
 from tournament.models import Tournament, TournamentCreatorACL, TournamentRegistration
 from submission.models import Submission, TournamentSubmissionEntry, WorkspaceTestSubmissionEntry
 from itertools import chain
+from ranklist.models import Ranklist
 
 
 # Create your views here.
@@ -167,11 +168,16 @@ def show_tournament_workspace(request, tournament_uuid):
     if tournament.phase == Tournament.TournamentPhase.MATCH_EXECUTION or tournament.phase == Tournament.TournamentPhase.TOURNAMENT_ENDED:
         generatedMatches = TournamentMatchTable.objects.filter(tournament=tournament)
 
+    ranklist = []
+
+    if tournament.phase == Tournament.TournamentPhase.TOURNAMENT_ENDED:
+        ranklist = Ranklist.objects.filter(tournament=tournament).order_by('rank')
+
     return render(request, 'tournament/tournament_tabs.html',
                   {'tournament': tournament, 'game': game.game_title, 'visible': visible, 'registered': registered,
                    'tournament_test_matches': tournament_test_matches, 'game_description': game_description,
                    'entries': submissions, 'testEntries': submission_list,
-                   'tournamentPhases': Tournament.TournamentPhase, 'matchEntries': generatedMatches})
+                   'tournamentPhases': Tournament.TournamentPhase, 'matchEntries': generatedMatches, 'rankList': ranklist})
 
 
 @login_required
@@ -260,6 +266,10 @@ def change_phase(request, tournament_uuid):
         if tournament.phase == Tournament.TournamentPhase.MATCH_EXECUTION:
             matchGenerator = RoundRobinMatchGenerator(tournament)
             matchGenerator.run()
+
+        if tournament.phase == Tournament.TournamentPhase.TOURNAMENT_ENDED:
+            ranklistGenerator = VictoryCountRankGenerator(tournament)
+            ranklistGenerator.generate_ranklist()
     except Exception as e:
         traceback.print_exc(e)
 

@@ -65,7 +65,7 @@
 
             {% if tournament.phase == tournamentPhases.TOURNAMENT_ENDED %}
                 <li>
-                    <a class="nav-link" id="ranklist" data-toggle="tab" href="#ranklist"
+                    <a class="nav-link" id="ranklist" data-toggle="tab" href="#rankList"
                        role="tab" aria-controls="ranklist" aria-selected="false">Ranklist</a></li>
             {% endif %}
         </ul>
@@ -356,19 +356,25 @@
                     </thead>
                     {% for entry in matchEntries %}
                         <tr>
-                            <td>{{ entry.match.match_uuid }}</td>
+                            <td>
+                                <a href="{% url 'show_match_history' entry.match.match_uuid %}">{{ entry.match.match_uuid }}</a>
+                            </td>
 
                             <td>
                                 <a href="{% url 'show_raw_submission' entry.match.submission0.submission_uuid %}">{{ entry.match.submission0.submission_uuid }}</a>
                             </td>
 
-                            <td>{{ entry.match.submission0.user.username }}</td>
+                            <td>
+                                <a href="{% url 'viewprofile' entry.match.submission0.user %}">{{ entry.match.submission0.user }}</a>
+                            </td>
 
                             <td>
                                 <a href="{% url 'show_raw_submission' entry.match.submission1.submission_uuid %}">{{ entry.match.submission1.submission_uuid }}</a>
                             </td>
 
-                            <td>{{ entry.match.submission1.user.username }}</td>
+                            <td>
+                                <a href="{% url 'viewprofile' entry.match.submission1.user %}">{{ entry.match.submission1.user }}</a>
+                            </td>
 
                             {% if entry.match.match_status == 2 %}
                                 <td>Ended</td>
@@ -381,6 +387,38 @@
                             {% endif %}
 
                             <td>{{ entry.match.match_results }}</td>
+
+                            <td>
+                                 <a href="{% url 'dump_history' entry.match.match_uuid %}">
+                                    <p><span class="glyphicon glyphicon-download"></span></p>
+                                 </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+
+            <div id="rankList" class="tab-pane fade">
+                <br>
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <td>User</td>
+                            <td>submission_uuid</td>
+                            <td>Rank</td>
+                        </tr>
+                    </thead>
+                    {% for rank in rankList %}
+                        <tr>
+                            <td>
+                                <a href="{% url 'viewprofile' rank.submission.user %}">{{ rank.submission.user }}</a>
+                            </td>
+
+                            <td>
+                                <a href="{% url 'show_raw_submission' rank.submission.submission_uuid %}">{{ rank.submission.submission_uuid }}</a>
+                            </td>
+
+                            <td>{{ rank.rank }}</td>
                         </tr>
                     {% endfor %}
                 </table>
