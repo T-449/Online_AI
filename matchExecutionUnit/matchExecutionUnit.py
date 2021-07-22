@@ -10,8 +10,11 @@ THREE_WAY_PATH = "matchExecutionUnit/three-way.out"
 RUNNER_PATH = "matchExecutionUnit/runner.sh"
 SANDBOX = 'Sandbox/'
 
+
 def execute_match(match, dir=SANDBOX):
+    print(os.getpgrp())
     os.setpgrp()
+    print(os.getpgrp())
     try:
         submission0_filepath = match.submission0.get_submission_filepath()
         submission1_filepath = match.submission1.get_submission_filepath()
@@ -28,15 +31,15 @@ def execute_match(match, dir=SANDBOX):
         shutil.copy(submission1_filepath, dir + '/one/one')
         shutil.copy(judge_code_filepath, dir + '/judge/judge')
         print("cd " + dir + "; ./three-way.out " + match.submission0.submission_language + " ./zero/zero "
-                  + match.submission1.submission_language + " ./one/one "
-                  + match.game.game_judge_code_language + " ./judge/judge")
+              + match.submission1.submission_language + " ./one/one "
+              + match.game.game_judge_code_language + " ./judge/judge")
 
         try:
             match.match_status = Match.MatchStatus.RUNNING
             match.save()
             os.system("cd " + dir + "; ./three-way.out " + match.submission0.submission_language + " ./zero/zero "
-                  + match.submission1.submission_language + " ./one/one "
-                  + match.game.game_judge_code_language + " ./judge/judge")
+                      + match.submission1.submission_language + " ./one/one "
+                      + match.game.game_judge_code_language + " ./judge/judge")
 
             shutil.copyfile(dir + "/matchhistory.json", match.history_filepath)
             shutil.rmtree(dir, ignore_errors=True)

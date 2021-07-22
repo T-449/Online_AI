@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'users.apps.UsersConfig',
     'scheduler.apps.SchedulerConfig',
     'test.apps.TestConfig',
+    'judge_queue.apps.JudgeQueueConfig',
 
     # Dependencies
     'crispy_forms',
@@ -159,3 +160,7 @@ from django.contrib.messages import constants as messages
 MESSAGE_TAGS = {
     messages.ERROR: 'danger',
 }
+
+
+#JUDGE_QUEUE_NOUMBER_OF_WORKERS
+JUDGE_QUEUE_WORKER_COUNT = 3

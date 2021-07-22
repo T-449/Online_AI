@@ -15,6 +15,7 @@ from Online_AI import settings
 from Online_AI.settings import MAX_TEST_GENERATION_LIMIT
 from game_creator.models import Game, GameCreatorWorkspaceACL
 from match.models import Match, TournamentTestMatchTable
+from match_generator.round_robin_match_generator import RoundRobinMatchGenerator
 from myutils.fileutils import get_file_content_as_string
 from tournament.models import Tournament, TournamentCreatorACL, TournamentRegistration
 from submission.models import Submission, TournamentSubmissionEntry, WorkspaceTestSubmissionEntry
