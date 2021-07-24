@@ -7,7 +7,7 @@ from submission.models import TournamentSubmissionEntry, Submission
 
 
 class RoundRobinMatchGenerator:
-    def __init__(self, tournament, judge_queue=JudgeQueue(Online_AI.settings.JUDGE_QUEUE_WORKER_COUNT)):
+    def __init__(self, tournament, judge_queue):
         self.tournament = tournament
         self.judge_queue = judge_queue
 
