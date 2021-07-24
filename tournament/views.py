@@ -18,7 +18,7 @@ from match.models import Match, TournamentTestMatchTable, TournamentMatchTable
 from match_generator.round_robin_match_generator import RoundRobinMatchGenerator
 from myutils.fileutils import get_file_content_as_string
 from ranklist.victory_count_rank_generator import VictoryCountRankGenerator
-from tournament.models import Tournament, TournamentCreatorACL, TournamentRegistration
+from tournament.models import Tournament, TournamentCreatorACL, TournamentRegistration, is_tournament_creator
 from submission.models import Submission, TournamentSubmissionEntry, WorkspaceTestSubmissionEntry
 from itertools import chain
 from ranklist.models import Ranklist
@@ -46,6 +46,11 @@ def create_tournament(request):
 @login_required
 def update_tournament(request, tournament_uuid):
     tournament = Tournament.objects.get(tournament_uuid=tournament_uuid)
+    r = HttpResponseRedirect(reverse('show_tournament_workspace', args=(tournament_uuid,)))
+    if not is_tournament_creator(request.user, tournament):
+        messages.error("You do not have the permission to do that")
+        return r
+
     games = GameCreatorWorkspaceACL.objects.filter(user_id=request.user.id)
     gameList = []
     for game in games:
@@ -131,16 +136,17 @@ def show_tournament_workspace(request, tournament_uuid):
     game_description = get_file_content_as_string(game.get_game_description_filepath()).encode('unicode_escape'
                                                                                                ).decode('utf-8')
 
-    #VictoryCountRankGenerator(tournament).generate_ranklist()
-
     visible = True
     registered = False
+    is_creator = False
     if request.user.id is not None:
+        is_creator = is_tournament_creator(request.user,tournament)
         if TournamentCreatorACL.objects.filter(user=request.user, tournament=tournament).exists():
             visible = False
         else:
             if TournamentRegistration.objects.filter(user=request.user,
                                                      tournament=tournament).exists():
+
                 registered = True
     else:
         visible = False
@@ -155,7 +161,8 @@ def show_tournament_workspace(request, tournament_uuid):
                                                                     submission__user=request.user).values_list(
             'submission',
             flat=True)
-        submissions = TournamentSubmissionEntry.objects.all().filter(submission__user=request.user, tournament=tournament)
+        submissions = TournamentSubmissionEntry.objects.all().filter(submission__user=request.user,
+                                                                     tournament=tournament)
 
     submission_list_pk = list(chain(test_agents, user_submissions))
 
@@ -163,10 +170,11 @@ def show_tournament_workspace(request, tournament_uuid):
     for pk in submission_list_pk:
         submission_list.append(Submission.objects.get(pk=pk))
 
-    generatedMatches = []
+    generated_matches = []
 
-    if tournament.phase == Tournament.TournamentPhase.MATCH_EXECUTION or tournament.phase == Tournament.TournamentPhase.TOURNAMENT_ENDED:
-        generatedMatches = TournamentMatchTable.objects.filter(tournament=tournament)
+    if tournament.phase == Tournament.TournamentPhase.MATCH_EXECUTION or \
+            tournament.phase == Tournament.TournamentPhase.TOURNAMENT_ENDED:
+        generated_matches = TournamentMatchTable.objects.filter(tournament=tournament)
 
     ranklist = []
 
@@ -175,9 +183,10 @@ def show_tournament_workspace(request, tournament_uuid):
 
     return render(request, 'tournament/tournament_tabs.html',
                   {'tournament': tournament, 'game': game.game_title, 'visible': visible, 'registered': registered,
-                   'tournament_test_matches': tournament_test_matches, 'game_description': game_description,
+                   'is_creator':is_creator,'tournament_test_matches': tournament_test_matches, 'game_description': game_description,
                    'entries': submissions, 'testEntries': submission_list,
-                   'tournamentPhases': Tournament.TournamentPhase, 'matchEntries': generatedMatches, 'rankList': ranklist})
+                   'tournamentPhases': Tournament.TournamentPhase, 'matchEntries': generated_matches,
+                   'rankList': ranklist})
 
 
 @login_required
