@@ -155,7 +155,7 @@ def show_tournament_workspace(request, tournament_uuid):
                                                                     submission__user=request.user).values_list(
             'submission',
             flat=True)
-        submissions = TournamentSubmissionEntry.objects.all().filter(submission__user=request.user)
+        submissions = TournamentSubmissionEntry.objects.all().filter(submission__user=request.user, tournament=tournament)
 
     submission_list_pk = list(chain(test_agents, user_submissions))
 

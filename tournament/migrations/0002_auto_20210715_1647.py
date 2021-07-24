@@ -5,7 +5,7 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
+    atomic = False
     dependencies = [
         ('submission', '0002_workspacetestsubmissionentry_tag'),
         ('match', '0008_merge_20210703_2159'),

@@ -23,9 +23,9 @@ class VictoryCountRankGenerator:
                     match_result = "Not Decided"
                 elif match.match_results.lower() == "win":
                     rank_count[match.submission0] += 1
-                elif self.match_results.lower() == "loss":
+                elif match.match_results.lower() == "loss":
                     rank_count[match.submission1] += 1
-                elif self.match_results.lower() == "draw":
+                elif match.match_results.lower() == "draw":
                     match_result = "Game drawn"
                 else:
                     match_result = "Error"
